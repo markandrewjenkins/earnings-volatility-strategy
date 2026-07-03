@@ -1,0 +1,111 @@
+{
+ "generated_utc": "2026-07-03T03:02:09+00:00",
+ "generated_et": "2026-07-02T23:01:58-04:00",
+ "scan_date": "2026-07-02",
+ "next_trading_day": "2026-07-03",
+ "thresholds": {
+  "ts_slope_0_45": -0.00406,
+  "iv30_rv30": 1.25,
+  "avg_volume30": 1500000,
+  "max_atm_spread_pct": 0.1,
+  "min_price": 20.0,
+  "richness_min": 1.15,
+  "calendar_gap_days": 30,
+  "min_market_cap": 1000000000
+ },
+ "sizing": {
+  "calendar_frac": 0.06,
+  "straddle_frac": 0.02
+ },
+ "counts": {
+  "calendar_events": 3,
+  "analyzed": 1,
+  "recommended": 0,
+  "consider": 0,
+  "avoid": 1,
+  "tier1": 0,
+  "errors": 0
+ },
+ "events": [
+  {
+   "ticker": "LNN",
+   "name": "Lindsay Corporation",
+   "date": "2026-07-02",
+   "when": "BMO",
+   "market_cap": 1258601951.0,
+   "eps_est": "$1.41",
+   "trade_window": "upcoming",
+   "price": 122.12,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-09-18",
+   "atm_strike": 120.0,
+   "straddle_mid": 6.5,
+   "calendar_debit_est": 3.95,
+   "expected_move_pct": 5.32,
+   "ts_slope_0_45": -0.00448,
+   "iv30": 0.3945,
+   "rv30": 0.4147,
+   "iv30_rv30": 0.951,
+   "avg_volume30": 201519,
+   "atm_spread_pct": 0.441,
+   "term_structure": [
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 0.4617
+    },
+    {
+     "exp": "2026-09-18",
+     "dte": 78,
+     "iv": 0.1792
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 5.85,
+    "n": 8,
+    "moves_pct": [
+     12.06,
+     6.83,
+     4.44,
+     4.33,
+     7.34,
+     2.9,
+     8.43,
+     0.46
+    ]
+   },
+   "richness": 0.91,
+   "pass_slope": true,
+   "pass_ivrv": false,
+   "pass_volume": false,
+   "tier": "AVOID",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": false,
+    "price_ok": true,
+    "premium_rich": false,
+    "richness_known": true
+   },
+   "error": null
+  }
+ ],
+ "skipped": [
+  {
+   "ticker": "CRMT",
+   "name": "America's Car-Mart, Inc.",
+   "date": "2026-07-02",
+   "when": "TNS",
+   "market_cap": 23163836.0,
+   "trade_window": "today"
+  },
+  {
+   "ticker": "AUC",
+   "name": "ATIF Holdings Limited",
+   "date": "2026-07-03",
+   "when": "TNS",
+   "market_cap": 83847722.0,
+   "trade_window": "upcoming"
+  }
+ ],
+ "errors": []
+}

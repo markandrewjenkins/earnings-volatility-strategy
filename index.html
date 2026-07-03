@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Earnings Volatility Strategy</title>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  /* Deus Ex: HR — near-black cards, vivid aug colors (shared with VIX dashboard) */
+  --bg:      #100d09;
+  --panel:   #0c0a07;
+  --panel2:  #131009;
+  --border:  #443714;
+  --border2: #6a551f;
+  --text:    #f6ecc6;
+  --dim:     #b39a52;
+  --white:   #fdf4d6;
+  --yellow:  #e8b94f;
+  --cyan:    #54d2ef;
+  --teal:    #52e6bd;
+  --purple:  #dba24f;
+  --amber:   #f0982f;
+  --coral:   #f2563a;
+  --gray:    #837448;
+  --pos: var(--teal);
+  --neg: var(--coral);
+  --neu: var(--cyan);
+}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html { font-size: 15px }
+body {
+  background-color: var(--bg);
+  background-image: radial-gradient(ellipse at 50% -8%, rgba(232,185,79,0.07), transparent 55%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: 'Saira', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+.hdr {
+  background: linear-gradient(180deg, #110d08, #0e0c08);
+  border-bottom: 2px solid var(--yellow);
+  box-shadow: 0 3px 16px -4px rgba(232,185,79,0.22);
+  padding: 12px 20px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hdr::before {
+  content: ''; position: absolute; top: 0; right: 0; width: 65%; height: 100%;
+  background: radial-gradient(ellipse at top right, rgba(232,185,79,0.10), transparent 72%);
+  pointer-events: none; z-index: 0;
+}
+.hdr > * { position: relative; z-index: 1; }
+.hdr::after {
+  content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,242,205,0.85), transparent);
+  background-size: 110px 100%; background-repeat: no-repeat; background-position: -130px 0;
+  animation: hdrsweep 2.6s ease-out 1 both; opacity: 0.5; pointer-events: none; z-index: 2;
+}
+@keyframes hdrsweep { 0% { background-position: -130px 0 } 100% { background-position: calc(100% + 130px) 0 } }
+.topbar { position: sticky; top: 0; z-index: 100; }
+.hdr-title { font-size: 1.3rem; font-weight: 700; color: var(--yellow); letter-spacing: 0.04em; text-transform: uppercase; text-shadow: 0 0 16px rgba(232,185,79,0.28); }
+.hdr-meta { font-size: 0.76rem; color: var(--dim); margin-top: 3px; }
+.hdr-meta a { color: var(--cyan); text-decoration: none }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap }
+.tab {
+  background: transparent; border: 1px solid var(--border2); color: var(--dim);
+  padding: 6px 16px; border-radius: 3px; cursor: pointer;
+  font-family: 'Saira', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.03em;
+  transition: all .15s;
+}
+.tab:hover { border-color: var(--cyan); color: var(--cyan); }
+.tab.active { background: #2a2210; border-color: var(--yellow); color: var(--yellow); font-weight: 700; }
+
+/* ── Live strip ─────────────────────────────────────────────────────── */
+#live-strip {
+  display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  padding: 8px 18px; background: var(--panel2);
+  border-bottom: 1px solid var(--border2);
+  font-family: 'Saira', sans-serif; font-size: 0.72rem;
+}
+.live-badge { display: inline-flex; align-items: baseline; gap: 6px; color: var(--yellow); font-weight: 700; letter-spacing: 0.12em; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; align-self: center;
+  background: var(--teal); box-shadow: 0 0 6px var(--teal);
+  animation: livepulse 1.6s ease-in-out infinite; }
+@keyframes livepulse { 0%,100% { opacity: 1 } 50% { opacity: 0.25 } }
+#live-strip.stale .live-dot { background: var(--gray); box-shadow: none; animation: none; }
+.live-item { display: inline-flex; align-items: baseline; gap: 6px; }
+.live-lbl { color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.64rem; }
+.live-val { color: var(--text); font-weight: 700; }
+.live-updated { margin-left: auto; color: var(--dim); font-size: 0.72rem; }
+
+/* ── Layout / panels ────────────────────────────────────────────────── */
+.body { display: flex; flex-direction: column; gap: 12px; padding: 16px; max-width: 1700px; margin: 0 auto }
+.row  { display: flex; flex-wrap: wrap; gap: 12px }
+.panel { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.panel:hover { border-color: var(--border2) }
+.ph {
+  padding: 10px 16px; border-bottom: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--dim); font-weight: 600;
+  display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+  letter-spacing: 0.02em; text-transform: uppercase; background: #0a0805;
+}
+.ph span.t { color: var(--yellow); font-weight: 700 }
+.pb { padding: 14px 16px }
+
+/* ── KPI cards ──────────────────────────────────────────────────────── */
+.kpi-grid { display: flex; flex-wrap: wrap; gap: 10px }
+.kpi {
+  background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--yellow);
+  border-radius: 6px; padding: 12px 14px 10px; flex: 0 0 165px;
+}
+.kpi-label { font-size: 0.72rem; color: var(--dim); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.kpi-val { font-size: 1.55rem; font-weight: 700; margin-top: 5px; white-space: nowrap; }
+.kpi-sub { font-size: 0.76rem; color: var(--dim); margin-top: 4px }
+
+/* ── Tables / pills ─────────────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem }
+th {
+  text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border2);
+  font-size: 0.75rem; color: var(--yellow); font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; background: #0a0805; white-space: nowrap;
+}
+td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); white-space: nowrap }
+tr:hover td { background: #1f1a10 }
+tr.clickable { cursor: pointer }
+tr.selected td { background: #241d0e }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.03em; }
+.pill-rec   { background: #0c211c; color: var(--teal);   border: 1px solid var(--teal) }
+.pill-con   { background: #2a2008; color: var(--amber);  border: 1px solid var(--amber) }
+.pill-avoid { background: #2a120c; color: var(--coral);  border: 1px solid var(--coral) }
+.pill-t1    { background: #2a2210; color: var(--yellow); border: 1px solid var(--yellow) }
+.pill-amc   { background: #221608; color: var(--purple); border: 1px solid var(--purple) }
+.pill-bmo   { background: #0c1c28; color: var(--cyan);   border: 1px solid var(--cyan) }
+.pill-tns   { background: #1b180f; color: var(--gray);   border: 1px solid var(--gray) }
+.pos { color: var(--teal) } .neg { color: var(--coral) } .neu { color: var(--cyan) }
+.dimtxt { color: var(--dim) }
+
+/* ── Condition bars ─────────────────────────────────────────────────── */
+.cbar { display: flex; align-items: center; gap: 10px; margin-bottom: 9px }
+.cbar-label { font-size: 0.78rem; color: var(--dim); min-width: 175px; font-weight: 600 }
+.cbar-track { flex: 1; height: 6px; background: #0a0805; border-radius: 3px; overflow: hidden; border: 1px solid var(--border) }
+.cbar-fill  { height: 100%; border-radius: 3px }
+.cbar-val   { font-size: 0.78rem; color: var(--text); min-width: 76px; text-align: right; font-weight: 700 }
+
+/* ── Note box / cards ───────────────────────────────────────────────── */
+.note-box {
+  background: #1f1a0e; border: 1px solid var(--yellow); border-radius: 6px;
+  padding: 11px 15px; font-size: 0.85rem; color: var(--text); line-height: 1.7;
+}
+.note-box strong { color: var(--yellow) }
+.mc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 10px }
+.mc { background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+.mc h4 { color: var(--yellow); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px }
+.mc p, .mc li { font-size: 0.82rem; color: var(--text); line-height: 1.6 }
+.mc .big { font-size: 1.35rem; font-weight: 700 }
+.prose { font-size: 0.88rem; line-height: 1.75; max-width: 1000px }
+.prose h3 { color: var(--yellow); margin: 14px 0 6px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.03em }
+.prose p { margin-bottom: 9px }
+.prose ul { margin: 0 0 9px 22px }
+.prose li { margin-bottom: 4px }
+.prose code { background: #1f1a10; border: 1px solid var(--border); border-radius: 3px; padding: 0 5px; font-size: 0.8rem; color: var(--cyan) }
+.acct-input { background: var(--panel2); color: var(--text); border: 1px solid var(--border2); border-radius: 3px; padding: 4px 8px; font-family: 'Saira', sans-serif; font-size: 0.8rem; width: 110px }
+#loading { text-align: center; padding: 70px 20px; color: var(--dim) }
+.spinner { width: 34px; height: 34px; border: 3px solid var(--border); border-top-color: var(--yellow); border-radius: 50%; margin: 0 auto 14px; animation: spin 0.9s linear infinite }
+@keyframes spin { to { transform: rotate(360deg) } }
+.foot { text-align: center; color: var(--dim); font-size: 0.72rem; padding: 18px 20px 30px; line-height: 1.7 }
+@media (max-width: 760px) {
+  .cbar-label { min-width: 120px }
+  td, th { padding: 6px 7px }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<div class="hdr">
+  <div>
+    <div class="hdr-title">Earnings Volatility Strategy</div>
+    <div class="hdr-meta">Selling overpriced earnings IV via calendar spreads &amp; straddles ·
+      <a href="https://markandrewjenkins.github.io/portfolio/" target="_blank" rel="noopener">portfolio</a> ·
+      <a href="https://markandrewjenkins.github.io/vix-swing-strategy/" target="_blank" rel="noopener">VIX swing strategy</a>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" id="tabbtn-scanner" onclick="showTab('scanner')">Scanner</button>
+    <button class="tab" id="tabbtn-strategy" onclick="showTab('strategy')">How It Works</button>
+    <button class="tab" id="tabbtn-improve" onclick="showTab('improve')">Improvements</button>
+  </div>
+</div>
+
+<div id="live-strip" title="Scanner output refreshes on a schedule (~every 15 min during US market hours). Entries are placed in the final 15 minutes before the close; exits ~15 minutes after the next open.">
+  <span class="live-badge"><span class="live-dot"></span><span id="lv-feed">SCAN</span></span>
+  <span class="live-item"><span class="live-lbl">Scan date</span><span class="live-val" id="lv-date">—</span></span>
+  <span class="live-item"><span class="live-lbl">Tradeable today</span><span class="live-val" id="lv-today">—</span></span>
+  <span class="live-item"><span class="live-lbl">Recommended</span><span class="live-val pos" id="lv-rec">—</span></span>
+  <span class="live-item"><span class="live-lbl">Consider</span><span class="live-val" id="lv-con" style="color:var(--amber)">—</span></span>
+  <span class="live-item"><span class="live-lbl">Tier 1</span><span class="live-val" id="lv-t1" style="color:var(--yellow)">—</span></span>
+  <span class="live-item"><span class="live-lbl">Analyzed</span><span class="live-val" id="lv-analyzed">—</span></span>
+  <span class="live-updated">Data as of: <span class="live-val" id="lv-updated">—</span></span>
+</div>
+</div>
+
+<div id="loading"><div class="spinner"></div>Loading scan results…</div>
+
+<div id="main-content" class="body" style="display:none">
+
+  <!-- ══ SCANNER TAB ══ -->
+  <div id="tab-scanner">
+    <div class="kpi-grid" id="kpi-strip"></div>
+
+    <div class="note-box" style="margin-top:12px" id="timing-note">
+      <strong>Trade window:</strong> candidates below report earnings <strong>after today's close (AMC)</strong> or
+      <strong>before the next trading day's open (BMO)</strong>. Positions are entered in the final ~15 minutes before
+      today's close and exited ~15 minutes after the next session's open — after the IV crush, before post-earnings drift.
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Trade candidates — enter before today's close</span>
+        <span style="display:inline-flex;align-items:center;gap:7px;text-transform:none">
+          <span class="live-lbl">Account $</span>
+          <input class="acct-input" id="acct" type="number" min="1000" step="1000" value="10000" onchange="acctChanged()">
+        </span>
+      </div>
+      <div class="pb" style="overflow-x:auto">
+        <table id="cand-table">
+          <thead><tr>
+            <th>Ticker</th><th>When</th><th>Rating</th><th>Price</th><th>Exp. move</th>
+            <th>TS slope</th><th>IV30/RV30</th><th>Avg vol 30d</th><th>ATM spread</th>
+            <th>Rich.</th><th>Calendar (sell front / buy back)</th><th>Debit</th><th>Size @6%</th>
+          </tr></thead>
+          <tbody id="cand-tbody"></tbody>
+        </table>
+        <div id="cand-empty" class="dimtxt" style="display:none;padding:14px 4px;font-size:0.85rem"></div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:12px" id="detail-row" >
+      <div class="panel" style="flex:1.2 1 420px">
+        <div class="ph"><span class="t" id="ts-title">IV term structure</span><span class="dimtxt" id="ts-sub" style="text-transform:none"></span></div>
+        <div class="pb" style="position:relative;height:280px"><canvas id="tsChart"></canvas></div>
+      </div>
+      <div class="panel" style="flex:1 1 380px">
+        <div class="ph"><span class="t">Filter check &amp; trade ticket</span></div>
+        <div class="pb" id="detail-body"><div class="dimtxt" style="font-size:0.85rem">Select a row in the candidates table.</div></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Upcoming this week (preview — metrics firm up on earnings day)</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Ticker</th><th>Date</th><th>When</th><th>Rating</th><th>Price</th><th>Exp. move</th>
+            <th>TS slope</th><th>IV30/RV30</th><th>Avg vol 30d</th>
+          </tr></thead>
+          <tbody id="up-tbody"></tbody>
+        </table>
+        <div id="up-empty" class="dimtxt" style="display:none;padding:14px 4px;font-size:0.85rem"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">On the calendar but not scanned</span><span class="dimtxt" style="text-transform:none">below $1B market cap or beyond scan budget — the 1.5M-share volume filter rejects nearly all of these anyway</span></div>
+      <div class="pb" id="skipped-body" style="font-size:0.82rem;color:var(--dim);line-height:1.9"></div>
+    </div>
+  </div>
+
+  <!-- ══ STRATEGY TAB ══ -->
+  <div id="tab-strategy" style="display:none">
+    <div class="panel"><div class="ph"><span class="t">The edge — selling earnings volatility</span></div>
+      <div class="pb prose">
+        <p>Quarterly earnings often account for the majority of a stock's annual volatility. Ahead of the event,
+        hedgers (price-insensitive, mandated to buy protection) and speculators (buying short-dated calls) push
+        option prices and implied volatility systematically above what the stock actually delivers. This strategy
+        takes the other side: <strong style="color:var(--yellow)">sell the inflated front-month IV just before the
+        announcement, collect the IV crush after it</strong>.</p>
+        <p>Backed by research over <strong>72,500 earnings events across 4,500 stocks (2007–present)</strong>:
+        traded blindly, both structures break even — the market prices earnings well on average. But three
+        pre-event filters isolate a persistently profitable subset (~10–12% of all events):</p>
+      </div>
+      <div class="pb mc-grid" style="padding-top:0">
+        <div class="mc"><h4>1 · Term-structure slope</h4><p class="big neg" id="th-slope">≤ −0.00406</p>
+          <p>Slope of ATM IV from the front expiry to the 45-day point. Steep backwardation = near-term options
+          most overpriced relative to later ones. The single strongest predictor — it gates the whole trade.</p></div>
+        <div class="mc"><h4>2 · IV30 / RV30</h4><p class="big neu" id="th-ivrv">≥ 1.25</p>
+          <p>30-day implied vol vs Yang-Zhang realized vol. If IV is already rich versus how the stock actually
+          moves, it's even more likely to be overpriced for the event.</p></div>
+        <div class="mc"><h4>3 · Liquidity</h4><p class="big pos" id="th-vol">≥ 1.5M shares</p>
+          <p>30-day average share volume. More participants → more price-insensitive hedging flow → richer premium.
+          Higher-volume deciles showed better returns for both structures.</p></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Ratings</span></div>
+      <div class="pb prose">
+        <p><span class="pill pill-rec">RECOMMENDED</span>&nbsp; all three filters pass.&nbsp;
+           <span class="pill pill-con">CONSIDER</span>&nbsp; slope passes plus exactly one other.&nbsp;
+           <span class="pill pill-avoid">AVOID</span>&nbsp; slope fails or fewer than two pass.&nbsp;
+           <span class="pill pill-t1">TIER 1 ★</span>&nbsp; our stricter cut — RECOMMENDED plus execution-quality
+           and premium-richness checks (see Improvements tab).</p>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Structures</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr><th></th><th>Long calendar spread (preferred)</th><th>Short straddle</th></tr></thead>
+          <tbody>
+            <tr><td class="dimtxt">Legs</td><td>Sell front-month ATM, buy ~+30d same-strike ATM (debit)</td><td>Sell ATM call + ATM put, same expiry (credit)</td></tr>
+            <tr><td class="dimtxt">Max loss</td><td class="pos">Debit paid (defined risk)</td><td class="neg">Unlimited — worst observed −9,200%</td></tr>
+            <tr><td class="dimtxt">Filtered mean return</td><td>+7.3% per trade (σ 28%)</td><td>+9.0% per trade (σ 48%)</td></tr>
+            <tr><td class="dimtxt">Full Kelly</td><td>60% (misleading — 100% losses happen)</td><td>6.5%</td></tr>
+            <tr><td class="dimtxt">Sizing used here</td><td class="pos">10% Kelly → ~6% of account per trade</td><td>30% Kelly → ~2% of account premium</td></tr>
+            <tr><td class="dimtxt">10y Monte Carlo (10% Kelly cal.)</td><td colspan="2">win rate ≈ 66% · mean max DD ≈ 20% · Sharpe ≈ 3.5 · expectancy ≈ $265/trade on $10k start</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Execution timing</span></div>
+      <div class="pb prose">
+        <ul>
+          <li><strong>Entry:</strong> final ~15 minutes before the close of the session preceding the announcement (today's close for AMC reporters; also covers next-morning BMO reporters).</li>
+          <li><strong>Exit:</strong> ~15 minutes after the next session's open — the "jump" exit. Holding until the next close was a consistent loser in the data (post-earnings announcement drift works against a short-vol position).</li>
+          <li><strong>Strike:</strong> at-the-money at entry. <strong>Calendar gap:</strong> ~30 days — wide enough that back-month IV holds while front-month IV crushes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ IMPROVEMENTS TAB ══ -->
+  <div id="tab-improve" style="display:none">
+    <div class="note-box"><strong>Goal:</strong> raise win rate and per-trade return over the baseline three-filter model.
+      The first three ideas are implemented live in this scanner as the <span class="pill pill-t1">TIER 1 ★</span> rating;
+      the rest are candidates for the backtest queue.</div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Implemented in the scanner (Tier 1)</span></div>
+      <div class="pb mc-grid">
+        <div class="mc"><h4>A · Premium richness vs history</h4>
+          <p>Compare today's option-implied expected move against the stock's own average realized earnings move
+          (last ~8 quarters). Require <code>expected ≥ 1.15×</code> historical. The baseline filters only prove IV is
+          rich vs <em>recent calm trading</em>; this proves it's rich vs <em>what earnings actually do to this stock</em> —
+          directly targeting per-trade return.</p></div>
+        <div class="mc"><h4>B · Execution-quality gate</h4>
+          <p>Require ATM bid/ask spread ≤ <code>10%</code> of mid. The research's biggest silent killer is slippage:
+          a 7% mean edge disappears if you give up 4% crossing wide spreads twice. Directly raises realized (not
+          theoretical) win rate.</p></div>
+        <div class="mc"><h4>C · Minimum share price $20</h4>
+          <p>Cheap stocks have structurally wide relative spreads and coarse strike spacing, so the "ATM" calendar is
+          often meaningfully off-strike. Filtering them removes a cluster of poor fills and off-model losses.</p></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Backtest queue — most promising next</span></div>
+      <div class="pb mc-grid">
+        <div class="mc"><h4>D · Rank, don't just gate</h4>
+          <p>The decile study shows returns rise <em>monotonically</em> as slope gets more negative and IV/RV gets higher.
+          When multiple candidates qualify on the same day, allocate to the top-ranked 1–3 by combined decile score
+          instead of equally to all. Same capital, higher average edge per dollar.</p></div>
+        <div class="mc"><h4>E · Skip binary-catalyst names</h4>
+          <p>Exclude sectors where the "earnings" event often carries FDA/regulatory-style tail risk (small biotech,
+          crypto-levered names). These populate the catastrophic left tail of the straddle distribution — cutting them
+          trims tail losses at minimal cost to frequency.</p></div>
+        <div class="mc"><h4>F · Earnings-day VIX regime filter</h4>
+          <p>When index vol itself is spiking (VIX > ~28 or term structure inverted), single-stock back-month IV can
+          crush along with the front, collapsing the calendar's edge. Standing aside (or switching to straddles, which
+          don't need the back month to hold) in those regimes should smooth the equity curve.</p></div>
+        <div class="mc"><h4>G · Double calendar variant</h4>
+          <p>For Tier 1 setups with expected move ≫ strike spacing, a double calendar (one at +EM strike, one at −EM)
+          widens the profit zone and cuts gamma pain when the stock moves ~1× the expected move — trading a bit of
+          peak return for win rate.</p></div>
+        <div class="mc"><h4>H · Scale by Kelly, cap correlation</h4>
+          <p>Max 3 concurrent positions and ≤ ~18% of account in simultaneous earnings risk (3 × 6%). Multiple same-day
+          trades are nearly independent bets — the research's variance numbers assume one at a time.</p></div>
+        <div class="mc"><h4>I · Exit discipline on the jump</h4>
+          <p>Take the exit 15 min after the open mechanically. The data says the edge is fully realized in the jump;
+          discretionary "let it ride" holding re-exposes you to post-earnings drift, which is a <em>negative</em>-edge
+          period for short vol.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Educational/research dashboard — not investment advice. Options involve substantial risk of loss.
+    Strategy basis: Volatility Vibes earnings IV research (72,500 events, 2007–present) · Scanner data: Nasdaq earnings calendar + Yahoo Finance options chains.<br>
+    Scan refreshes ~every 15 minutes during US market hours via GitHub Actions. Quotes are delayed; verify in your broker before trading.
+  </div>
+</div>
+
+<script>
+'use strict';
+var DATA = null;
+var selectedTicker = null;
+var tsChart = null;
+
+function $(id) { return document.getElementById(id); }
+function fmt(v, d) { return (v === null || v === undefined || isNaN(v)) ? '—' : Number(v).toFixed(d === undefined ? 2 : d); }
+function fmtInt(v) { return (v === null || v === undefined) ? '—' : Number(v).toLocaleString('en-US'); }
+function fmtCap(v) {
+  if (v === null || v === undefined) return '—';
+  if (v >= 1e12) return '$' + (v / 1e12).toFixed(1) + 'T';
+  if (v >= 1e9)  return '$' + (v / 1e9).toFixed(1) + 'B';
+  return '$' + (v / 1e6).toFixed(0) + 'M';
+}
+function acct() { var v = parseFloat($('acct').value); return (v > 0) ? v : 10000; }
+function acctChanged() {
+  try { localStorage.setItem('evs_acct', String(acct())); } catch (e) {}
+  renderCandidates(); renderDetail();
+}
+
+function showTab(name) {
+  ['scanner', 'strategy', 'improve'].forEach(function (t) {
+    $('tab-' + t).style.display = (t === name) ? '' : 'none';
+    $('tabbtn-' + t).className = 'tab' + (t === name ? ' active' : '');
+  });
+}
+
+function tierPill(ev) {
+  var p = '';
+  if (ev.tier === 'RECOMMENDED') p = '<span class="pill pill-rec">RECOMMENDED</span>';
+  else if (ev.tier === 'CONSIDER') p = '<span class="pill pill-con">CONSIDER</span>';
+  else p = '<span class="pill pill-avoid">AVOID</span>';
+  if (ev.tier1) p += ' <span class="pill pill-t1">T1 ★</span>';
+  return p;
+}
+function whenPill(w) {
+  if (w === 'AMC') return '<span class="pill pill-amc">AMC</span>';
+  if (w === 'BMO') return '<span class="pill pill-bmo">BMO</span>';
+  return '<span class="pill pill-tns" title="Announcement time not supplied">TBD</span>';
+}
+function passTxt(ok, txt) {
+  return '<span class="' + (ok ? 'pos' : 'neg') + '">' + txt + '</span>';
+}
+
+function calContracts(ev) {
+  if (!ev.calendar_debit_est) return null;
+  return Math.floor((acct() * DATA.sizing.calendar_frac) / (ev.calendar_debit_est * 100));
+}
+
+function renderKpis() {
+  var c = DATA.counts;
+  var evs = DATA.events.filter(function (e) { return e.trade_window === 'today'; });
+  var moves = evs.map(function (e) { return e.expected_move_pct; }).filter(function (m) { return m; });
+  var avgMove = moves.length ? (moves.reduce(function (a, b) { return a + b; }, 0) / moves.length) : null;
+  var kpis = [
+    { l: 'Tradeable today', v: String(evs.length), s: 'AMC today + BMO next session' },
+    { l: 'Recommended', v: String(c.recommended), s: 'all 3 filters pass', c: 'var(--teal)' },
+    { l: 'Consider', v: String(c.consider), s: 'slope + 1 of 2', c: 'var(--amber)' },
+    { l: 'Tier 1 ★', v: String(c.tier1), s: 'enhanced filters', c: 'var(--yellow)' },
+    { l: 'Avg expected move', v: avgMove === null ? '—' : fmt(avgMove, 1) + '%', s: 'ATM straddle / price' },
+    { l: 'Calendar events', v: String(c.calendar_events), s: 'scan horizon (this week)' }
+  ];
+  $('kpi-strip').innerHTML = kpis.map(function (k) {
+    return '<div class="kpi"><div class="kpi-label">' + k.l + '</div>' +
+      '<div class="kpi-val"' + (k.c ? ' style="color:' + k.c + '"' : '') + '>' + k.v + '</div>' +
+      '<div class="kpi-sub">' + k.s + '</div></div>';
+  }).join('');
+}
+
+function candRow(ev, withDate) {
+  var slopeOk = ev.pass_slope, ivrvOk = ev.pass_ivrv, volOk = ev.pass_volume;
+  var contracts = calContracts(ev);
+  var legs = (ev.front_exp && ev.back_exp)
+    ? ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) + ' @ ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1)
+    : '—';
+  var cells = [
+    '<td><b>' + ev.ticker + '</b> <span class="dimtxt" style="font-size:0.72rem">' + fmtCap(ev.market_cap) + '</span></td>'
+  ];
+  if (withDate) cells.push('<td>' + ev.date + '</td>');
+  cells.push(
+    '<td>' + whenPill(ev.when) + '</td>',
+    '<td>' + tierPill(ev) + '</td>',
+    '<td>' + fmt(ev.price) + '</td>',
+    '<td>' + (ev.expected_move_pct ? '±' + fmt(ev.expected_move_pct, 1) + '%' : '—') + '</td>',
+    '<td>' + passTxt(slopeOk, fmt(ev.ts_slope_0_45, 5)) + '</td>',
+    '<td>' + passTxt(ivrvOk, fmt(ev.iv30_rv30)) + '</td>',
+    '<td>' + passTxt(volOk, fmtInt(ev.avg_volume30)) + '</td>'
+  );
+  if (!withDate) cells.push(
+    '<td>' + (ev.atm_spread_pct === null ? '—' : passTxt(ev.atm_spread_pct <= DATA.thresholds.max_atm_spread_pct, fmt(ev.atm_spread_pct * 100, 1) + '%')) + '</td>',
+    '<td>' + (ev.richness ? passTxt(ev.richness >= DATA.thresholds.richness_min, fmt(ev.richness) + 'x') : '<span class="dimtxt">—</span>') + '</td>',
+    '<td style="font-size:0.78rem">' + legs + '</td>',
+    '<td>' + (ev.calendar_debit_est ? '$' + fmt(ev.calendar_debit_est) : '—') + '</td>',
+    '<td>' + (contracts !== null ? contracts + 'x' : '—') + '</td>'
+  );
+  return cells.join('');
+}
+
+function renderCandidates() {
+  var today = DATA.events.filter(function (e) { return e.trade_window === 'today'; });
+  today.sort(function (a, b) {
+    var rank = { 'RECOMMENDED': 0, 'CONSIDER': 1, 'AVOID': 2 };
+    if (rank[a.tier] !== rank[b.tier]) return rank[a.tier] - rank[b.tier];
+    return (a.ts_slope_0_45 || 0) - (b.ts_slope_0_45 || 0);
+  });
+  var tb = $('cand-tbody');
+  tb.innerHTML = today.map(function (ev) {
+    var cls = 'clickable' + (ev.ticker === selectedTicker ? ' selected' : '');
+    return '<tr class="' + cls + '" onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev, false) + '</tr>';
+  }).join('');
+  $('cand-empty').style.display = today.length ? 'none' : '';
+  $('cand-empty').textContent = 'No qualifying earnings events in today’s trade window. Quiet weeks are normal between earnings seasons — the strategy only trades ~10–12% of events even in peak season.';
+
+  var up = DATA.events.filter(function (e) { return e.trade_window === 'upcoming'; });
+  up.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.market_cap || 0) - (a.market_cap || 0); });
+  $('up-tbody').innerHTML = up.map(function (ev) {
+    return '<tr class="clickable" onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev, true) + '</tr>';
+  }).join('');
+  $('up-empty').style.display = up.length ? 'none' : '';
+  $('up-empty').textContent = 'No further scanned events on this week’s calendar.';
+
+  var sk = DATA.skipped || [];
+  $('skipped-body').innerHTML = sk.length
+    ? sk.map(function (s) {
+        return '<span style="margin-right:16px;white-space:nowrap"><b style="color:var(--text)">' + s.ticker + '</b> ' +
+          s.date.slice(5) + ' ' + (s.when || '') + ' <span style="font-size:0.72rem">' + fmtCap(s.market_cap) + '</span></span>';
+      }).join('')
+    : 'None.';
+}
+
+function selectTicker(t) {
+  selectedTicker = t;
+  renderCandidates();
+  renderDetail();
+}
+
+function renderDetail() {
+  var ev = null;
+  for (var i = 0; i < DATA.events.length; i++) if (DATA.events[i].ticker === selectedTicker) { ev = DATA.events[i]; break; }
+  if (!ev) {
+    var first = DATA.events.filter(function (e) { return e.trade_window === 'today'; })[0] || DATA.events[0];
+    if (!first) return;
+    ev = first; selectedTicker = ev.ticker;
+  }
+  var th = DATA.thresholds;
+
+  // ── term structure chart ──
+  $('ts-title').textContent = 'IV term structure — ' + ev.ticker;
+  $('ts-sub').textContent = ev.name + ' · earnings ' + ev.date + ' ' + ev.when;
+  var pts = (ev.term_structure || []).map(function (p) { return { x: p.dte, y: p.iv * 100 }; });
+  if (tsChart) tsChart.destroy();
+  tsChart = new Chart($('tsChart'), {
+    type: 'line',
+    data: { datasets: [{
+      label: 'ATM IV %', data: pts, borderColor: '#e8b94f', backgroundColor: 'rgba(232,185,79,0.12)',
+      pointBackgroundColor: '#e8b94f', tension: 0.25, fill: true, pointRadius: 4
+    }]},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { type: 'linear', title: { display: true, text: 'days to expiry', color: '#b39a52' },
+             grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } },
+        y: { title: { display: true, text: 'ATM IV %', color: '#b39a52' },
+             grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } }
+      },
+      plugins: { legend: { display: false }, tooltip: { callbacks: {
+        label: function (c) { return c.parsed.y.toFixed(1) + '% IV @ ' + c.parsed.x + 'd'; } } } }
+    }
+  });
+
+  // ── condition bars + ticket ──
+  function bar(label, val, ok, pct, txt) {
+    return '<div class="cbar"><div class="cbar-label">' + label + '</div>' +
+      '<div class="cbar-track"><div class="cbar-fill" style="width:' + Math.max(3, Math.min(100, pct)) + '%;background:' +
+      (ok ? 'var(--teal)' : 'var(--coral)') + '"></div></div>' +
+      '<div class="cbar-val">' + txt + '</div></div>';
+  }
+  var slopePct = ev.ts_slope_0_45 === null ? 0 : Math.min(100, Math.max(0, (-ev.ts_slope_0_45 / (2 * -th.ts_slope_0_45)) * 100));
+  var ivrvPct = ev.iv30_rv30 ? Math.min(100, (ev.iv30_rv30 / (2 * th.iv30_rv30)) * 100) : 0;
+  var volPct = Math.min(100, (ev.avg_volume30 / (4 * th.avg_volume30)) * 100);
+  var html = '';
+  html += bar('TS slope ≤ ' + th.ts_slope_0_45, ev.ts_slope_0_45, ev.pass_slope, slopePct, fmt(ev.ts_slope_0_45, 5));
+  html += bar('IV30/RV30 ≥ ' + th.iv30_rv30, ev.iv30_rv30, ev.pass_ivrv, ivrvPct, fmt(ev.iv30_rv30));
+  html += bar('Avg vol ≥ 1.5M', ev.avg_volume30, ev.pass_volume, volPct, (ev.avg_volume30 / 1e6).toFixed(1) + 'M');
+  if (ev.atm_spread_pct !== null) {
+    html += bar('ATM spread ≤ 10%', ev.atm_spread_pct, ev.atm_spread_pct <= th.max_atm_spread_pct,
+      Math.min(100, ev.atm_spread_pct / 0.2 * 100), fmt(ev.atm_spread_pct * 100, 1) + '%');
+  }
+  if (ev.richness) {
+    html += bar('Richness ≥ ' + th.richness_min + 'x', ev.richness, ev.richness >= th.richness_min,
+      Math.min(100, ev.richness / 2.5 * 100), fmt(ev.richness) + 'x');
+  }
+  html += '<div style="height:1px;background:var(--border2);margin:12px 0"></div>';
+  html += '<div style="font-size:0.82rem;line-height:1.9">';
+  html += '<div>Rating: ' + tierPill(ev) + '</div>';
+  if (ev.expected_move_pct) {
+    html += '<div>Options-implied move: <b>±' + fmt(ev.expected_move_pct, 1) + '%</b>' +
+      (ev.hist_moves ? ' · avg realized last ' + ev.hist_moves.n + ' earnings: <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b>' : '') + '</div>';
+  }
+  if (ev.front_exp && ev.back_exp) {
+    var n = calContracts(ev);
+    html += '<div style="margin-top:6px;padding:9px 12px;background:#1f1a0e;border:1px solid var(--border2);border-radius:5px">' +
+      '<b style="color:var(--yellow)">CALENDAR ·</b> sell ' + ev.front_exp + ' / buy ' + ev.back_exp +
+      ' @ strike ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1) +
+      (ev.calendar_debit_est ? ' · est. debit <b>$' + fmt(ev.calendar_debit_est) + '</b>' : '') +
+      (n !== null ? ' · <b>' + n + ' contract' + (n === 1 ? '' : 's') + '</b> ≈ ' + (DATA.sizing.calendar_frac * 100) + '% of $' + fmtInt(acct()) : '') +
+      '</div>';
+    if (ev.straddle_mid) {
+      var ns = Math.floor((acct() * DATA.sizing.straddle_frac) / (ev.straddle_mid * 100));
+      html += '<div style="margin-top:6px;padding:9px 12px;background:#170f0b;border:1px solid var(--border);border-radius:5px">' +
+        '<b style="color:var(--amber)">STRADDLE (alt) ·</b> sell ' + ev.front_exp + ' ATM call+put' +
+        ' · premium <b>$' + fmt(ev.straddle_mid) + '</b> · ' + ns + ' contract' + (ns === 1 ? '' : 's') +
+        ' ≈ ' + (DATA.sizing.straddle_frac * 100) + '% premium</div>';
+    }
+    html += '<div class="dimtxt" style="font-size:0.72rem;margin-top:6px">Enter final ~15 min before the close preceding the announcement · exit ~15 min after the next open. Quotes are delayed — reprice at your broker.</div>';
+  }
+  html += '</div>';
+  $('detail-body').innerHTML = html;
+}
+
+function renderStrip() {
+  var c = DATA.counts;
+  $('lv-date').textContent = DATA.scan_date;
+  $('lv-today').textContent = String(DATA.events.filter(function (e) { return e.trade_window === 'today'; }).length);
+  $('lv-rec').textContent = String(c.recommended);
+  $('lv-con').textContent = String(c.consider);
+  $('lv-t1').textContent = String(c.tier1);
+  $('lv-analyzed').textContent = String(c.analyzed);
+  var d = new Date(DATA.generated_utc);
+  $('lv-updated').textContent = d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+  var strip = $('live-strip');
+  var ageH = (Date.now() - d.getTime()) / 3.6e6;
+  if (DATA.stale || ageH > 24) { strip.className = 'stale'; $('lv-feed').textContent = 'STALE'; }
+  else { strip.className = ''; $('lv-feed').textContent = 'SCAN'; }
+}
+
+function render() {
+  renderStrip();
+  renderKpis();
+  renderCandidates();
+  renderDetail();
+  // thresholds into strategy tab
+  $('th-slope').textContent = '≤ ' + DATA.thresholds.ts_slope_0_45;
+  $('th-ivrv').textContent = '≥ ' + DATA.thresholds.iv30_rv30;
+  $('th-vol').textContent = '≥ ' + (DATA.thresholds.avg_volume30 / 1e6).toFixed(1) + 'M shares';
+}
+
+function load() {
+  fetch('scan_results.json?t=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (j) {
+      DATA = j;
+      $('loading').style.display = 'none';
+      $('main-content').style.display = '';
+      render();
+    })
+    .catch(function (e) {
+      $('loading').innerHTML = '<div style="color:var(--coral);font-weight:700">Failed to load scan_results.json</div>' +
+        '<div style="color:var(--dim);font-size:0.8rem;margin-top:8px">' + e.message + ' — the first scheduled scan may not have run yet.</div>';
+    });
+}
+
+try { var saved = localStorage.getItem('evs_acct'); if (saved) $('acct').value = saved; } catch (e) {}
+load();
+setInterval(load, 5 * 60 * 1000);   // re-pull the JSON every 5 minutes
+</script>
+</body>
+</html>

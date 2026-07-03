@@ -1,0 +1,56 @@
+name: Earnings volatility scan
+
+# Refreshes scan_results.json for the dashboard.
+# GitHub schedules are best-effort: a */15 cron typically fires every 15–30
+# minutes under load. The window that actually matters for entries is the
+# final hour before the US close, and there are dedicated runs for it.
+
+on:
+  schedule:
+    # Every 15 min through the US session (13:00–21:00 UTC covers
+    # 9:00am–5:00pm ET in EDT; in EST everything shifts one hour later,
+    # still inside the window).
+    - cron: "*/15 13-21 * * 1-5"
+    # One late-evening run so the dashboard rolls to the next trade date
+    # after AMC reporters are done.
+    - cron: "5 23 * * 1-5"
+  workflow_dispatch: {}
+
+concurrency:
+  group: earnings-scan
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install --quiet -r requirements.txt
+
+      - name: Run scanner
+        run: python scanner.py --max 45
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add scan_results.json
+          if ! git diff --cached --quiet; then
+            git pull --rebase --autostash || true
+            git commit -m "chore: refresh scan results [skip ci]"
+            git push
+          else
+            echo "No data changes — nothing to commit."
+          fi
