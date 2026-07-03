@@ -1,8 +1,8 @@
 {
- "generated_utc": "2026-07-03T03:47:21+00:00",
- "generated_et": "2026-07-02T23:45:57-04:00",
- "scan_date": "2026-07-02",
- "next_trading_day": "2026-07-03",
+ "generated_utc": "2026-07-03T15:16:15+00:00",
+ "generated_et": "2026-07-03T11:14:11-04:00",
+ "scan_date": "2026-07-03",
+ "next_trading_day": "2026-07-06",
  "horizon_days": 30,
  "date_source": "Nasdaq earnings calendar API, cross-checked per ticker against Yahoo Finance (date_mismatch flags a >1 day gap)",
  "thresholds": {
@@ -20,12 +20,12 @@
   "straddle_frac": 0.02
  },
  "counts": {
-  "calendar_events": 1311,
-  "analyzed": 9,
+  "calendar_events": 1327,
+  "analyzed": 10,
   "watchlist": 40,
   "recommended": 2,
   "consider": 3,
-  "avoid": 4,
+  "avoid": 5,
   "tier1": 0,
   "watch_high": 39,
   "errors": 0
@@ -50,38 +50,25 @@
    "calendar_debit_est": 4.5,
    "expected_move_pct": 26.19,
    "ts_slope_0_45": -0.00702,
-   "iv30": 1.537,
-   "rv30": 1.3908,
-   "iv30_rv30": 1.105,
-   "avg_volume30": 3218270,
+   "iv30": 1.53,
+   "rv30": 1.391,
+   "iv30_rv30": 1.1,
+   "avg_volume30": 3218973,
    "atm_spread_pct": 0.0314,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 1.6423
     },
     {
      "exp": "2026-08-21",
-     "dte": 50,
+     "dte": 49,
      "iv": 1.3966
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 15.22,
-    "n": 8,
-    "moves_pct": [
-     13.37,
-     13.78,
-     16.02,
-     10.57,
-     10.3,
-     7.95,
-     23.47,
-     26.27
-    ]
-   },
-   "richness": 1.72,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": true,
    "pass_ivrv": false,
    "pass_volume": true,
@@ -91,7 +78,7 @@
     "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
-    "richness_known": true
+    "richness_known": false
    },
    "error": null
   },
@@ -114,38 +101,25 @@
    "calendar_debit_est": 0.8,
    "expected_move_pct": 18.86,
    "ts_slope_0_45": -0.00543,
-   "iv30": 0.9064,
+   "iv30": 0.901,
    "rv30": 0.3176,
-   "iv30_rv30": 2.853,
-   "avg_volume30": 506610,
+   "iv30_rv30": 2.836,
+   "avg_volume30": 510410,
    "atm_spread_pct": 0.3648,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 0.9878
     },
     {
      "exp": "2026-08-21",
-     "dte": 50,
+     "dte": 49,
      "iv": 0.7979
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 4.99,
-    "n": 8,
-    "moves_pct": [
-     7.84,
-     8.79,
-     4.79,
-     5.91,
-     8.39,
-     2.83,
-     1.08,
-     0.31
-    ]
-   },
-   "richness": 3.78,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": true,
    "pass_ivrv": true,
    "pass_volume": false,
@@ -155,7 +129,7 @@
     "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
-    "richness_known": true
+    "richness_known": false
    },
    "error": null
   },
@@ -178,38 +152,25 @@
    "calendar_debit_est": 0.3,
    "expected_move_pct": 9.63,
    "ts_slope_0_45": -0.00385,
-   "iv30": 0.537,
+   "iv30": 0.5331,
    "rv30": 0.375,
-   "iv30_rv30": 1.432,
-   "avg_volume30": 2440736,
+   "iv30_rv30": 1.422,
+   "avg_volume30": 2442140,
    "atm_spread_pct": 0.1306,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 0.5947
     },
     {
      "exp": "2026-08-21",
-     "dte": 50,
+     "dte": 49,
      "iv": 0.46
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 7.31,
-    "n": 8,
-    "moves_pct": [
-     10.65,
-     3.67,
-     12.55,
-     11.25,
-     8.0,
-     4.2,
-     7.69,
-     0.47
-    ]
-   },
-   "richness": 1.32,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": false,
    "pass_ivrv": true,
    "pass_volume": true,
@@ -219,7 +180,7 @@
     "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
-    "richness_known": true
+    "richness_known": false
    },
    "error": null
   },
@@ -245,30 +206,17 @@
    "iv30": 0.5443,
    "rv30": 0.3426,
    "iv30_rv30": 1.589,
-   "avg_volume30": 305505,
+   "avg_volume30": 305706,
    "atm_spread_pct": 0.2132,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 0.5443
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 5.15,
-    "n": 8,
-    "moves_pct": [
-     3.94,
-     4.55,
-     6.48,
-     5.33,
-     6.96,
-     4.49,
-     6.98,
-     2.46
-    ]
-   },
-   "richness": 1.21,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": false,
    "pass_ivrv": true,
    "pass_volume": false,
@@ -278,7 +226,7 @@
     "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
-    "richness_known": true
+    "richness_known": false
    },
    "error": null
   },
@@ -301,38 +249,25 @@
    "calendar_debit_est": 3.6,
    "expected_move_pct": 8.43,
    "ts_slope_0_45": -0.00224,
-   "iv30": 0.5376,
+   "iv30": 0.5354,
    "rv30": 0.4375,
-   "iv30_rv30": 1.229,
-   "avg_volume30": 305578,
+   "iv30_rv30": 1.224,
+   "avg_volume30": 307896,
    "atm_spread_pct": 0.2166,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 0.5712
     },
     {
      "exp": "2026-08-21",
-     "dte": 50,
+     "dte": 49,
      "iv": 0.4928
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 5.4,
-    "n": 8,
-    "moves_pct": [
-     8.82,
-     6.56,
-     4.9,
-     5.52,
-     4.17,
-     1.92,
-     5.23,
-     6.06
-    ]
-   },
-   "richness": 1.56,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": false,
    "pass_ivrv": false,
    "pass_volume": false,
@@ -342,7 +277,7 @@
     "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
-    "richness_known": true
+    "richness_known": false
    },
    "error": null
   },
@@ -365,38 +300,25 @@
    "calendar_debit_est": 1.05,
    "expected_move_pct": 21.8,
    "ts_slope_0_45": -0.00857,
-   "iv30": 1.2226,
+   "iv30": 1.214,
    "rv30": 0.9087,
-   "iv30_rv30": 1.345,
-   "avg_volume30": 3005568,
+   "iv30_rv30": 1.336,
+   "avg_volume30": 3010876,
    "atm_spread_pct": 0.8791,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 1.3511
     },
     {
      "exp": "2026-08-21",
-     "dte": 50,
+     "dte": 49,
      "iv": 1.0513
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 6.69,
-    "n": 8,
-    "moves_pct": [
-     4.59,
-     7.93,
-     10.13,
-     7.94,
-     4.73,
-     1.26,
-     8.1,
-     8.84
-    ]
-   },
-   "richness": 3.26,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": true,
    "pass_ivrv": true,
    "pass_volume": true,
@@ -406,7 +328,7 @@
     "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
-    "richness_known": true
+    "richness_known": false
    },
    "error": null
   },
@@ -429,58 +351,45 @@
    "calendar_debit_est": 1.6,
    "expected_move_pct": 4.53,
    "ts_slope_0_45": -0.00381,
-   "iv30": 0.297,
-   "rv30": 0.2527,
-   "iv30_rv30": 1.176,
-   "avg_volume30": 9437371,
+   "iv30": 0.2995,
+   "rv30": 0.2537,
+   "iv30_rv30": 1.18,
+   "avg_volume30": 9502596,
    "atm_spread_pct": 0.0951,
    "term_structure": [
     {
      "exp": "2026-07-10",
-     "dte": 8,
+     "dte": 7,
      "iv": 0.4199
     },
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 0.369
     },
     {
      "exp": "2026-07-24",
-     "dte": 22,
+     "dte": 21,
      "iv": 0.3206
     },
     {
      "exp": "2026-07-31",
-     "dte": 29,
+     "dte": 28,
      "iv": 0.2946
     },
     {
      "exp": "2026-08-07",
-     "dte": 36,
+     "dte": 35,
      "iv": 0.3115
     },
     {
      "exp": "2026-08-21",
-     "dte": 50,
+     "dte": 49,
      "iv": 0.2608
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 3.96,
-    "n": 8,
-    "moves_pct": [
-     2.28,
-     4.93,
-     4.23,
-     7.45,
-     4.89,
-     4.51,
-     1.92,
-     1.48
-    ]
-   },
-   "richness": 1.14,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": false,
    "pass_ivrv": false,
    "pass_volume": true,
@@ -489,8 +398,8 @@
    "enhanced": {
     "tight_spread": true,
     "price_ok": true,
-    "premium_rich": false,
-    "richness_known": true
+    "premium_rich": true,
+    "richness_known": false
    },
    "error": null
   },
@@ -513,38 +422,25 @@
    "calendar_debit_est": 2.85,
    "expected_move_pct": 6.61,
    "ts_slope_0_45": -0.01503,
-   "iv30": 0.5084,
+   "iv30": 0.4934,
    "rv30": 0.3385,
-   "iv30_rv30": 1.502,
-   "avg_volume30": 163447,
+   "iv30_rv30": 1.458,
+   "avg_volume30": 163553,
    "atm_spread_pct": 0.2029,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 0.734
     },
     {
      "exp": "2026-08-21",
-     "dte": 50,
+     "dte": 49,
      "iv": 0.2077
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 4.8,
-    "n": 8,
-    "moves_pct": [
-     4.04,
-     6.63,
-     2.77,
-     2.1,
-     8.17,
-     5.85,
-     4.79,
-     4.04
-    ]
-   },
-   "richness": 1.38,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": true,
    "pass_ivrv": true,
    "pass_volume": false,
@@ -554,7 +450,7 @@
     "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
-    "richness_known": true
+    "richness_known": false
    },
    "error": null
   },
@@ -564,7 +460,7 @@
    "date": "2026-07-09",
    "when": "BMO",
    "market_cap": 1221601824.0,
-   "eps_est": "$0.33",
+   "eps_est": "$0.32",
    "bucket": "week",
    "trade_window": "upcoming",
    "price": 13.73,
@@ -577,38 +473,25 @@
    "calendar_debit_est": 0.38,
    "expected_move_pct": 17.12,
    "ts_slope_0_45": -0.00862,
-   "iv30": 0.8717,
+   "iv30": 0.863,
    "rv30": 0.4456,
-   "iv30_rv30": 1.956,
-   "avg_volume30": 2232300,
+   "iv30_rv30": 1.937,
+   "avg_volume30": 2235843,
    "atm_spread_pct": 0.4094,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 15,
+     "dte": 14,
      "iv": 1.001
     },
     {
      "exp": "2026-08-21",
-     "dte": 50,
+     "dte": 49,
      "iv": 0.6992
     }
    ],
-   "hist_moves": {
-    "avg_abs_move_pct": 7.68,
-    "n": 8,
-    "moves_pct": [
-     18.11,
-     6.61,
-     17.35,
-     1.8,
-     9.16,
-     4.13,
-     3.35,
-     0.98
-    ]
-   },
-   "richness": 2.23,
+   "hist_moves": null,
+   "richness": null,
    "pass_slope": true,
    "pass_ivrv": true,
    "pass_volume": true,
@@ -618,7 +501,78 @@
     "tight_spread": false,
     "price_ok": false,
     "premium_rich": true,
-    "richness_known": true
+    "richness_known": false
+   },
+   "error": null
+  },
+  {
+   "ticker": "DAL",
+   "name": "Delta Air Lines, Inc.",
+   "date": "2026-07-10",
+   "when": "BMO",
+   "market_cap": 61139893280.0,
+   "eps_est": "$1.44",
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 92.75,
+   "yahoo_date": "2026-07-10",
+   "date_mismatch": false,
+   "front_exp": "2026-07-10",
+   "back_exp": "2026-08-07",
+   "atm_strike": 93.0,
+   "straddle_mid": 6.57,
+   "calendar_debit_est": 2.48,
+   "expected_move_pct": 7.08,
+   "ts_slope_0_45": -0.00361,
+   "iv30": 0.5213,
+   "rv30": 0.4215,
+   "iv30_rv30": 1.237,
+   "avg_volume30": 8147393,
+   "atm_spread_pct": 0.0344,
+   "term_structure": [
+    {
+     "exp": "2026-07-10",
+     "dte": 7,
+     "iv": 0.5989
+    },
+    {
+     "exp": "2026-07-17",
+     "dte": 14,
+     "iv": 0.5308
+    },
+    {
+     "exp": "2026-07-24",
+     "dte": 21,
+     "iv": 0.5032
+    },
+    {
+     "exp": "2026-07-31",
+     "dte": 28,
+     "iv": 0.5246
+    },
+    {
+     "exp": "2026-08-07",
+     "dte": 35,
+     "iv": 0.5131
+    },
+    {
+     "exp": "2026-08-21",
+     "dte": 49,
+     "iv": 0.441
+    }
+   ],
+   "hist_moves": null,
+   "richness": null,
+   "pass_slope": false,
+   "pass_ivrv": false,
+   "pass_volume": true,
+   "tier": "AVOID",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": true,
+    "price_ok": true,
+    "premium_rich": true,
+    "richness_known": false
    },
    "error": null
   }
@@ -634,23 +588,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 356.18,
-   "avg_volume30": 25344767,
+   "avg_volume30": 25350876,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 4.1,
-    "n": 8,
-    "moves_pct": [
-     9.97,
-     2.16,
-     2.51,
-     0.88,
-     2.38,
-     6.94,
-     2.92,
-     5.03
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-23",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -666,23 +607,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 359.91,
-   "avg_volume30": 36567675,
+   "avg_volume30": 36585820,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 4.16,
-    "n": 8,
-    "moves_pct": [
-     9.96,
-     1.96,
-     2.65,
-     1.02,
-     2.53,
-     7.29,
-     2.82,
-     5.04
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-23",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -698,23 +626,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 308.63,
-   "avg_volume30": 62159290,
+   "avg_volume30": 62274360,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 1.88,
-    "n": 8,
-    "moves_pct": [
-     3.24,
-     0.72,
-     0.63,
-     2.5,
-     3.74,
-     0.74,
-     1.82,
-     1.68
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-30",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -730,23 +645,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 390.49,
-   "avg_volume30": 45814083,
+   "avg_volume30": 45862040,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 5.22,
-    "n": 8,
-    "moves_pct": [
-     3.93,
-     9.99,
-     2.92,
-     3.95,
-     7.63,
-     6.18,
-     6.05,
-     1.08
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-29",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -762,23 +664,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 242.67,
-   "avg_volume30": 56164411,
+   "avg_volume30": 56281086,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 5.86,
-    "n": 8,
-    "moves_pct": [
-     1.29,
-     5.55,
-     9.58,
-     8.27,
-     3.13,
-     4.05,
-     6.19,
-     8.78
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-30",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -794,23 +683,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 434.16,
-   "avg_volume30": 13748008,
+   "avg_volume30": 13754193,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 4.21,
-    "n": 8,
-    "moves_pct": [
-     3.13,
-     4.44,
-     2.96,
-     3.38,
-     2.56,
-     3.86,
-     9.79,
-     3.55
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-16",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -826,23 +702,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 393.45,
-   "avg_volume30": 47213601,
+   "avg_volume30": 47270366,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 7.5,
-    "n": 8,
-    "moves_pct": [
-     3.56,
-     3.45,
-     2.28,
-     8.2,
-     5.37,
-     2.87,
-     21.92,
-     12.33
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-22",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -858,23 +721,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 582.9,
-   "avg_volume30": 19068358,
+   "avg_volume30": 19096833,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 7.03,
-    "n": 8,
-    "moves_pct": [
-     8.55,
-     10.4,
-     11.33,
-     11.25,
-     4.23,
-     1.55,
-     4.09,
-     4.82
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-29",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -890,23 +740,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 334.47,
-   "avg_volume30": 9737556,
+   "avg_volume30": 9866486,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.68,
-    "n": 8,
-    "moves_pct": [
-     1.67,
-     4.19,
-     1.91,
-     0.74,
-     4.0,
-     1.97,
-     4.44,
-     2.49
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-14",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -922,23 +759,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 1769.32,
-   "avg_volume30": 2078188,
+   "avg_volume30": 2079256,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 7.09,
-    "n": 8,
-    "moves_pct": [
-     2.41,
-     2.92,
-     2.71,
-     8.33,
-     7.06,
-     4.29,
-     16.26,
-     12.74
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-15",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -954,23 +778,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 120.35,
-   "avg_volume30": 127833143,
+   "avg_volume30": 127908416,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 12.0,
-    "n": 8,
-    "moves_pct": [
-     23.6,
-     17.03,
-     3.36,
-     8.53,
-     6.7,
-     2.9,
-     7.81,
-     26.06
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-23",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -986,23 +797,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 263.04,
-   "avg_volume30": 8488084,
+   "avg_volume30": 8491313,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 1.89,
-    "n": 8,
-    "moves_pct": [
-     0.9,
-     0.22,
-     0.17,
-     6.19,
-     0.48,
-     1.94,
-     1.55,
-     3.69
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-15",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1018,23 +816,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 195.15,
-   "avg_volume30": 2033581,
+   "avg_volume30": 2037250,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 1.91,
-    "n": 8,
-    "moves_pct": [
-     1.17,
-     3.23,
-     3.53,
-     2.55,
-     2.0,
-     0.62,
-     1.49,
-     0.7
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-27",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1050,23 +835,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 351.41,
-   "avg_volume30": 12716557,
+   "avg_volume30": 12719266,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 5.47,
-    "n": 8,
-    "moves_pct": [
-     2.78,
-     3.59,
-     4.45,
-     4.29,
-     6.25,
-     7.43,
-     5.09,
-     9.87
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-29",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1082,23 +854,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 539.39,
-   "avg_volume30": 4052990,
+   "avg_volume30": 4092600,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.75,
-    "n": 8,
-    "moves_pct": [
-     4.25,
-     4.29,
-     0.31,
-     1.32,
-     2.33,
-     3.14,
-     2.74,
-     3.63
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-30",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1114,23 +873,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 261.07,
-   "avg_volume30": 7686072,
+   "avg_volume30": 7757996,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 4.12,
-    "n": 8,
-    "moves_pct": [
-     3.64,
-     3.79,
-     4.45,
-     3.28,
-     3.38,
-     4.7,
-     6.36,
-     3.38
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-31",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1146,23 +892,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 58.73,
-   "avg_volume30": 38377940,
+   "avg_volume30": 38544086,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.95,
-    "n": 8,
-    "moves_pct": [
-     1.82,
-     3.78,
-     4.37,
-     2.15,
-     3.6,
-     0.98,
-     1.57,
-     5.35
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-14",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1178,23 +911,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 377.52,
-   "avg_volume30": 5145841,
+   "avg_volume30": 5171506,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 5.68,
-    "n": 8,
-    "moves_pct": [
-     5.56,
-     7.38,
-     2.85,
-     2.22,
-     6.07,
-     6.6,
-     9.05,
-     5.68
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-16",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1210,23 +930,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 425.36,
-   "avg_volume30": 6798602,
+   "avg_volume30": 6801213,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 10.06,
-    "n": 8,
-    "moves_pct": [
-     6.96,
-     19.61,
-     3.42,
-     7.46,
-     22.38,
-     6.04,
-     8.11,
-     6.5
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-16",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1242,23 +949,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 315.28,
-   "avg_volume30": 12459506,
+   "avg_volume30": 12460083,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 8.35,
-    "n": 8,
-    "moves_pct": [
-     13.63,
-     5.7,
-     1.21,
-     13.44,
-     6.18,
-     6.82,
-     4.13,
-     15.72
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-29",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1274,23 +968,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 84.14,
-   "avg_volume30": 19217499,
+   "avg_volume30": 19369443,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.48,
-    "n": 8,
-    "moves_pct": [
-     3.86,
-     2.33,
-     4.06,
-     0.72,
-     0.78,
-     4.73,
-     2.07,
-     1.31
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-28",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1306,23 +987,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 235.55,
-   "avg_volume30": 14065495,
+   "avg_volume30": 14067143,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 5.53,
-    "n": 8,
-    "moves_pct": [
-     3.63,
-     15.24,
-     2.42,
-     4.97,
-     3.75,
-     4.13,
-     3.7,
-     6.42
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-28",
    "date_mismatch": true,
    "likelihood": "HIGH",
@@ -1338,23 +1006,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 151.41,
-   "avg_volume30": 9226281,
+   "avg_volume30": 9342803,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.48,
-    "n": 8,
-    "moves_pct": [
-     2.46,
-     2.65,
-     0.88,
-     2.38,
-     3.74,
-     1.87,
-     1.02,
-     4.84
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-29",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1370,24 +1025,30 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 213.93,
-   "avg_volume30": 6254148,
+   "avg_volume30": 6288063,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 3.64,
-    "n": 8,
-    "moves_pct": [
-     4.52,
-     5.78,
-     4.71,
-     1.27,
-     1.44,
-     4.03,
-     6.5,
-     0.91
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-15",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "CVX",
+   "name": "Chevron Corporation",
+   "date": "2026-07-31",
+   "when": "BMO",
+   "market_cap": 329987828215.0,
+   "eps_est": "$5.90",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 169.2,
+   "avg_volume30": 9845493,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": null,
+   "yahoo_date": "2026-07-31",
    "date_mismatch": false,
    "likelihood": "HIGH",
    "error": null
@@ -1402,20 +1063,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 96.78,
-   "avg_volume30": 1665021,
+   "avg_volume30": 1668240,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 3.14,
-    "n": 5,
-    "moves_pct": [
-     3.03,
-     7.19,
-     3.25,
-     1.12,
-     1.12
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-08-04",
    "date_mismatch": true,
    "likelihood": "HIGH",
@@ -1431,23 +1082,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 77.65,
-   "avg_volume30": 43447147,
+   "avg_volume30": 43478843,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 6.36,
-    "n": 8,
-    "moves_pct": [
-     9.72,
-     2.18,
-     10.07,
-     5.1,
-     1.53,
-     9.69,
-     11.09,
-     1.51
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-16",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1463,23 +1101,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 1113.11,
-   "avg_volume30": 3028535,
+   "avg_volume30": 3036310,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 6.86,
-    "n": 8,
-    "moves_pct": [
-     13.75,
-     2.73,
-     3.32,
-     14.58,
-     7.26,
-     2.67,
-     6.12,
-     4.45
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-22",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1495,23 +1120,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 1021.0,
-   "avg_volume30": 2402366,
+   "avg_volume30": 2407810,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.7,
-    "n": 8,
-    "moves_pct": [
-     2.11,
-     4.63,
-     2.04,
-     0.9,
-     1.93,
-     6.02,
-     1.43,
-     2.57
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-14",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1527,23 +1139,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 159.9,
-   "avg_volume30": 2086105,
+   "avg_volume30": 2087316,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.7,
-    "n": 8,
-    "moves_pct": [
-     0.91,
-     2.04,
-     4.42,
-     3.25,
-     0.73,
-     1.77,
-     4.41,
-     4.1
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-21",
    "date_mismatch": true,
    "likelihood": "HIGH",
@@ -1559,23 +1158,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 182.27,
-   "avg_volume30": 5002327,
+   "avg_volume30": 5062553,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 5.73,
-    "n": 8,
-    "moves_pct": [
-     6.98,
-     0.54,
-     3.83,
-     8.43,
-     2.44,
-     10.95,
-     10.47,
-     2.18
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-22",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1591,23 +1177,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 293.08,
-   "avg_volume30": 9947726,
+   "avg_volume30": 9957440,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 8.76,
-    "n": 8,
-    "moves_pct": [
-     19.43,
-     9.94,
-     5.6,
-     13.34,
-     6.56,
-     7.52,
-     4.01,
-     3.69
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-22",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1623,23 +1196,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 289.52,
-   "avg_volume30": 11382766,
+   "avg_volume30": 11418503,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 6.62,
-    "n": 8,
-    "moves_pct": [
-     8.25,
-     5.13,
-     1.94,
-     7.62,
-     6.58,
-     12.96,
-     6.17,
-     4.33
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-22",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1655,23 +1215,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 85.51,
-   "avg_volume30": 15626260,
+   "avg_volume30": 15638276,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 5.27,
-    "n": 8,
-    "moves_pct": [
-     5.7,
-     4.61,
-     7.15,
-     5.48,
-     0.95,
-     6.69,
-     5.61,
-     6.02
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-14",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1687,23 +1234,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 199.25,
-   "avg_volume30": 5409631,
+   "avg_volume30": 5451140,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 5.34,
-    "n": 8,
-    "moves_pct": [
-     4.4,
-     3.68,
-     7.67,
-     4.91,
-     9.81,
-     2.64,
-     1.34,
-     8.24
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-23",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1719,23 +1253,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 546.64,
-   "avg_volume30": 2539667,
+   "avg_volume30": 2545206,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.4,
-    "n": 8,
-    "moves_pct": [
-     2.83,
-     2.88,
-     2.7,
-     1.74,
-     1.54,
-     1.54,
-     3.64,
-     2.31
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-31",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1751,23 +1272,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 139.97,
-   "avg_volume30": 12718169,
+   "avg_volume30": 12828550,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 3.94,
-    "n": 8,
-    "moves_pct": [
-     2.61,
-     4.49,
-     3.89,
-     3.68,
-     3.47,
-     6.49,
-     5.11,
-     1.81
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-14",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1783,23 +1291,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 351.96,
-   "avg_volume30": 3126166,
+   "avg_volume30": 3150533,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 3.33,
-    "n": 8,
-    "moves_pct": [
-     4.31,
-     1.77,
-     7.27,
-     2.35,
-     3.5,
-     1.53,
-     3.15,
-     2.74
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-24",
    "date_mismatch": false,
    "likelihood": "HIGH",
@@ -1815,23 +1310,10 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 13.95,
-   "avg_volume30": 9271115,
+   "avg_volume30": 9281366,
    "pass_volume": true,
    "price_ok": false,
-   "hist_moves": {
-    "avg_abs_move_pct": 3.2,
-    "n": 8,
-    "moves_pct": [
-     0.75,
-     2.88,
-     2.45,
-     3.79,
-     9.55,
-     2.8,
-     2.77,
-     0.63
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-22",
    "date_mismatch": true,
    "likelihood": "LOW",
@@ -1847,56 +1329,11 @@
    "bucket": "watch",
    "trade_window": "upcoming",
    "price": 78.02,
-   "avg_volume30": 6746462,
+   "avg_volume30": 6756030,
    "pass_volume": true,
    "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 2.61,
-    "n": 8,
-    "moves_pct": [
-     3.39,
-     5.28,
-     1.09,
-     0.68,
-     2.84,
-     2.89,
-     3.0,
-     1.73
-    ]
-   },
+   "hist_moves": null,
    "yahoo_date": "2026-07-30",
-   "date_mismatch": false,
-   "likelihood": "HIGH",
-   "error": null
-  },
-  {
-   "ticker": "APH",
-   "name": "Amphenol Corporation",
-   "date": "2026-07-29",
-   "when": "BMO",
-   "market_cap": 211870976118.0,
-   "eps_est": "$1.16",
-   "bucket": "watch",
-   "trade_window": "upcoming",
-   "price": 164.59,
-   "avg_volume30": 10289812,
-   "pass_volume": true,
-   "price_ok": true,
-   "hist_moves": {
-    "avg_abs_move_pct": 6.03,
-    "n": 8,
-    "moves_pct": [
-     3.24,
-     12.2,
-     4.95,
-     3.72,
-     8.21,
-     7.04,
-     2.42,
-     6.44
-    ]
-   },
-   "yahoo_date": "2026-07-29",
    "date_mismatch": false,
    "likelihood": "HIGH",
    "error": null
@@ -1904,20 +1341,12 @@
  ],
  "skipped": [
   {
-   "ticker": "CRMT",
-   "name": "America's Car-Mart, Inc.",
-   "date": "2026-07-02",
-   "when": "TNS",
-   "market_cap": 23163836.0,
-   "bucket": "now"
-  },
-  {
    "ticker": "AUC",
    "name": "ATIF Holdings Limited",
    "date": "2026-07-03",
    "when": "TNS",
    "market_cap": 83847722.0,
-   "bucket": "week"
+   "bucket": "now"
   },
   {
    "ticker": "KRUS",
@@ -1992,6 +1421,14 @@
    "bucket": "week"
   },
   {
+   "ticker": "CRMT",
+   "name": "America's Car-Mart, Inc.",
+   "date": "2026-07-09",
+   "when": "TNS",
+   "market_cap": 23163836.0,
+   "bucket": "week"
+  },
+  {
    "ticker": "ARTW",
    "name": "Art's-Way Manufacturing Co., Inc.",
    "date": "2026-07-09",
@@ -2008,20 +1445,12 @@
    "bucket": "week"
   },
   {
-   "ticker": "DAL",
-   "name": "Delta Air Lines, Inc.",
-   "date": "2026-07-10",
-   "when": "BMO",
-   "market_cap": 61139893280.0,
-   "bucket": "watch"
-  },
-  {
    "ticker": "NB",
    "name": "NioCorp Developments Ltd.",
    "date": "2026-07-10",
    "when": "TNS",
    "market_cap": 701729571.0,
-   "bucket": "watch"
+   "bucket": "week"
   },
   {
    "ticker": "HIFS",
@@ -2029,7 +1458,7 @@
    "date": "2026-07-10",
    "when": "TNS",
    "market_cap": 675872676.0,
-   "bucket": "watch"
+   "bucket": "week"
   },
   {
    "ticker": "PLG",
@@ -2037,7 +1466,7 @@
    "date": "2026-07-10",
    "when": "TNS",
    "market_cap": 171394157.0,
-   "bucket": "watch"
+   "bucket": "week"
   },
   {
    "ticker": "LEDS",
@@ -2045,7 +1474,7 @@
    "date": "2026-07-10",
    "when": "TNS",
    "market_cap": 13955434.0,
-   "bucket": "watch"
+   "bucket": "week"
   },
   {
    "ticker": "VMAR",
@@ -2053,7 +1482,7 @@
    "date": "2026-07-10",
    "when": "TNS",
    "market_cap": 1148739.0,
-   "bucket": "watch"
+   "bucket": "week"
   },
   {
    "ticker": "FBK",
@@ -2240,6 +1669,14 @@
    "bucket": "watch"
   },
   {
+   "ticker": "JBHT",
+   "name": "J.B. Hunt Transport Services, Inc.",
+   "date": "2026-07-15",
+   "when": "AMC",
+   "market_cap": 27353369814.0,
+   "bucket": "watch"
+  },
+  {
    "ticker": "FHN",
    "name": "First Horizon Corporation",
    "date": "2026-07-15",
@@ -2277,14 +1714,6 @@
    "date": "2026-07-15",
    "when": "TNS",
    "market_cap": 5676746900.0,
-   "bucket": "watch"
-  },
-  {
-   "ticker": "MCRI",
-   "name": "Monarch Casino & Resort, Inc.",
-   "date": "2026-07-15",
-   "when": "TNS",
-   "market_cap": 2309034536.0,
    "bucket": "watch"
   },
   {
@@ -2832,22 +2261,6 @@
    "bucket": "watch"
   },
   {
-   "ticker": "RLI",
-   "name": "RLI Corp.",
-   "date": "2026-07-20",
-   "when": "TNS",
-   "market_cap": 5576979158.0,
-   "bucket": "watch"
-  },
-  {
-   "ticker": "CLF",
-   "name": "Cleveland-Cliffs Inc.",
-   "date": "2026-07-20",
-   "when": "TNS",
-   "market_cap": 5373306069.0,
-   "bucket": "watch"
-  },
-  {
    "ticker": "SFBS",
    "name": "ServisFirst Bancshares, Inc.",
    "date": "2026-07-20",
@@ -2877,6 +2290,14 @@
    "date": "2026-07-20",
    "when": "AMC",
    "market_cap": 2365685470.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MCRI",
+   "name": "Monarch Casino & Resort, Inc.",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 2309034536.0,
    "bucket": "watch"
   },
   {
@@ -2947,7 +2368,7 @@
    "ticker": "HBCP",
    "name": "Home Bancorp, Inc.",
    "date": "2026-07-20",
-   "when": "TNS",
+   "when": "AMC",
    "market_cap": 554160306.0,
    "bucket": "watch"
   },
@@ -3072,19 +2493,19 @@
    "bucket": "watch"
   },
   {
+   "ticker": "EQT",
+   "name": "EQT Corporation",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 32825085440.0,
+   "bucket": "watch"
+  },
+  {
    "ticker": "HAL",
    "name": "Halliburton Company",
    "date": "2026-07-21",
    "when": "BMO",
    "market_cap": 27576479232.0,
-   "bucket": "watch"
-  },
-  {
-   "ticker": "JBHT",
-   "name": "J.B. Hunt Transport Services, Inc.",
-   "date": "2026-07-21",
-   "when": "TNS",
-   "market_cap": 27353369814.0,
    "bucket": "watch"
   },
   {
@@ -3160,6 +2581,14 @@
    "bucket": "watch"
   },
   {
+   "ticker": "RRC",
+   "name": "Range Resources Corporation",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 8710954583.0,
+   "bucket": "watch"
+  },
+  {
    "ticker": "ACI",
    "name": "Albertsons Companies, Inc.",
    "date": "2026-07-21",
@@ -3205,6 +2634,14 @@
    "date": "2026-07-21",
    "when": "BMO",
    "market_cap": 4314703480.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WSBC",
+   "name": "WesBanco, Inc.",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 3842413372.0,
    "bucket": "watch"
   },
   {
@@ -3277,6 +2714,14 @@
    "date": "2026-07-21",
    "when": "AMC",
    "market_cap": 667775369.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "AMSF",
+   "name": "AMERISAFE, Inc.",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 642661572.0,
    "bucket": "watch"
   },
   {
@@ -3397,14 +2842,6 @@
    "date": "2026-07-22",
    "when": "TNS",
    "market_cap": 78033458846.0,
-   "bucket": "watch"
-  },
-  {
-   "ticker": "ORLY",
-   "name": "O'Reilly Automotive, Inc.",
-   "date": "2026-07-22",
-   "when": "TNS",
-   "market_cap": 76813600673.0,
    "bucket": "watch"
   },
   {
@@ -3611,7 +3048,7 @@
    "ticker": "RNR",
    "name": "RenaissanceRe Holdings Ltd.",
    "date": "2026-07-22",
-   "when": "TNS",
+   "when": "AMC",
    "market_cap": 13507852710.0,
    "bucket": "watch"
   },
@@ -3672,14 +3109,6 @@
    "bucket": "watch"
   },
   {
-   "ticker": "MXL",
-   "name": "MaxLinear, Inc",
-   "date": "2026-07-22",
-   "when": "TNS",
-   "market_cap": 10064070332.0,
-   "bucket": "watch"
-  },
-  {
    "ticker": "PLXS",
    "name": "Plexus Corp.",
    "date": "2026-07-22",
@@ -3736,6 +3165,14 @@
    "bucket": "watch"
   },
   {
+   "ticker": "RLI",
+   "name": "RLI Corp.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 5576979158.0,
+   "bucket": "watch"
+  },
+  {
    "ticker": "KOF",
    "name": "Coca Cola Femsa S.A.B. de C.V.",
    "date": "2026-07-22",
@@ -3787,7 +3224,7 @@
    "ticker": "TNL",
    "name": "Travel   Leisure Co.",
    "date": "2026-07-22",
-   "when": "TNS",
+   "when": "BMO",
    "market_cap": 4693481307.0,
    "bucket": "watch"
   },
@@ -3923,7 +3360,7 @@
    "ticker": "FRME",
    "name": "First Merchants Corporation",
    "date": "2026-07-22",
-   "when": "TNS",
+   "when": "AMC",
    "market_cap": 2791277199.0,
    "bucket": "watch"
   },
@@ -3979,7 +3416,7 @@
    "ticker": "NTST",
    "name": "NetSTREIT Corp.",
    "date": "2026-07-22",
-   "when": "TNS",
+   "when": "AMC",
    "market_cap": 2050253596.0,
    "bucket": "watch"
   },
@@ -4035,7 +3472,7 @@
    "ticker": "QCRH",
    "name": "QCR Holdings, Inc.",
    "date": "2026-07-22",
-   "when": "TNS",
+   "when": "AMC",
    "market_cap": 1631992643.0,
    "bucket": "watch"
   },
@@ -4072,14 +3509,6 @@
    "bucket": "watch"
   },
   {
-   "ticker": "CVLG",
-   "name": "Covenant Logistics Group, Inc.",
-   "date": "2026-07-22",
-   "when": "TNS",
-   "market_cap": 1128415437.0,
-   "bucket": "watch"
-  },
-  {
    "ticker": "CFFN",
    "name": "Capitol Federal Financial, Inc.",
    "date": "2026-07-22",
@@ -4099,7 +3528,7 @@
    "ticker": "HBNC",
    "name": "Horizon Bancorp, Inc.",
    "date": "2026-07-22",
-   "when": "TNS",
+   "when": "AMC",
    "market_cap": 1051233567.0,
    "bucket": "watch"
   },
@@ -4155,7 +3584,7 @@
    "ticker": "TCBX",
    "name": "Third Coast Bancshares, Inc.",
    "date": "2026-07-22",
-   "when": "TNS",
+   "when": "AMC",
    "market_cap": 678947545.0,
    "bucket": "watch"
   },
@@ -4301,6 +3730,14 @@
    "date": "2026-07-22",
    "when": "BMO",
    "market_cap": 296949750.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RELL",
+   "name": "Richardson Electronics, Ltd.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 273233426.0,
    "bucket": "watch"
   }
  ],
