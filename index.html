@@ -197,6 +197,7 @@ tr.selected td { background: #241d0e }
   </div>
   <div class="tabs">
     <button class="tab active" id="tabbtn-scanner" onclick="showTab('scanner')">Scanner</button>
+    <button class="tab" id="tabbtn-sim" onclick="showTab('sim')">Simulation</button>
     <button class="tab" id="tabbtn-strategy" onclick="showTab('strategy')">How It Works</button>
     <button class="tab" id="tabbtn-improve" onclick="showTab('improve')">Improvements</button>
   </div>
@@ -210,6 +211,7 @@ tr.selected td { background: #241d0e }
   <span class="live-item"><span class="live-lbl">Consider</span><span class="live-val" id="lv-con" style="color:var(--amber)">—</span></span>
   <span class="live-item"><span class="live-lbl">Tier 1</span><span class="live-val" id="lv-t1" style="color:var(--yellow)">—</span></span>
   <span class="live-item"><span class="live-lbl">Analyzed</span><span class="live-val" id="lv-analyzed">—</span></span>
+  <span class="live-item"><span class="live-lbl">Watch high</span><span class="live-val neu" id="lv-watch">—</span></span>
   <span class="live-updated">Data as of: <span class="live-val" id="lv-updated">—</span></span>
 </div>
 </div>
@@ -260,7 +262,7 @@ tr.selected td { background: #241d0e }
     </div>
 
     <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Upcoming this week (preview — metrics firm up on earnings day)</span></div>
+      <div class="ph"><span class="t">This week (full metrics preview — slope &amp; IV firm up in the final days)</span></div>
       <div class="pb" style="overflow-x:auto">
         <table>
           <thead><tr>
@@ -274,9 +276,63 @@ tr.selected td { background: #241d0e }
     </div>
 
     <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Watchlist — next 30 days</span>
+        <span class="dimtxt" style="text-transform:none">largest names reporting 8–30 days out. The slope &amp; IV/RV filters only form in the final days, so “likely” grades the persistent criteria (volume, price, history). ⚠ = Nasdaq &amp; Yahoo disagree on the date by &gt;1 day</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Ticker</th><th>Earnings date</th><th>In</th><th>When</th><th>Likely to qualify</th>
+            <th>Price</th><th>Avg vol 30d</th><th>Vol filter</th><th>Avg move (8q)</th><th>Mkt cap</th>
+          </tr></thead>
+          <tbody id="watch-tbody"></tbody>
+        </table>
+        <div id="watch-empty" class="dimtxt" style="display:none;padding:14px 4px;font-size:0.85rem"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">On the calendar but not scanned</span><span class="dimtxt" style="text-transform:none">below $1B market cap or beyond scan budget — the 1.5M-share volume filter rejects nearly all of these anyway</span></div>
       <div class="pb" id="skipped-body" style="font-size:0.82rem;color:var(--dim);line-height:1.9"></div>
     </div>
+  </div>
+
+  <!-- ══ SIMULATION TAB ══ -->
+  <div id="tab-sim" style="display:none">
+    <div class="note-box"><strong>What this is (and isn't):</strong> free historical option-chain data doesn't exist,
+      so a tick-level 10-year backtest isn't possible. Instead: <strong>Monte Carlo over 4,000 simulated 10-year paths</strong>,
+      with per-trade return distributions calibrated to the published research moments (calendar: mean +7.3%/trade, σ28%,
+      66% win, floor −105%; straddle: +9%, σ48%, fat tail). Each improvement variant applies an <strong>explicitly stated
+      assumption</strong> (shown under the table). Read the <em>differences between variants</em> as the signal —
+      absolute dollar outcomes inherit every assumption, especially the ~120 qualifying trades/yr.</div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">10-year outcomes by variant — $10,000 start</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table id="sim-table">
+          <thead><tr>
+            <th>Variant</th><th>Trades/yr</th><th>Win rate</th><th>Mean/trade</th>
+            <th>Median terminal</th><th>Median CAGR</th><th>Mean max DD</th><th>Worst 5% DD</th>
+            <th>Longest DD</th><th>Sharpe</th><th>P(halved)</th><th>P(10x)</th>
+          </tr></thead>
+          <tbody id="sim-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pb" id="sim-assumptions" style="padding-top:0;font-size:0.8rem;color:var(--dim);line-height:1.7"></div>
+    </div>
+
+    <div class="row" style="margin-top:12px">
+      <div class="panel" style="flex:1.3 1 460px">
+        <div class="ph"><span class="t" id="sim-eq-title">Equity paths (percentile bands, log scale)</span>
+          <span id="sim-variant-btns" style="display:inline-flex;gap:4px;flex-wrap:wrap"></span></div>
+        <div class="pb" style="position:relative;height:330px"><canvas id="simEqChart"></canvas></div>
+      </div>
+      <div class="panel" style="flex:1 1 360px">
+        <div class="ph"><span class="t">Per-trade return distribution</span></div>
+        <div class="pb" style="position:relative;height:330px"><canvas id="simHistChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="note-box" style="margin-top:12px" id="sim-takeaway"></div>
   </div>
 
   <!-- ══ STRATEGY TAB ══ -->
@@ -421,10 +477,11 @@ function acctChanged() {
 }
 
 function showTab(name) {
-  ['scanner', 'strategy', 'improve'].forEach(function (t) {
+  ['scanner', 'sim', 'strategy', 'improve'].forEach(function (t) {
     $('tab-' + t).style.display = (t === name) ? '' : 'none';
     $('tabbtn-' + t).className = 'tab' + (t === name ? ' active' : '');
   });
+  if (name === 'sim') loadSim();
 }
 
 function tierPill(ev) {
@@ -440,6 +497,18 @@ function whenPill(w) {
   if (w === 'BMO') return '<span class="pill pill-bmo">BMO</span>';
   return '<span class="pill pill-tns" title="Announcement time not supplied">TBD</span>';
 }
+function likePill(l) {
+  if (l === 'HIGH') return '<span class="pill pill-rec">HIGH</span>';
+  if (l === 'MEDIUM') return '<span class="pill pill-con">MEDIUM</span>';
+  return '<span class="pill pill-avoid">LOW</span>';
+}
+function mismatchFlag(ev) {
+  if (ev.date_mismatch) {
+    return ' <span title="Date check: Nasdaq says ' + ev.date + ' but Yahoo says ' + ev.yahoo_date +
+      ' — earnings dates shift; confirm before trading" style="color:var(--amber);cursor:help">&#9888;</span>';
+  }
+  return '';
+}
 function passTxt(ok, txt) {
   return '<span class="' + (ok ? 'pos' : 'neg') + '">' + txt + '</span>';
 }
@@ -451,7 +520,7 @@ function calContracts(ev) {
 
 function renderKpis() {
   var c = DATA.counts;
-  var evs = DATA.events.filter(function (e) { return e.trade_window === 'today'; });
+  var evs = DATA.events.filter(function (e) { return e.bucket === 'now'; });
   var moves = evs.map(function (e) { return e.expected_move_pct; }).filter(function (m) { return m; });
   var avgMove = moves.length ? (moves.reduce(function (a, b) { return a + b; }, 0) / moves.length) : null;
   var kpis = [
@@ -460,7 +529,8 @@ function renderKpis() {
     { l: 'Consider', v: String(c.consider), s: 'slope + 1 of 2', c: 'var(--amber)' },
     { l: 'Tier 1 ★', v: String(c.tier1), s: 'enhanced filters', c: 'var(--yellow)' },
     { l: 'Avg expected move', v: avgMove === null ? '—' : fmt(avgMove, 1) + '%', s: 'ATM straddle / price' },
-    { l: 'Calendar events', v: String(c.calendar_events), s: 'scan horizon (this week)' }
+    { l: 'Watchlist HIGH', v: String(c.watch_high || 0), s: 'likely qualifiers, next 30d', c: 'var(--cyan)' },
+    { l: 'Calendar events', v: String(c.calendar_events), s: (DATA.horizon_days || 30) + '-day horizon' }
   ];
   $('kpi-strip').innerHTML = kpis.map(function (k) {
     return '<div class="kpi"><div class="kpi-label">' + k.l + '</div>' +
@@ -476,7 +546,7 @@ function candRow(ev, withDate) {
     ? ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) + ' @ ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1)
     : '—';
   var cells = [
-    '<td><b>' + ev.ticker + '</b> <span class="dimtxt" style="font-size:0.72rem">' + fmtCap(ev.market_cap) + '</span></td>'
+    '<td><b>' + ev.ticker + '</b>' + mismatchFlag(ev) + ' <span class="dimtxt" style="font-size:0.72rem">' + fmtCap(ev.market_cap) + '</span></td>'
   ];
   if (withDate) cells.push('<td>' + ev.date + '</td>');
   cells.push(
@@ -499,7 +569,7 @@ function candRow(ev, withDate) {
 }
 
 function renderCandidates() {
-  var today = DATA.events.filter(function (e) { return e.trade_window === 'today'; });
+  var today = DATA.events.filter(function (e) { return e.bucket === 'now'; });
   today.sort(function (a, b) {
     var rank = { 'RECOMMENDED': 0, 'CONSIDER': 1, 'AVOID': 2 };
     if (rank[a.tier] !== rank[b.tier]) return rank[a.tier] - rank[b.tier];
@@ -511,15 +581,36 @@ function renderCandidates() {
     return '<tr class="' + cls + '" onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev, false) + '</tr>';
   }).join('');
   $('cand-empty').style.display = today.length ? 'none' : '';
-  $('cand-empty').textContent = 'No qualifying earnings events in today’s trade window. Quiet weeks are normal between earnings seasons — the strategy only trades ~10–12% of events even in peak season.';
+  $('cand-empty').textContent = 'No qualifying earnings events in today’s trade window. Quiet weeks are normal between earnings seasons — the strategy only trades ~10–12% of events even in peak season. Check the This-week and Watchlist tables below for what’s coming.';
 
-  var up = DATA.events.filter(function (e) { return e.trade_window === 'upcoming'; });
+  var up = DATA.events.filter(function (e) { return e.bucket === 'week'; });
   up.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.market_cap || 0) - (a.market_cap || 0); });
   $('up-tbody').innerHTML = up.map(function (ev) {
     return '<tr class="clickable" onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev, true) + '</tr>';
   }).join('');
   $('up-empty').style.display = up.length ? 'none' : '';
   $('up-empty').textContent = 'No further scanned events on this week’s calendar.';
+
+  var watch = (DATA.watchlist || []).slice();
+  watch.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.market_cap || 0) - (a.market_cap || 0); });
+  var todayStr = DATA.scan_date;
+  $('watch-tbody').innerHTML = watch.map(function (w) {
+    var days = Math.round((new Date(w.date) - new Date(todayStr)) / 8.64e7);
+    return '<tr>' +
+      '<td><b>' + w.ticker + '</b>' + mismatchFlag(w) + ' <span class="dimtxt" style="font-size:0.72rem">' + (w.name || '').slice(0, 26) + '</span></td>' +
+      '<td>' + w.date + '</td>' +
+      '<td>' + days + 'd</td>' +
+      '<td>' + whenPill(w.when) + '</td>' +
+      '<td>' + likePill(w.likelihood) + '</td>' +
+      '<td>' + fmt(w.price) + '</td>' +
+      '<td>' + fmtInt(w.avg_volume30) + '</td>' +
+      '<td>' + passTxt(w.pass_volume, w.pass_volume ? 'PASS' : 'FAIL') + '</td>' +
+      '<td>' + (w.hist_moves ? '±' + fmt(w.hist_moves.avg_abs_move_pct, 1) + '%' : '—') + '</td>' +
+      '<td>' + fmtCap(w.market_cap) + '</td>' +
+      '</tr>';
+  }).join('');
+  $('watch-empty').style.display = watch.length ? 'none' : '';
+  $('watch-empty').textContent = 'No watchlist names — either a very quiet month or the scan is stale.';
 
   var sk = DATA.skipped || [];
   $('skipped-body').innerHTML = sk.length
@@ -540,7 +631,7 @@ function renderDetail() {
   var ev = null;
   for (var i = 0; i < DATA.events.length; i++) if (DATA.events[i].ticker === selectedTicker) { ev = DATA.events[i]; break; }
   if (!ev) {
-    var first = DATA.events.filter(function (e) { return e.trade_window === 'today'; })[0] || DATA.events[0];
+    var first = DATA.events.filter(function (e) { return e.bucket === 'now'; })[0] || DATA.events[0];
     if (!first) return;
     ev = first; selectedTicker = ev.ticker;
   }
@@ -548,7 +639,8 @@ function renderDetail() {
 
   // ── term structure chart ──
   $('ts-title').textContent = 'IV term structure — ' + ev.ticker;
-  $('ts-sub').textContent = ev.name + ' · earnings ' + ev.date + ' ' + ev.when;
+  $('ts-sub').textContent = ev.name + ' · earnings ' + ev.date + ' ' + ev.when +
+    (ev.date_mismatch ? ' · ⚠ Yahoo says ' + ev.yahoo_date : '');
   var pts = (ev.term_structure || []).map(function (p) { return { x: p.dte, y: p.iv * 100 }; });
   if (tsChart) tsChart.destroy();
   tsChart = new Chart($('tsChart'), {
@@ -623,11 +715,12 @@ function renderDetail() {
 function renderStrip() {
   var c = DATA.counts;
   $('lv-date').textContent = DATA.scan_date;
-  $('lv-today').textContent = String(DATA.events.filter(function (e) { return e.trade_window === 'today'; }).length);
+  $('lv-today').textContent = String(DATA.events.filter(function (e) { return e.bucket === 'now'; }).length);
   $('lv-rec').textContent = String(c.recommended);
   $('lv-con').textContent = String(c.consider);
   $('lv-t1').textContent = String(c.tier1);
   $('lv-analyzed').textContent = String(c.analyzed);
+  $('lv-watch').textContent = String(c.watch_high || 0);
   var d = new Date(DATA.generated_utc);
   $('lv-updated').textContent = d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
   var strip = $('live-strip');
@@ -645,6 +738,123 @@ function render() {
   $('th-slope').textContent = '≤ ' + DATA.thresholds.ts_slope_0_45;
   $('th-ivrv').textContent = '≥ ' + DATA.thresholds.iv30_rv30;
   $('th-vol').textContent = '≥ ' + (DATA.thresholds.avg_volume30 / 1e6).toFixed(1) + 'M shares';
+}
+
+/* ── Simulation tab ─────────────────────────────────────────────────── */
+var SIM = null;
+var simEqChart = null;
+var simHistChart = null;
+var simSelected = null;
+
+function loadSim() {
+  if (SIM) return;
+  fetch('sim_results.json?t=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (j) { SIM = j; renderSim(); })
+    .catch(function (e) {
+      $('sim-tbody').innerHTML = '<tr><td colspan="12" style="color:var(--coral)">Failed to load sim_results.json — ' + e.message + '</td></tr>';
+    });
+}
+
+function renderSim() {
+  var vs = SIM.variants;
+  $('sim-tbody').innerHTML = vs.map(function (v) {
+    var base = vs[0];
+    var hl = v.id === 'all_combined' ? ' style="background:#191408"' : '';
+    return '<tr' + hl + '>' +
+      '<td><b>' + v.label + '</b></td>' +
+      '<td>' + v.params.trades_yr + '</td>' +
+      '<td>' + fmt(v.per_trade.win_rate * 100, 1) + '%</td>' +
+      '<td class="' + (v.per_trade.mean_pct >= base.per_trade.mean_pct ? 'pos' : 'dimtxt') + '">+' + fmt(v.per_trade.mean_pct, 1) + '%</td>' +
+      '<td><b>$' + fmtInt(v.terminal.median) + '</b></td>' +
+      '<td>' + fmt(v.cagr.median * 100, 1) + '%</td>' +
+      '<td class="' + (v.max_dd.mean > base.max_dd.mean ? 'pos' : 'neg') + '">' + fmt(v.max_dd.mean * 100, 1) + '%</td>' +
+      '<td>' + fmt(v.max_dd.p95_worst * 100, 1) + '%</td>' +
+      '<td>' + fmt(v.longest_dd_years.median, 1) + 'y</td>' +
+      '<td><b>' + fmt(v.sharpe, 2) + '</b></td>' +
+      '<td>' + fmt(v.prob.halved_at_any_point * 100, 1) + '%</td>' +
+      '<td>' + fmt(v.prob.x10_after_10y * 100, 1) + '%</td>' +
+      '</tr>';
+  }).join('');
+
+  $('sim-assumptions').innerHTML = '<b style="color:var(--yellow)">Variant assumptions:</b><br>' +
+    vs.map(function (v) { return '<b style="color:var(--text)">' + v.label + ':</b> ' + v.assumption; }).join('<br>') +
+    '<br><span style="font-size:0.72rem">' + SIM.n_paths.toLocaleString() + ' paths × ' + SIM.years +
+    ' years, $' + fmtInt(SIM.start_equity) + ' start · generated ' + SIM.generated_utc.slice(0, 10) + '</span>';
+
+  $('sim-variant-btns').innerHTML = vs.map(function (v, i) {
+    return '<button class="tab" id="simbtn-' + v.id + '" style="padding:3px 9px;font-size:0.68rem" ' +
+      'onclick="selectSimVariant(\'' + v.id + '\')">' + v.label.replace('Calendar', 'Cal').replace('Straddle', 'Strad').replace(' — research filters (baseline)', ' baseline').replace(/Cal \+ /, '+') + '</button>';
+  }).join('');
+  selectSimVariant('baseline_calendar');
+
+  var takeHtml = '<strong>Key takeaway:</strong> the improvements mostly trade raw growth for quality. ' +
+    'Execution filters (Tier 1) and tail trims lift the win rate and Sharpe and cut the average max drawdown ';
+  var base = vs[0]; var all = null;
+  for (var i = 0; i < vs.length; i++) if (vs[i].id === 'all_combined') all = vs[i];
+  if (all) {
+    takeHtml += 'from ' + fmt(base.max_dd.mean * 100, 0) + '% to ' + fmt(all.max_dd.mean * 100, 0) + '% and the probability of ever halving the account from ' +
+      fmt(base.prob.halved_at_any_point * 100, 1) + '% to ' + fmt(all.prob.halved_at_any_point * 100, 1) + '% — but they also filter out trades, and fewer trades means less compounding, so the median terminal value drops. ' +
+      'If you can stomach the baseline drawdowns, the baseline compounds fastest; if you want the smoothest ride per unit of risk, the combined variant has the best Sharpe (' + fmt(all.sharpe, 2) + ' vs ' + fmt(base.sharpe, 2) + '). ' +
+      'A middle path — Tier 1 execution filters only — keeps most of the growth while still improving every risk metric.';
+  }
+  $('sim-takeaway').innerHTML = takeHtml;
+}
+
+function selectSimVariant(id) {
+  simSelected = id;
+  var v = null;
+  for (var i = 0; i < SIM.variants.length; i++) if (SIM.variants[i].id === id) v = SIM.variants[i];
+  if (!v) return;
+  SIM.variants.forEach(function (x) {
+    var b = $('simbtn-' + x.id);
+    if (b) b.className = 'tab' + (x.id === id ? ' active' : '');
+  });
+
+  var band = v.equity_band;
+  var mk = function (arr, i) { return arr.map(function (y, k) { return { x: band.t_years[k], y: y }; }); };
+  if (simEqChart) simEqChart.destroy();
+  simEqChart = new Chart($('simEqChart'), {
+    type: 'line',
+    data: { datasets: [
+      { label: 'p95', data: mk(band.p95), borderColor: 'rgba(84,210,239,0.5)', pointRadius: 0, borderWidth: 1, fill: false },
+      { label: 'p75', data: mk(band.p75), borderColor: 'rgba(82,230,189,0.5)', backgroundColor: 'rgba(82,230,189,0.08)', pointRadius: 0, borderWidth: 1, fill: '+1' },
+      { label: 'median', data: mk(band.p50), borderColor: '#e8b94f', backgroundColor: 'rgba(232,185,79,0.10)', pointRadius: 0, borderWidth: 2.5, fill: false },
+      { label: 'p25', data: mk(band.p25), borderColor: 'rgba(240,152,47,0.5)', pointRadius: 0, borderWidth: 1, fill: false },
+      { label: 'p5', data: mk(band.p5), borderColor: 'rgba(242,86,58,0.6)', pointRadius: 0, borderWidth: 1, fill: false }
+    ]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: {
+        x: { type: 'linear', title: { display: true, text: 'years', color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } },
+        y: { type: 'logarithmic', title: { display: true, text: 'account $ (log)', color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' },
+             ticks: { color: '#b39a52', callback: function (v2) { return '$' + Number(v2).toLocaleString(); } } }
+      },
+      plugins: { legend: { labels: { color: '#f6ecc6', boxWidth: 18, font: { size: 10 } } },
+        tooltip: { callbacks: { label: function (c) { return c.dataset.label + ': $' + Math.round(c.parsed.y).toLocaleString(); } } } }
+    }
+  });
+  $('sim-eq-title').textContent = 'Equity paths — ' + v.label;
+
+  var edges = v.ret_hist.edges, counts = v.ret_hist.counts;
+  var labels = [], colors = [];
+  for (var j = 0; j < counts.length; j++) {
+    labels.push(edges[j] + '%');
+    colors.push(edges[j] < 0 ? 'rgba(242,86,58,0.75)' : 'rgba(82,230,189,0.75)');
+  }
+  if (simHistChart) simHistChart.destroy();
+  simHistChart = new Chart($('simHistChart'), {
+    type: 'bar',
+    data: { labels: labels, datasets: [{ label: 'trades', data: counts, backgroundColor: colors, borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: {
+        x: { title: { display: true, text: 'per-trade return bucket', color: '#b39a52' }, grid: { display: false }, ticks: { color: '#b39a52', maxRotation: 60, font: { size: 9 } } },
+        y: { title: { display: true, text: 'count (sample)', color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
 }
 
 function load() {

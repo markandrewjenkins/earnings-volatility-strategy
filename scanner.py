@@ -50,6 +50,7 @@ import yfinance as yf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "scan_results.json")
+CAL_CACHE_PATH = os.path.join(HERE, "calendar_cache.json")
 
 # ── Strategy constants (from the research) ──────────────────────────────
 SLOPE_THRESHOLD = -0.00406
@@ -69,6 +70,12 @@ RICHNESS_MIN = 1.15             # expected move >= 1.15x avg historical move
 MIN_MARKET_CAP = 1_000_000_000  # only scan liquid-ish names (the 1.5M-share
                                 # volume filter would reject most below this
                                 # anyway; keeps API usage sane in peak season)
+
+CAL_HORIZON_DAYS = 30           # how far ahead we watch the earnings calendar
+NEAR_WINDOW_DAYS = 7            # full options analysis inside this window
+WATCH_MAX = 40                  # watchlist names given light (history-only) analysis
+CACHE_PATH = None               # set below (depends on HERE)
+CACHE_MAX_AGE_H = 12            # re-fetch the far calendar this often
 
 NASDAQ_HEADERS = {
     "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -124,8 +131,8 @@ def fetch_calendar_day(day: date, session: requests.Session):
     return out
 
 
-def fetch_calendar(days, max_retries=3):
-    session = requests.Session()
+def fetch_calendar_days(days, session=None, max_retries=3):
+    session = session or requests.Session()
     events = []
     for day in days:
         last_err = None
@@ -139,8 +146,69 @@ def fetch_calendar(days, max_retries=3):
                 time.sleep(3 * (attempt + 1))
         if last_err is not None:
             raise RuntimeError(f"calendar fetch failed for {day}: {last_err}")
-        time.sleep(0.6)
+        time.sleep(0.5)
     return events
+
+
+def fetch_calendar(today):
+    """Near days (0..NEAR_WINDOW) are always fetched fresh. The far calendar
+    (NEAR_WINDOW+1 .. CAL_HORIZON) is cached in calendar_cache.json and only
+    re-fetched every CACHE_MAX_AGE_H hours — earnings dates that far out move
+    slowly, and 30 Nasdaq requests per 15-minute run would invite blocks."""
+    session = requests.Session()
+    near_days = [today + timedelta(days=i) for i in range(0, NEAR_WINDOW_DAYS + 1)
+                 if (today + timedelta(days=i)).weekday() < 5]
+    events = fetch_calendar_days(near_days, session)
+
+    far_days = [today + timedelta(days=i)
+                for i in range(NEAR_WINDOW_DAYS + 1, CAL_HORIZON_DAYS + 1)
+                if (today + timedelta(days=i)).weekday() < 5]
+    cache = None
+    if os.path.exists(CAL_CACHE_PATH):
+        try:
+            with open(CAL_CACHE_PATH, encoding="utf-8") as f:
+                cache = json.load(f)
+            fetched = datetime.fromisoformat(cache["fetched_utc"])
+            age_h = (datetime.now(timezone.utc) - fetched).total_seconds() / 3600
+            if age_h > CACHE_MAX_AGE_H or cache.get("horizon_start") != far_days[0].isoformat():
+                cache = None
+        except Exception:
+            cache = None
+    if cache is None:
+        far_events = fetch_calendar_days(far_days, session)
+        cache = {
+            "fetched_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "horizon_start": far_days[0].isoformat() if far_days else None,
+            "events": far_events,
+        }
+        try:
+            write_atomic(cache, CAL_CACHE_PATH)
+        except Exception:
+            pass
+    events.extend(cache["events"])
+    return events
+
+
+def yahoo_earnings_date(stock, nasdaq_date):
+    """Cross-check Nasdaq's date against Yahoo's per-ticker earnings date.
+    Nasdaq mixes confirmed dates with projections, and projected dates are
+    often shifted (last year's date + ~91 days). Returns (yahoo_date_str,
+    mismatch_bool) — mismatch when they differ by more than 1 day."""
+    try:
+        cal = stock.calendar
+        eds = cal.get("Earnings Date") if isinstance(cal, dict) else None
+        if not eds:
+            return None, None
+        nd = datetime.strptime(nasdaq_date, "%Y-%m-%d").date()
+        yds = []
+        for x in eds:
+            if hasattr(x, "date"):
+                x = x.date() if isinstance(x, datetime) else x
+            yds.append(x)
+        nearest = min(yds, key=lambda y: abs((y - nd).days))
+        return nearest.isoformat(), abs((nearest - nd).days) > 1
+    except Exception:
+        return None, None
 
 
 # ── Options math (identical to the original calculator) ─────────────────
@@ -276,6 +344,8 @@ def analyze_ticker(symbol, earnings_date):
         p_idx = (puts["strike"] - price).abs().idxmin()
         c_iv = float(calls.loc[c_idx, "impliedVolatility"])
         p_iv = float(puts.loc[p_idx, "impliedVolatility"])
+        if not (np.isfinite(c_iv) and np.isfinite(p_iv)) or c_iv <= 0 or p_iv <= 0:
+            continue  # Yahoo sometimes returns NaN/zero IV on illiquid expiries
         atm_iv[exp] = (c_iv + p_iv) / 2.0
 
         if straddle is None:  # first usable expiry = front month
@@ -338,6 +408,7 @@ def analyze_ticker(symbol, earnings_date):
                 cal_debit = None
 
     hist = historical_earnings_moves(stock, history, earnings_date)
+    y_date, mismatch = yahoo_earnings_date(stock, earnings_date)
 
     pass_slope = ts_slope <= SLOPE_THRESHOLD
     pass_ivrv = bool(ivrv and ivrv >= IVRV_THRESHOLD)
@@ -364,6 +435,8 @@ def analyze_ticker(symbol, earnings_date):
 
     return {
         "price": round(price, 2),
+        "yahoo_date": y_date,
+        "date_mismatch": mismatch,
         "front_exp": front_exp,
         "back_exp": back_exp,
         "atm_strike": atm_strike,
@@ -388,6 +461,45 @@ def analyze_ticker(symbol, earnings_date):
     }
 
 
+# ── Watchlist (light) analysis — no option chains ───────────────────────
+
+def analyze_watch_ticker(symbol, earnings_date):
+    """History-only look at a name reporting 8–30 days out. The slope and
+    IV/RV filters only form in the final days before the event, so here we
+    grade the *persistent* criteria and the stock's earnings history."""
+    stock = yf.Ticker(symbol)
+    history = stock.history(period="2y", auto_adjust=True)
+    if history is None or len(history) < 40:
+        raise ValueError("not enough price history")
+    price = float(history["Close"].iloc[-1])
+    avg_vol = float(history["Volume"].rolling(30).mean().dropna().iloc[-1])
+    hist = historical_earnings_moves(stock, history, earnings_date)
+    y_date, mismatch = yahoo_earnings_date(stock, earnings_date)
+
+    pass_vol = avg_vol >= VOLUME_THRESHOLD
+    price_ok = price >= MIN_PRICE
+    # Likelihood the name will rate RECOMMENDED on its earnings day, based on
+    # what is observable now: volume is stable week to week (the strongest
+    # persistent signal); price and options-liquidity proxy fill it out.
+    # Slope/IV richness can only be confirmed in the final days.
+    if pass_vol and price_ok:
+        likelihood = "HIGH"
+    elif avg_vol >= VOLUME_THRESHOLD * 0.5 and price_ok:
+        likelihood = "MEDIUM"
+    else:
+        likelihood = "LOW"
+    return {
+        "price": round(price, 2),
+        "avg_volume30": int(avg_vol),
+        "pass_volume": bool(pass_vol),
+        "price_ok": bool(price_ok),
+        "hist_moves": hist,
+        "yahoo_date": y_date,
+        "date_mismatch": mismatch,
+        "likelihood": likelihood,
+    }
+
+
 # ── Main scan ────────────────────────────────────────────────────────────
 
 def run_scan(max_analyze=45, tickers_override=None):
@@ -400,52 +512,75 @@ def run_scan(max_analyze=45, tickers_override=None):
                    "when": "AMC", "market_cap": None, "eps_est": None}
                   for t in tickers_override]
     else:
-        # Calendar horizon: today through +4 calendar days (covers weekend)
-        days = [today + timedelta(days=i) for i in range(0, 5)
-                if (today + timedelta(days=i)).weekday() < 5]
-        events = fetch_calendar(days)
+        events = fetch_calendar(today)
 
     for ev in events:
         d = datetime.strptime(ev["date"], "%Y-%m-%d").date()
-        tradeable = (d == today and ev["when"] in ("AMC", "TNS")) or \
-                    (d == next_td and ev["when"] == "BMO")
-        ev["trade_window"] = "today" if tradeable else "upcoming"
+        if (d == today and ev["when"] in ("AMC", "TNS")) or \
+           (d == next_td and ev["when"] == "BMO"):
+            ev["bucket"] = "now"       # enter before today's close
+        elif d <= today:
+            ev["bucket"] = "past"      # already reported (yesterday, or today BMO)
+        elif (d - today).days <= NEAR_WINDOW_DAYS:
+            ev["bucket"] = "week"      # full metrics, preview
+        else:
+            ev["bucket"] = "watch"     # 30-day watchlist, light metrics
+        # keep old field name for anything that still reads it
+        ev["trade_window"] = "today" if ev["bucket"] == "now" else "upcoming"
 
-    # Filter to scannable universe, prioritize tradeable-now by market cap
     def cap(ev):
         return ev["market_cap"] or 0
 
     scannable = [e for e in events if cap(e) >= MIN_MARKET_CAP or tickers_override]
-    tradeable_now = sorted([e for e in scannable if e["trade_window"] == "today"],
-                           key=cap, reverse=True)
-    upcoming = sorted([e for e in scannable if e["trade_window"] == "upcoming"],
-                      key=cap, reverse=True)
-    to_analyze = (tradeable_now + upcoming)[:max_analyze]
+    now_evs = sorted([e for e in scannable if e["bucket"] == "now"], key=cap, reverse=True)
+    week_evs = sorted([e for e in scannable if e["bucket"] == "week"],
+                      key=lambda e: (e["date"], -cap(e)))
+    watch_evs = sorted([e for e in scannable if e["bucket"] == "watch"], key=cap, reverse=True)
 
     errors = []
     analyzed = []
-    for ev in to_analyze:
+
+    # Full options analysis: everything tradeable now, then this week, within budget
+    for ev in (now_evs + week_evs)[:max_analyze]:
         sym = ev["ticker"]
         try:
             metrics = analyze_ticker(sym, ev["date"])
             analyzed.append({**ev, **metrics, "error": None})
-            print(f"  {sym:6s} {metrics['tier']:12s} slope={metrics['ts_slope_0_45']} "
-                  f"ivrv={metrics['iv30_rv30']} vol={metrics['avg_volume30']:,}")
+            print(f"  {sym:6s} [{ev['bucket']:5s}] {metrics['tier']:12s} "
+                  f"slope={metrics['ts_slope_0_45']} ivrv={metrics['iv30_rv30']} "
+                  f"vol={metrics['avg_volume30']:,}")
         except Exception as e:
             errors.append({"ticker": sym, "error": str(e)})
-            print(f"  {sym:6s} ERROR: {e}")
+            print(f"  {sym:6s} [{ev['bucket']:5s}] ERROR: {e}")
         time.sleep(0.6)
 
-    # Events we saw on the calendar but didn't analyze (small caps / over cap)
-    skipped = [e for e in events if e not in to_analyze]
+    # Light analysis for the 30-day watchlist (largest caps first)
+    watchlist = []
+    for ev in watch_evs[:WATCH_MAX]:
+        sym = ev["ticker"]
+        try:
+            metrics = analyze_watch_ticker(sym, ev["date"])
+            watchlist.append({**ev, **metrics, "error": None})
+            print(f"  {sym:6s} [watch] {metrics['likelihood']:6s} "
+                  f"vol={metrics['avg_volume30']:,}")
+        except Exception as e:
+            errors.append({"ticker": sym, "error": str(e)})
+            print(f"  {sym:6s} [watch] ERROR: {e}")
+        time.sleep(0.4)
+
+    analyzed_syms = {a["ticker"] for a in analyzed} | {w["ticker"] for w in watchlist}
+    skipped = [e for e in events
+               if e["ticker"] not in analyzed_syms and e["bucket"] != "past"]
 
     counts = {
         "calendar_events": len(events),
         "analyzed": len(analyzed),
+        "watchlist": len(watchlist),
         "recommended": sum(1 for a in analyzed if a["tier"] == "RECOMMENDED"),
         "consider": sum(1 for a in analyzed if a["tier"] == "CONSIDER"),
         "avoid": sum(1 for a in analyzed if a["tier"] == "AVOID"),
         "tier1": sum(1 for a in analyzed if a.get("tier1")),
+        "watch_high": sum(1 for w in watchlist if w["likelihood"] == "HIGH"),
         "errors": len(errors),
     }
 
@@ -454,6 +589,9 @@ def run_scan(max_analyze=45, tickers_override=None):
         "generated_et": et.isoformat(timespec="seconds"),
         "scan_date": today.isoformat(),
         "next_trading_day": next_td.isoformat(),
+        "horizon_days": CAL_HORIZON_DAYS,
+        "date_source": "Nasdaq earnings calendar API, cross-checked per ticker "
+                       "against Yahoo Finance (date_mismatch flags a >1 day gap)",
         "thresholds": {
             "ts_slope_0_45": SLOPE_THRESHOLD,
             "iv30_rv30": IVRV_THRESHOLD,
@@ -467,18 +605,30 @@ def run_scan(max_analyze=45, tickers_override=None):
         "sizing": KELLY,
         "counts": counts,
         "events": analyzed,
+        "watchlist": watchlist,
         "skipped": [{k: e[k] for k in ("ticker", "name", "date", "when",
-                                       "market_cap", "trade_window")}
-                    for e in skipped][:200],
+                                       "market_cap", "bucket")}
+                    for e in skipped][:300],
         "errors": errors,
     }
     return result
 
 
+def sanitize(obj):
+    """NaN/Inf are invalid JSON and would break the dashboard's JSON.parse."""
+    if isinstance(obj, dict):
+        return {k: sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize(v) for v in obj]
+    if isinstance(obj, float) and not math.isfinite(obj):
+        return None
+    return obj
+
+
 def write_atomic(obj, path):
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(obj, f, indent=1)
+        json.dump(sanitize(obj), f, indent=1, allow_nan=False)
     os.replace(tmp, path)
 
 

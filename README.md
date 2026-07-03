@@ -11,9 +11,21 @@ Strategy basis: the Volatility Vibes earnings IV-crush research
 
 ## How it works
 
-1. `scanner.py` pulls the Nasdaq earnings calendar (today → +4 days),
-   keeps US stocks ≥ $1B market cap, and for each candidate pulls the
-   Yahoo Finance option chain to compute:
+1. `scanner.py` pulls the Nasdaq earnings calendar (today → +30 days; the
+   far half is cached ~12h in `calendar_cache.json`), keeps US stocks
+   ≥ $1B market cap, and buckets events:
+   - **now** — reports after today's close or before the next open
+     (enter before today's close): full options analysis
+   - **week** — within 7 days: full options analysis as a preview
+   - **watch** — 8–30 days out: light history-only analysis with a
+     HIGH/MEDIUM/LOW "likely to qualify" grade (volume & price persist
+     week-to-week; the slope and IV/RV filters only form in the final days)
+
+   Earnings dates come from Nasdaq and are **cross-checked against Yahoo's
+   per-ticker earnings date** — a >1-day disagreement sets `date_mismatch`
+   and shows a ⚠ on the dashboard (dates do shift; confirm before trading).
+
+   For each fully-analyzed candidate the option chain provides:
    - `ts_slope_0_45` — ATM IV term-structure slope (front expiry → 45d)
    - `iv30_rv30` — 30d implied vol vs Yang-Zhang realized vol
    - `avg_volume30` — 30-day average share volume
@@ -25,6 +37,10 @@ Strategy basis: the Volatility Vibes earnings IV-crush research
    execution-quality and premium-richness filters (see the dashboard's
    Improvements tab).
 3. Results are written to `scan_results.json`; `index.html` renders it.
+4. `backtest_mc.py` (run manually, not on the schedule) generates
+   `sim_results.json` — a 10-year, 4,000-path Monte Carlo calibrated to the
+   published research moments, with each proposed improvement modeled as an
+   explicitly stated assumption. Rendered on the dashboard's Simulation tab.
 
 ## Refresh schedule
 

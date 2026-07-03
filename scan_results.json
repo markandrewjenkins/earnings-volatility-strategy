@@ -1,8 +1,10 @@
 {
- "generated_utc": "2026-07-03T03:08:26+00:00",
- "generated_et": "2026-07-02T23:08:14-04:00",
+ "generated_utc": "2026-07-03T03:47:21+00:00",
+ "generated_et": "2026-07-02T23:45:57-04:00",
  "scan_date": "2026-07-02",
  "next_trading_day": "2026-07-03",
+ "horizon_days": 30,
+ "date_source": "Nasdaq earnings calendar API, cross-checked per ticker against Yahoo Finance (date_mismatch flags a >1 day gap)",
  "thresholds": {
   "ts_slope_0_45": -0.00406,
   "iv30_rv30": 1.25,
@@ -18,51 +20,320 @@
   "straddle_frac": 0.02
  },
  "counts": {
-  "calendar_events": 3,
-  "analyzed": 1,
-  "recommended": 0,
-  "consider": 0,
-  "avoid": 1,
+  "calendar_events": 1311,
+  "analyzed": 9,
+  "watchlist": 40,
+  "recommended": 2,
+  "consider": 3,
+  "avoid": 4,
   "tier1": 0,
+  "watch_high": 39,
   "errors": 0
  },
  "events": [
   {
-   "ticker": "LNN",
-   "name": "Lindsay Corporation",
-   "date": "2026-07-02",
-   "when": "BMO",
-   "market_cap": 1258601951.0,
-   "eps_est": "$1.41",
+   "ticker": "PENG",
+   "name": "Penguin Solutions, Inc.",
+   "date": "2026-07-07",
+   "when": "AMC",
+   "market_cap": 3491936025.0,
+   "eps_est": "$0.49",
+   "bucket": "week",
    "trade_window": "upcoming",
-   "price": 122.12,
+   "price": 61.47,
+   "yahoo_date": "2026-07-07",
+   "date_mismatch": false,
    "front_exp": "2026-07-17",
-   "back_exp": "2026-09-18",
-   "atm_strike": 120.0,
-   "straddle_mid": 6.5,
-   "calendar_debit_est": 3.95,
-   "expected_move_pct": 5.32,
-   "ts_slope_0_45": -0.00448,
-   "iv30": 0.39,
-   "rv30": 0.4147,
-   "iv30_rv30": 0.94,
-   "avg_volume30": 201519,
-   "atm_spread_pct": 0.441,
+   "back_exp": "2026-08-21",
+   "atm_strike": 60.0,
+   "straddle_mid": 16.1,
+   "calendar_debit_est": 4.5,
+   "expected_move_pct": 26.19,
+   "ts_slope_0_45": -0.00702,
+   "iv30": 1.537,
+   "rv30": 1.3908,
+   "iv30_rv30": 1.105,
+   "avg_volume30": 3218270,
+   "atm_spread_pct": 0.0314,
    "term_structure": [
     {
      "exp": "2026-07-17",
-     "dte": 14,
-     "iv": 0.4617
+     "dte": 15,
+     "iv": 1.6423
     },
     {
-     "exp": "2026-09-18",
-     "dte": 77,
-     "iv": 0.1792
+     "exp": "2026-08-21",
+     "dte": 50,
+     "iv": 1.3966
     }
    ],
-   "hist_moves": null,
-   "richness": null,
+   "hist_moves": {
+    "avg_abs_move_pct": 15.22,
+    "n": 8,
+    "moves_pct": [
+     13.37,
+     13.78,
+     16.02,
+     10.57,
+     10.3,
+     7.95,
+     23.47,
+     26.27
+    ]
+   },
+   "richness": 1.72,
    "pass_slope": true,
+   "pass_ivrv": false,
+   "pass_volume": true,
+   "tier": "CONSIDER",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": true,
+    "price_ok": true,
+    "premium_rich": true,
+    "richness_known": true
+   },
+   "error": null
+  },
+  {
+   "ticker": "EPAC",
+   "name": "Enerpac Tool Group Corp.",
+   "date": "2026-07-07",
+   "when": "AMC",
+   "market_cap": 1800918325.0,
+   "eps_est": "$0.49",
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 34.87,
+   "yahoo_date": "2026-07-07",
+   "date_mismatch": false,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "atm_strike": 35.0,
+   "straddle_mid": 6.58,
+   "calendar_debit_est": 0.8,
+   "expected_move_pct": 18.86,
+   "ts_slope_0_45": -0.00543,
+   "iv30": 0.9064,
+   "rv30": 0.3176,
+   "iv30_rv30": 2.853,
+   "avg_volume30": 506610,
+   "atm_spread_pct": 0.3648,
+   "term_structure": [
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 0.9878
+    },
+    {
+     "exp": "2026-08-21",
+     "dte": 50,
+     "iv": 0.7979
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 4.99,
+    "n": 8,
+    "moves_pct": [
+     7.84,
+     8.79,
+     4.79,
+     5.91,
+     8.39,
+     2.83,
+     1.08,
+     0.31
+    ]
+   },
+   "richness": 3.78,
+   "pass_slope": true,
+   "pass_ivrv": true,
+   "pass_volume": false,
+   "tier": "CONSIDER",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": false,
+    "price_ok": true,
+    "premium_rich": true,
+    "richness_known": true
+   },
+   "error": null
+  },
+  {
+   "ticker": "LEVI",
+   "name": "Levi Strauss & Co.",
+   "date": "2026-07-08",
+   "when": "BMO",
+   "market_cap": 9422608150.0,
+   "eps_est": "$0.24",
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 24.41,
+   "yahoo_date": "2026-07-08",
+   "date_mismatch": false,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "atm_strike": 24.0,
+   "straddle_mid": 2.35,
+   "calendar_debit_est": 0.3,
+   "expected_move_pct": 9.63,
+   "ts_slope_0_45": -0.00385,
+   "iv30": 0.537,
+   "rv30": 0.375,
+   "iv30_rv30": 1.432,
+   "avg_volume30": 2440736,
+   "atm_spread_pct": 0.1306,
+   "term_structure": [
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 0.5947
+    },
+    {
+     "exp": "2026-08-21",
+     "dte": 50,
+     "iv": 0.46
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 7.31,
+    "n": 8,
+    "moves_pct": [
+     10.65,
+     3.67,
+     12.55,
+     11.25,
+     8.0,
+     4.2,
+     7.69,
+     0.47
+    ]
+   },
+   "richness": 1.32,
+   "pass_slope": false,
+   "pass_ivrv": true,
+   "pass_volume": true,
+   "tier": "AVOID",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": false,
+    "price_ok": true,
+    "premium_rich": true,
+    "richness_known": true
+   },
+   "error": null
+  },
+  {
+   "ticker": "PSMT",
+   "name": "PriceSmart, Inc.",
+   "date": "2026-07-08",
+   "when": "AMC",
+   "market_cap": 6033656210.0,
+   "eps_est": null,
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 197.9,
+   "yahoo_date": "2026-07-08",
+   "date_mismatch": false,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "atm_strike": 200.0,
+   "straddle_mid": 12.35,
+   "calendar_debit_est": 3.1,
+   "expected_move_pct": 6.24,
+   "ts_slope_0_45": null,
+   "iv30": 0.5443,
+   "rv30": 0.3426,
+   "iv30_rv30": 1.589,
+   "avg_volume30": 305505,
+   "atm_spread_pct": 0.2132,
+   "term_structure": [
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 0.5443
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 5.15,
+    "n": 8,
+    "moves_pct": [
+     3.94,
+     4.55,
+     6.48,
+     5.33,
+     6.96,
+     4.49,
+     6.98,
+     2.46
+    ]
+   },
+   "richness": 1.21,
+   "pass_slope": false,
+   "pass_ivrv": true,
+   "pass_volume": false,
+   "tier": "AVOID",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": false,
+    "price_ok": true,
+    "premium_rich": true,
+    "richness_known": true
+   },
+   "error": null
+  },
+  {
+   "ticker": "AZZ",
+   "name": "AZZ Inc.",
+   "date": "2026-07-08",
+   "when": "AMC",
+   "market_cap": 4499057228.0,
+   "eps_est": "$1.63",
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 150.01,
+   "yahoo_date": "2026-07-08",
+   "date_mismatch": false,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "atm_strike": 150.0,
+   "straddle_mid": 12.65,
+   "calendar_debit_est": 3.6,
+   "expected_move_pct": 8.43,
+   "ts_slope_0_45": -0.00224,
+   "iv30": 0.5376,
+   "rv30": 0.4375,
+   "iv30_rv30": 1.229,
+   "avg_volume30": 305578,
+   "atm_spread_pct": 0.2166,
+   "term_structure": [
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 0.5712
+    },
+    {
+     "exp": "2026-08-21",
+     "dte": 50,
+     "iv": 0.4928
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 5.4,
+    "n": 8,
+    "moves_pct": [
+     8.82,
+     6.56,
+     4.9,
+     5.52,
+     4.17,
+     1.92,
+     5.23,
+     6.06
+    ]
+   },
+   "richness": 1.56,
+   "pass_slope": false,
    "pass_ivrv": false,
    "pass_volume": false,
    "tier": "AVOID",
@@ -71,8 +342,1563 @@
     "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
-    "richness_known": false
+    "richness_known": true
    },
+   "error": null
+  },
+  {
+   "ticker": "NRIX",
+   "name": "Nurix Therapeutics, Inc.",
+   "date": "2026-07-08",
+   "when": "TNS",
+   "market_cap": 2472432989.0,
+   "eps_est": "($0.73)",
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 23.97,
+   "yahoo_date": "2026-07-09",
+   "date_mismatch": false,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "atm_strike": 24.0,
+   "straddle_mid": 5.22,
+   "calendar_debit_est": 1.05,
+   "expected_move_pct": 21.8,
+   "ts_slope_0_45": -0.00857,
+   "iv30": 1.2226,
+   "rv30": 0.9087,
+   "iv30_rv30": 1.345,
+   "avg_volume30": 3005568,
+   "atm_spread_pct": 0.8791,
+   "term_structure": [
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 1.3511
+    },
+    {
+     "exp": "2026-08-21",
+     "dte": 50,
+     "iv": 1.0513
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 6.69,
+    "n": 8,
+    "moves_pct": [
+     4.59,
+     7.93,
+     10.13,
+     7.94,
+     4.73,
+     1.26,
+     8.1,
+     8.84
+    ]
+   },
+   "richness": 3.26,
+   "pass_slope": true,
+   "pass_ivrv": true,
+   "pass_volume": true,
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": false,
+    "price_ok": true,
+    "premium_rich": true,
+    "richness_known": true
+   },
+   "error": null
+  },
+  {
+   "ticker": "PEP",
+   "name": "Pepsico, Inc.",
+   "date": "2026-07-09",
+   "when": "BMO",
+   "market_cap": 192933015345.0,
+   "eps_est": "$2.19",
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 144.22,
+   "yahoo_date": "2026-07-09",
+   "date_mismatch": false,
+   "front_exp": "2026-07-10",
+   "back_exp": "2026-08-07",
+   "atm_strike": 144.0,
+   "straddle_mid": 6.53,
+   "calendar_debit_est": 1.6,
+   "expected_move_pct": 4.53,
+   "ts_slope_0_45": -0.00381,
+   "iv30": 0.297,
+   "rv30": 0.2527,
+   "iv30_rv30": 1.176,
+   "avg_volume30": 9437371,
+   "atm_spread_pct": 0.0951,
+   "term_structure": [
+    {
+     "exp": "2026-07-10",
+     "dte": 8,
+     "iv": 0.4199
+    },
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 0.369
+    },
+    {
+     "exp": "2026-07-24",
+     "dte": 22,
+     "iv": 0.3206
+    },
+    {
+     "exp": "2026-07-31",
+     "dte": 29,
+     "iv": 0.2946
+    },
+    {
+     "exp": "2026-08-07",
+     "dte": 36,
+     "iv": 0.3115
+    },
+    {
+     "exp": "2026-08-21",
+     "dte": 50,
+     "iv": 0.2608
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 3.96,
+    "n": 8,
+    "moves_pct": [
+     2.28,
+     4.93,
+     4.23,
+     7.45,
+     4.89,
+     4.51,
+     1.92,
+     1.48
+    ]
+   },
+   "richness": 1.14,
+   "pass_slope": false,
+   "pass_ivrv": false,
+   "pass_volume": true,
+   "tier": "AVOID",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": true,
+    "price_ok": true,
+    "premium_rich": false,
+    "richness_known": true
+   },
+   "error": null
+  },
+  {
+   "ticker": "WDFC",
+   "name": "WD-40 Company",
+   "date": "2026-07-09",
+   "when": "AMC",
+   "market_cap": 3248537705.0,
+   "eps_est": "$1.58",
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 245.83,
+   "yahoo_date": "2026-07-09",
+   "date_mismatch": false,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "atm_strike": 250.0,
+   "straddle_mid": 16.25,
+   "calendar_debit_est": 2.85,
+   "expected_move_pct": 6.61,
+   "ts_slope_0_45": -0.01503,
+   "iv30": 0.5084,
+   "rv30": 0.3385,
+   "iv30_rv30": 1.502,
+   "avg_volume30": 163447,
+   "atm_spread_pct": 0.2029,
+   "term_structure": [
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 0.734
+    },
+    {
+     "exp": "2026-08-21",
+     "dte": 50,
+     "iv": 0.2077
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 4.8,
+    "n": 8,
+    "moves_pct": [
+     4.04,
+     6.63,
+     2.77,
+     2.1,
+     8.17,
+     5.85,
+     4.79,
+     4.04
+    ]
+   },
+   "richness": 1.38,
+   "pass_slope": true,
+   "pass_ivrv": true,
+   "pass_volume": false,
+   "tier": "CONSIDER",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": false,
+    "price_ok": true,
+    "premium_rich": true,
+    "richness_known": true
+   },
+   "error": null
+  },
+  {
+   "ticker": "SMPL",
+   "name": "The Simply Good Foods Company",
+   "date": "2026-07-09",
+   "when": "BMO",
+   "market_cap": 1221601824.0,
+   "eps_est": "$0.33",
+   "bucket": "week",
+   "trade_window": "upcoming",
+   "price": 13.73,
+   "yahoo_date": "2026-07-09",
+   "date_mismatch": false,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "atm_strike": 12.5,
+   "straddle_mid": 2.35,
+   "calendar_debit_est": 0.38,
+   "expected_move_pct": 17.12,
+   "ts_slope_0_45": -0.00862,
+   "iv30": 0.8717,
+   "rv30": 0.4456,
+   "iv30_rv30": 1.956,
+   "avg_volume30": 2232300,
+   "atm_spread_pct": 0.4094,
+   "term_structure": [
+    {
+     "exp": "2026-07-17",
+     "dte": 15,
+     "iv": 1.001
+    },
+    {
+     "exp": "2026-08-21",
+     "dte": 50,
+     "iv": 0.6992
+    }
+   ],
+   "hist_moves": {
+    "avg_abs_move_pct": 7.68,
+    "n": 8,
+    "moves_pct": [
+     18.11,
+     6.61,
+     17.35,
+     1.8,
+     9.16,
+     4.13,
+     3.35,
+     0.98
+    ]
+   },
+   "richness": 2.23,
+   "pass_slope": true,
+   "pass_ivrv": true,
+   "pass_volume": true,
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "enhanced": {
+    "tight_spread": false,
+    "price_ok": false,
+    "premium_rich": true,
+    "richness_known": true
+   },
+   "error": null
+  }
+ ],
+ "watchlist": [
+  {
+   "ticker": "GOOG",
+   "name": "Alphabet Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 4376420360000.0,
+   "eps_est": "$2.86",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 356.18,
+   "avg_volume30": 25344767,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 4.1,
+    "n": 8,
+    "moves_pct": [
+     9.97,
+     2.16,
+     2.51,
+     0.88,
+     2.38,
+     6.94,
+     2.92,
+     5.03
+    ]
+   },
+   "yahoo_date": "2026-07-23",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "GOOGL",
+   "name": "Alphabet Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 4376420360000.0,
+   "eps_est": "$2.86",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 359.91,
+   "avg_volume30": 36567675,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 4.16,
+    "n": 8,
+    "moves_pct": [
+     9.96,
+     1.96,
+     2.65,
+     1.02,
+     2.53,
+     7.29,
+     2.82,
+     5.04
+    ]
+   },
+   "yahoo_date": "2026-07-23",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "AAPL",
+   "name": "Apple Inc.",
+   "date": "2026-07-30",
+   "when": "TNS",
+   "market_cap": 4323663859280.0,
+   "eps_est": "$1.88",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 308.63,
+   "avg_volume30": 62159290,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 1.88,
+    "n": 8,
+    "moves_pct": [
+     3.24,
+     0.72,
+     0.63,
+     2.5,
+     3.74,
+     0.74,
+     1.82,
+     1.68
+    ]
+   },
+   "yahoo_date": "2026-07-30",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "MSFT",
+   "name": "Microsoft Corporation",
+   "date": "2026-07-29",
+   "when": "TNS",
+   "market_cap": 2854598888053.0,
+   "eps_est": "$4.21",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 390.49,
+   "avg_volume30": 45814083,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 5.22,
+    "n": 8,
+    "moves_pct": [
+     3.93,
+     9.99,
+     2.92,
+     3.95,
+     7.63,
+     6.18,
+     6.05,
+     1.08
+    ]
+   },
+   "yahoo_date": "2026-07-29",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "AMZN",
+   "name": "Amazon.com, Inc.",
+   "date": "2026-07-30",
+   "when": "TNS",
+   "market_cap": 2599993350681.0,
+   "eps_est": "$1.82",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 242.67,
+   "avg_volume30": 56164411,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 5.86,
+    "n": 8,
+    "moves_pct": [
+     1.29,
+     5.55,
+     9.58,
+     8.27,
+     3.13,
+     4.05,
+     6.19,
+     8.78
+    ]
+   },
+   "yahoo_date": "2026-07-30",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "TSM",
+   "name": "Taiwan Semiconductor Manufacturing Company Ltd.",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 2304001073504.0,
+   "eps_est": "$3.77",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 434.16,
+   "avg_volume30": 13748008,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 4.21,
+    "n": 8,
+    "moves_pct": [
+     3.13,
+     4.44,
+     2.96,
+     3.38,
+     2.56,
+     3.86,
+     9.79,
+     3.55
+    ]
+   },
+   "yahoo_date": "2026-07-16",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "TSLA",
+   "name": "Tesla, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1597309362336.0,
+   "eps_est": "$0.27",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 393.45,
+   "avg_volume30": 47213601,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 7.5,
+    "n": 8,
+    "moves_pct": [
+     3.56,
+     3.45,
+     2.28,
+     8.2,
+     5.37,
+     2.87,
+     21.92,
+     12.33
+    ]
+   },
+   "yahoo_date": "2026-07-22",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "META",
+   "name": "Meta Platforms, Inc.",
+   "date": "2026-07-29",
+   "when": "TNS",
+   "market_cap": 1555825027255.0,
+   "eps_est": "$7.09",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 582.9,
+   "avg_volume30": 19068358,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 7.03,
+    "n": 8,
+    "moves_pct": [
+     8.55,
+     10.4,
+     11.33,
+     11.25,
+     4.23,
+     1.55,
+     4.09,
+     4.82
+    ]
+   },
+   "yahoo_date": "2026-07-29",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "JPM",
+   "name": "J P Morgan Chase & Co",
+   "date": "2026-07-14",
+   "when": "BMO",
+   "market_cap": 895144379411.0,
+   "eps_est": "$5.49",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 334.47,
+   "avg_volume30": 9737556,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.68,
+    "n": 8,
+    "moves_pct": [
+     1.67,
+     4.19,
+     1.91,
+     0.74,
+     4.0,
+     1.97,
+     4.44,
+     2.49
+    ]
+   },
+   "yahoo_date": "2026-07-14",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "ASML",
+   "name": "ASML Holding N.V.",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 710340173302.0,
+   "eps_est": "$7.98",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 1769.32,
+   "avg_volume30": 2078188,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 7.09,
+    "n": 8,
+    "moves_pct": [
+     2.41,
+     2.92,
+     2.71,
+     8.33,
+     7.06,
+     4.29,
+     16.26,
+     12.74
+    ]
+   },
+   "yahoo_date": "2026-07-15",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "INTC",
+   "name": "Intel Corporation",
+   "date": "2026-07-23",
+   "when": "AMC",
+   "market_cap": 638402520000.0,
+   "eps_est": "$0.10",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 120.35,
+   "avg_volume30": 127833143,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 12.0,
+    "n": 8,
+    "moves_pct": [
+     23.6,
+     17.03,
+     3.36,
+     8.53,
+     6.7,
+     2.9,
+     7.81,
+     26.06
+    ]
+   },
+   "yahoo_date": "2026-07-23",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "JNJ",
+   "name": "Johnson & Johnson",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 611384966295.0,
+   "eps_est": "$2.83",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 263.04,
+   "avg_volume30": 8488084,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 1.89,
+    "n": 8,
+    "moves_pct": [
+     0.9,
+     0.22,
+     0.17,
+     6.19,
+     0.48,
+     1.94,
+     1.55,
+     3.69
+    ]
+   },
+   "yahoo_date": "2026-07-15",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "AZN",
+   "name": "AstraZeneca PLC",
+   "date": "2026-07-27",
+   "when": "BMO",
+   "market_cap": 579426534428.0,
+   "eps_est": "$2.52",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 195.15,
+   "avg_volume30": 2033581,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 1.91,
+    "n": 8,
+    "moves_pct": [
+     1.17,
+     3.23,
+     3.53,
+     2.55,
+     2.0,
+     0.62,
+     1.49,
+     0.7
+    ]
+   },
+   "yahoo_date": "2026-07-27",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "LRCX",
+   "name": "Lam Research Corporation",
+   "date": "2026-07-29",
+   "when": "TNS",
+   "market_cap": 489298409460.0,
+   "eps_est": "$1.68",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 351.41,
+   "avg_volume30": 12716557,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 5.47,
+    "n": 8,
+    "moves_pct": [
+     2.78,
+     3.59,
+     4.45,
+     4.29,
+     6.25,
+     7.43,
+     5.09,
+     9.87
+    ]
+   },
+   "yahoo_date": "2026-07-29",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "MA",
+   "name": "Mastercard Incorporated",
+   "date": "2026-07-30",
+   "when": "TNS",
+   "market_cap": 461619549206.0,
+   "eps_est": "$4.75",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 539.39,
+   "avg_volume30": 4052990,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.75,
+    "n": 8,
+    "moves_pct": [
+     4.25,
+     4.29,
+     0.31,
+     1.32,
+     2.33,
+     3.14,
+     2.74,
+     3.63
+    ]
+   },
+   "yahoo_date": "2026-07-30",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "ABBV",
+   "name": "AbbVie Inc.",
+   "date": "2026-07-31",
+   "when": "BMO",
+   "market_cap": 443571005640.0,
+   "eps_est": "$3.79",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 261.07,
+   "avg_volume30": 7686072,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 4.12,
+    "n": 8,
+    "moves_pct": [
+     3.64,
+     3.79,
+     4.45,
+     3.28,
+     3.38,
+     4.7,
+     6.36,
+     3.38
+    ]
+   },
+   "yahoo_date": "2026-07-31",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "BAC",
+   "name": "Bank of America Corporation",
+   "date": "2026-07-14",
+   "when": "BMO",
+   "market_cap": 414157030392.0,
+   "eps_est": "$1.11",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 58.73,
+   "avg_volume30": 38377940,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.95,
+    "n": 8,
+    "moves_pct": [
+     1.82,
+     3.78,
+     4.37,
+     2.15,
+     3.6,
+     0.98,
+     1.57,
+     5.35
+    ]
+   },
+   "yahoo_date": "2026-07-14",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "GE",
+   "name": "GE Aerospace",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 391188862891.0,
+   "eps_est": "$1.86",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 377.52,
+   "avg_volume30": 5145841,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 5.68,
+    "n": 8,
+    "moves_pct": [
+     5.56,
+     7.38,
+     2.85,
+     2.22,
+     6.07,
+     6.6,
+     9.05,
+     5.68
+    ]
+   },
+   "yahoo_date": "2026-07-16",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "UNH",
+   "name": "UnitedHealth Group Incorporated",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 387359914082.0,
+   "eps_est": "$4.84",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 425.36,
+   "avg_volume30": 6798602,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 10.06,
+    "n": 8,
+    "moves_pct": [
+     6.96,
+     19.61,
+     3.42,
+     7.46,
+     22.38,
+     6.04,
+     8.11,
+     6.5
+    ]
+   },
+   "yahoo_date": "2026-07-16",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "ARM",
+   "name": "Arm Holdings plc",
+   "date": "2026-07-29",
+   "when": "TNS",
+   "market_cap": 359086725892.0,
+   "eps_est": "$0.18",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 315.28,
+   "avg_volume30": 12459506,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 8.35,
+    "n": 8,
+    "moves_pct": [
+     13.63,
+     5.7,
+     1.21,
+     13.44,
+     6.18,
+     6.82,
+     4.13,
+     15.72
+    ]
+   },
+   "yahoo_date": "2026-07-29",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "KO",
+   "name": "Coca-Cola Company (The)",
+   "date": "2026-07-28",
+   "when": "BMO",
+   "market_cap": 349884587371.0,
+   "eps_est": "$0.92",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 84.14,
+   "avg_volume30": 19217499,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.48,
+    "n": 8,
+    "moves_pct": [
+     3.86,
+     2.33,
+     4.06,
+     0.72,
+     0.78,
+     4.73,
+     2.07,
+     1.31
+    ]
+   },
+   "yahoo_date": "2026-07-28",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "KLAC",
+   "name": "KLA Corporation",
+   "date": "2026-07-30",
+   "when": "TNS",
+   "market_cap": 347717398150.0,
+   "eps_est": "$1",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 235.55,
+   "avg_volume30": 14065495,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 5.53,
+    "n": 8,
+    "moves_pct": [
+     3.63,
+     15.24,
+     2.42,
+     4.97,
+     3.75,
+     4.13,
+     3.7,
+     6.42
+    ]
+   },
+   "yahoo_date": "2026-07-28",
+   "date_mismatch": true,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "PG",
+   "name": "Procter & Gamble Company (The)",
+   "date": "2026-07-29",
+   "when": "BMO",
+   "market_cap": 343305347327.0,
+   "eps_est": "$1.43",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 151.41,
+   "avg_volume30": 9226281,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.48,
+    "n": 8,
+    "moves_pct": [
+     2.46,
+     2.65,
+     0.88,
+     2.38,
+     3.74,
+     1.87,
+     1.02,
+     4.84
+    ]
+   },
+   "yahoo_date": "2026-07-29",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "MS",
+   "name": "Morgan Stanley",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 334163561330.0,
+   "eps_est": "$2.78",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 213.93,
+   "avg_volume30": 6254148,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 3.64,
+    "n": 8,
+    "moves_pct": [
+     4.52,
+     5.78,
+     4.71,
+     1.27,
+     1.44,
+     4.03,
+     6.5,
+     0.91
+    ]
+   },
+   "yahoo_date": "2026-07-15",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "HSBC",
+   "name": "HSBC Holdings plc",
+   "date": "2026-07-29",
+   "when": "TNS",
+   "market_cap": 325766492360.0,
+   "eps_est": "$2.25",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 96.78,
+   "avg_volume30": 1665021,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 3.14,
+    "n": 5,
+    "moves_pct": [
+     3.03,
+     7.19,
+     3.25,
+     1.12,
+     1.12
+    ]
+   },
+   "yahoo_date": "2026-08-04",
+   "date_mismatch": true,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "NFLX",
+   "name": "Netflix, Inc.",
+   "date": "2026-07-16",
+   "when": "AMC",
+   "market_cap": 312399142792.0,
+   "eps_est": "$0.79",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 77.65,
+   "avg_volume30": 43447147,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 6.36,
+    "n": 8,
+    "moves_pct": [
+     9.72,
+     2.18,
+     10.07,
+     5.1,
+     1.53,
+     9.69,
+     11.09,
+     1.51
+    ]
+   },
+   "yahoo_date": "2026-07-16",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "GEV",
+   "name": "GE Vernova Inc.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 304822526328.0,
+   "eps_est": "$3.23",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 1113.11,
+   "avg_volume30": 3028535,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 6.86,
+    "n": 8,
+    "moves_pct": [
+     13.75,
+     2.73,
+     3.32,
+     14.58,
+     7.26,
+     2.67,
+     6.12,
+     4.45
+    ]
+   },
+   "yahoo_date": "2026-07-22",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "GS",
+   "name": "Goldman Sachs Group, Inc. (The)",
+   "date": "2026-07-14",
+   "when": "BMO",
+   "market_cap": 300792516526.0,
+   "eps_est": "$14.01",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 1021.0,
+   "avg_volume30": 2402366,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.7,
+    "n": 8,
+    "moves_pct": [
+     2.11,
+     4.63,
+     2.04,
+     0.9,
+     1.93,
+     6.02,
+     1.43,
+     2.57
+    ]
+   },
+   "yahoo_date": "2026-07-14",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "NVS",
+   "name": "Novartis AG",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 294122499801.0,
+   "eps_est": "$2.20",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 159.9,
+   "avg_volume30": 2086105,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.7,
+    "n": 8,
+    "moves_pct": [
+     0.91,
+     2.04,
+     4.42,
+     3.25,
+     0.73,
+     1.77,
+     4.41,
+     4.1
+    ]
+   },
+   "yahoo_date": "2026-07-21",
+   "date_mismatch": true,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "PM",
+   "name": "Philip Morris International Inc",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 276940321346.0,
+   "eps_est": "$2.03",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 182.27,
+   "avg_volume30": 5002327,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 5.73,
+    "n": 8,
+    "moves_pct": [
+     6.98,
+     0.54,
+     3.83,
+     8.43,
+     2.44,
+     10.95,
+     10.47,
+     2.18
+    ]
+   },
+   "yahoo_date": "2026-07-22",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "TXN",
+   "name": "Texas Instruments Incorporated",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 271580789762.0,
+   "eps_est": "$1.90",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 293.08,
+   "avg_volume30": 9947726,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 8.76,
+    "n": 8,
+    "moves_pct": [
+     19.43,
+     9.94,
+     5.6,
+     13.34,
+     6.56,
+     7.52,
+     4.01,
+     3.69
+    ]
+   },
+   "yahoo_date": "2026-07-22",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "IBM",
+   "name": "International Business Machines Corporation",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 269042161400.0,
+   "eps_est": "$3.02",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 289.52,
+   "avg_volume30": 11382766,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 6.62,
+    "n": 8,
+    "moves_pct": [
+     8.25,
+     5.13,
+     1.94,
+     7.62,
+     6.58,
+     12.96,
+     6.17,
+     4.33
+    ]
+   },
+   "yahoo_date": "2026-07-22",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "WFC",
+   "name": "Wells Fargo & Company",
+   "date": "2026-07-14",
+   "when": "BMO",
+   "market_cap": 262992685114.0,
+   "eps_est": "$1.73",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 85.51,
+   "avg_volume30": 15626260,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 5.27,
+    "n": 8,
+    "moves_pct": [
+     5.7,
+     4.61,
+     7.15,
+     5.48,
+     0.95,
+     6.69,
+     5.61,
+     6.02
+    ]
+   },
+   "yahoo_date": "2026-07-14",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "RTX",
+   "name": "RTX Corporation",
+   "date": "2026-07-23",
+   "when": "BMO",
+   "market_cap": 258266947822.0,
+   "eps_est": "$1.66",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 199.25,
+   "avg_volume30": 5409631,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 5.34,
+    "n": 8,
+    "moves_pct": [
+     4.4,
+     3.68,
+     7.67,
+     4.91,
+     9.81,
+     2.64,
+     1.34,
+     8.24
+    ]
+   },
+   "yahoo_date": "2026-07-23",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "LIN",
+   "name": "Linde plc",
+   "date": "2026-07-31",
+   "when": "BMO",
+   "market_cap": 246819984033.0,
+   "eps_est": "$4.48",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 546.64,
+   "avg_volume30": 2539667,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.4,
+    "n": 8,
+    "moves_pct": [
+     2.83,
+     2.88,
+     2.7,
+     1.74,
+     1.54,
+     1.54,
+     3.64,
+     2.31
+    ]
+   },
+   "yahoo_date": "2026-07-31",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "C",
+   "name": "Citigroup Inc.",
+   "date": "2026-07-14",
+   "when": "BMO",
+   "market_cap": 239002498704.0,
+   "eps_est": "$2.65",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 139.97,
+   "avg_volume30": 12718169,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 3.94,
+    "n": 8,
+    "moves_pct": [
+     2.61,
+     4.49,
+     3.89,
+     3.68,
+     3.47,
+     6.49,
+     5.11,
+     1.81
+    ]
+   },
+   "yahoo_date": "2026-07-14",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "AXP",
+   "name": "American Express Company",
+   "date": "2026-07-24",
+   "when": "BMO",
+   "market_cap": 237449602164.0,
+   "eps_est": "$4.39",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 351.96,
+   "avg_volume30": 3126166,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 3.33,
+    "n": 8,
+    "moves_pct": [
+     4.31,
+     1.77,
+     7.27,
+     2.35,
+     3.5,
+     1.53,
+     3.15,
+     2.74
+    ]
+   },
+   "yahoo_date": "2026-07-24",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "SAN",
+   "name": "Banco Santander, S.A.",
+   "date": "2026-07-29",
+   "when": "TNS",
+   "market_cap": 229200730706.0,
+   "eps_est": null,
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 13.95,
+   "avg_volume30": 9271115,
+   "pass_volume": true,
+   "price_ok": false,
+   "hist_moves": {
+    "avg_abs_move_pct": 3.2,
+    "n": 8,
+    "moves_pct": [
+     0.75,
+     2.88,
+     2.45,
+     3.79,
+     9.55,
+     2.8,
+     2.77,
+     0.63
+    ]
+   },
+   "yahoo_date": "2026-07-22",
+   "date_mismatch": true,
+   "likelihood": "LOW",
+   "error": null
+  },
+  {
+   "ticker": "SHEL",
+   "name": "Shell PLC",
+   "date": "2026-07-30",
+   "when": "TNS",
+   "market_cap": 221121158130.0,
+   "eps_est": "$2.51",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 78.02,
+   "avg_volume30": 6746462,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 2.61,
+    "n": 8,
+    "moves_pct": [
+     3.39,
+     5.28,
+     1.09,
+     0.68,
+     2.84,
+     2.89,
+     3.0,
+     1.73
+    ]
+   },
+   "yahoo_date": "2026-07-30",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
+   "error": null
+  },
+  {
+   "ticker": "APH",
+   "name": "Amphenol Corporation",
+   "date": "2026-07-29",
+   "when": "BMO",
+   "market_cap": 211870976118.0,
+   "eps_est": "$1.16",
+   "bucket": "watch",
+   "trade_window": "upcoming",
+   "price": 164.59,
+   "avg_volume30": 10289812,
+   "pass_volume": true,
+   "price_ok": true,
+   "hist_moves": {
+    "avg_abs_move_pct": 6.03,
+    "n": 8,
+    "moves_pct": [
+     3.24,
+     12.2,
+     4.95,
+     3.72,
+     8.21,
+     7.04,
+     2.42,
+     6.44
+    ]
+   },
+   "yahoo_date": "2026-07-29",
+   "date_mismatch": false,
+   "likelihood": "HIGH",
    "error": null
   }
  ],
@@ -83,7 +1909,7 @@
    "date": "2026-07-02",
    "when": "TNS",
    "market_cap": 23163836.0,
-   "trade_window": "today"
+   "bucket": "now"
   },
   {
    "ticker": "AUC",
@@ -91,7 +1917,2391 @@
    "date": "2026-07-03",
    "when": "TNS",
    "market_cap": 83847722.0,
-   "trade_window": "upcoming"
+   "bucket": "week"
+  },
+  {
+   "ticker": "KRUS",
+   "name": "Kura Sushi USA, Inc.",
+   "date": "2026-07-07",
+   "when": "AMC",
+   "market_cap": 704820114.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "SAR",
+   "name": "Saratoga Investment Corp",
+   "date": "2026-07-07",
+   "when": "AMC",
+   "market_cap": 366675040.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "HELE",
+   "name": "Helen of Troy Limited",
+   "date": "2026-07-08",
+   "when": "BMO",
+   "market_cap": 683389070.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "PCYO",
+   "name": "Pure Cycle Corporation",
+   "date": "2026-07-08",
+   "when": "AMC",
+   "market_cap": 265142988.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "FEIM",
+   "name": "Frequency Electronics, Inc.",
+   "date": "2026-07-09",
+   "when": "TNS",
+   "market_cap": 647500377.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "TMQ",
+   "name": "Trilogy Metals Inc.",
+   "date": "2026-07-09",
+   "when": "TNS",
+   "market_cap": 588380629.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "BYRN",
+   "name": "Byrna Technologies, Inc.",
+   "date": "2026-07-09",
+   "when": "BMO",
+   "market_cap": 154262447.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "SOTK",
+   "name": "Sono-Tek Corporation",
+   "date": "2026-07-09",
+   "when": "TNS",
+   "market_cap": 92396832.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "NTIC",
+   "name": "Northern Technologies International Corporation",
+   "date": "2026-07-09",
+   "when": "TNS",
+   "market_cap": 83434689.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "ARTW",
+   "name": "Art's-Way Manufacturing Co., Inc.",
+   "date": "2026-07-09",
+   "when": "TNS",
+   "market_cap": 13471604.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "EDUC",
+   "name": "Educational Development Corporation",
+   "date": "2026-07-09",
+   "when": "AMC",
+   "market_cap": 13107501.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "DAL",
+   "name": "Delta Air Lines, Inc.",
+   "date": "2026-07-10",
+   "when": "BMO",
+   "market_cap": 61139893280.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NB",
+   "name": "NioCorp Developments Ltd.",
+   "date": "2026-07-10",
+   "when": "TNS",
+   "market_cap": 701729571.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HIFS",
+   "name": "Hingham Institution for Savings",
+   "date": "2026-07-10",
+   "when": "TNS",
+   "market_cap": 675872676.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PLG",
+   "name": "Platinum Group Metals Ltd.",
+   "date": "2026-07-10",
+   "when": "TNS",
+   "market_cap": 171394157.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "LEDS",
+   "name": "SemiLEDS Corporation",
+   "date": "2026-07-10",
+   "when": "TNS",
+   "market_cap": 13955434.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "VMAR",
+   "name": "Vision Marine Technologies Inc.",
+   "date": "2026-07-10",
+   "when": "TNS",
+   "market_cap": 1148739.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FBK",
+   "name": "FB Financial Corporation",
+   "date": "2026-07-13",
+   "when": "AMC",
+   "market_cap": 2914167011.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "AERO",
+   "name": "Grupo Aeromexico, S.A.B. de C.V.",
+   "date": "2026-07-13",
+   "when": "AMC",
+   "market_cap": 2569359032.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SLP",
+   "name": "Simulations Plus, Inc.",
+   "date": "2026-07-13",
+   "when": "TNS",
+   "market_cap": 370770595.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TRX",
+   "name": "TRX Gold Corporation",
+   "date": "2026-07-13",
+   "when": "TNS",
+   "market_cap": 279880919.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GLDG",
+   "name": "GoldMining Inc.",
+   "date": "2026-07-13",
+   "when": "TNS",
+   "market_cap": 192801529.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PAPL",
+   "name": "Pineapple Financial Inc.",
+   "date": "2026-07-13",
+   "when": "TNS",
+   "market_cap": 26610424.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "LEXX",
+   "name": "Lexaria Bioscience Corp.",
+   "date": "2026-07-13",
+   "when": "TNS",
+   "market_cap": 14178419.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "JCTC",
+   "name": "Jewett-Cameron Trading Company",
+   "date": "2026-07-13",
+   "when": "TNS",
+   "market_cap": 8765081.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FAST",
+   "name": "Fastenal Company",
+   "date": "2026-07-14",
+   "when": "BMO",
+   "market_cap": 54818674163.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ERIC",
+   "name": "Ericsson",
+   "date": "2026-07-14",
+   "when": "BMO",
+   "market_cap": 36646593359.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "AEHR",
+   "name": "Aehr Test Systems",
+   "date": "2026-07-14",
+   "when": "TNS",
+   "market_cap": 2710385097.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "KMTS",
+   "name": "Kestra Medical Technologies, Ltd.",
+   "date": "2026-07-14",
+   "when": "AMC",
+   "market_cap": 1534051717.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PXED",
+   "name": "Phoenix Education Partners, Inc.",
+   "date": "2026-07-14",
+   "when": "AMC",
+   "market_cap": 1228316511.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "EQBK",
+   "name": "Equity Bancshares, Inc.",
+   "date": "2026-07-14",
+   "when": "AMC",
+   "market_cap": 1036167056.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ANGO",
+   "name": "AngioDynamics, Inc.",
+   "date": "2026-07-14",
+   "when": "BMO",
+   "market_cap": 540451408.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BLK",
+   "name": "BlackRock, Inc.",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 152188298136.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PGR",
+   "name": "Progressive Corporation (The)",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 131651005339.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PNC",
+   "name": "PNC Financial Services Group, Inc. (The)",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 101041692704.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BNY",
+   "name": "The Bank Of New York Mellon Corporation",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 100225068151.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "KMI",
+   "name": "Kinder Morgan, Inc.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 70571473012.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CTAS",
+   "name": "Cintas Corporation",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 69715848777.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "UAL",
+   "name": "United Airlines Holdings, Inc.",
+   "date": "2026-07-15",
+   "when": "AMC",
+   "market_cap": 43859242475.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MTB",
+   "name": "M&T Bank Corporation",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 35432382267.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FHN",
+   "name": "First Horizon Corporation",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 12363794029.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FR",
+   "name": "First Industrial Realty Trust, Inc.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 8167663823.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CAG",
+   "name": "ConAgra Brands, Inc.",
+   "date": "2026-07-15",
+   "when": "BMO",
+   "market_cap": 6841651331.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HOMB",
+   "name": "Home BancShares, Inc.",
+   "date": "2026-07-15",
+   "when": "AMC",
+   "market_cap": 5820847925.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "AIR",
+   "name": "AAR Corp.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 5676746900.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MCRI",
+   "name": "Monarch Casino & Resort, Inc.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 2309034536.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TFIN",
+   "name": "Triumph Financial, Inc.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 1888073925.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MRTN",
+   "name": "Marten Transport, Ltd.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 1423730406.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CTBI",
+   "name": "Community Trust Bancorp, Inc.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 1345386814.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GSBC",
+   "name": "Great Southern Bancorp, Inc.",
+   "date": "2026-07-15",
+   "when": "AMC",
+   "market_cap": 884092355.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SPFI",
+   "name": "South Plains Financial, Inc.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 840115686.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PLBC",
+   "name": "Plumas Bancorp",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 416624851.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "UROY",
+   "name": "Uranium Royalty Corp.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 406227096.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PKBK",
+   "name": "Parke Bancorp, Inc.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 397209967.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "UNB",
+   "name": "Union Bankshares, Inc.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 113874803.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MMLP",
+   "name": "Martin Midstream Partners L.P.",
+   "date": "2026-07-15",
+   "when": "TNS",
+   "market_cap": 90769272.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ABT",
+   "name": "Abbott Laboratories",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 160560269705.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PLD",
+   "name": "Prologis, Inc.",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 127543838400.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "USB",
+   "name": "U.S. Bancorp",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 96108088718.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ELV",
+   "name": "Elevance Health, Inc.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 90380810932.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "STT",
+   "name": "State Street Corporation",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 46959062489.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CFG",
+   "name": "Citizens Financial Group, Inc.",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 30371381074.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SNA",
+   "name": "Snap-On Incorporated",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 20890676684.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WIT",
+   "name": "Wipro Limited",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 19613331296.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "AA",
+   "name": "Alcoa Corporation",
+   "date": "2026-07-16",
+   "when": "AMC",
+   "market_cap": 12529491265.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WBS",
+   "name": "Webster Financial Corporation",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 12416090542.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WAL",
+   "name": "Western Alliance Bancorporation",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 9115885706.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CBSH",
+   "name": "Commerce Bancshares, Inc.",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 8562950261.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FNB",
+   "name": "F.N.B. Corporation",
+   "date": "2026-07-16",
+   "when": "AMC",
+   "market_cap": 6916379529.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "VIST",
+   "name": "Vista Energy S.A.B. de C.V.",
+   "date": "2026-07-16",
+   "when": "AMC",
+   "market_cap": 6538548381.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FFIN",
+   "name": "First Financial Bankshares, Inc.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 5079344419.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TCBI",
+   "name": "Texas Capital Bancshares, Inc.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 4565359963.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "INDB",
+   "name": "Independent Bank Corp.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 4107804350.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CNS",
+   "name": "Cohen & Steers Inc",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 3978402496.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BANF",
+   "name": "BancFirst Corporation",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 3853702044.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SFNC",
+   "name": "Simmons First National Corporation",
+   "date": "2026-07-16",
+   "when": "AMC",
+   "market_cap": 3368390933.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WAFD",
+   "name": "WaFd, Inc.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 2884606259.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MAN",
+   "name": "ManpowerGroup",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 1726817608.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WABC",
+   "name": "Westamerica Bancorporation",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 1411156336.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MCB",
+   "name": "Metropolitan Bank Holding Corp.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 1246544734.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "VZLA",
+   "name": "Vizsla Silver Corp.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 1146353474.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CWBC",
+   "name": "Community West Bancshares",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 745105297.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CASS",
+   "name": "Cass Information Systems, Inc",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 674190785.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "IIIN",
+   "name": "Insteel Industries, Inc.",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 589604714.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BSVN",
+   "name": "Bank7 Corp.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 477109070.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BCML",
+   "name": "BayCom Corp",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 369171287.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CHMG",
+   "name": "Chemung Financial Corp",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 367655870.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BVFL",
+   "name": "BV Financial, Inc.",
+   "date": "2026-07-16",
+   "when": "TNS",
+   "market_cap": 185402189.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HOVR",
+   "name": "New Horizon Aircraft Ltd.",
+   "date": "2026-07-16",
+   "when": "BMO",
+   "market_cap": 112190799.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HDB",
+   "name": "HDFC Bank Limited",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 130765577254.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "IBN",
+   "name": "ICICI Bank Limited",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 103358289831.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MMM",
+   "name": "3M Company",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 83429899070.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TRV",
+   "name": "The Travelers Companies, Inc.",
+   "date": "2026-07-17",
+   "when": "BMO",
+   "market_cap": 71155167172.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TFC",
+   "name": "Truist Financial Corporation",
+   "date": "2026-07-17",
+   "when": "BMO",
+   "market_cap": 63402796305.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FITB",
+   "name": "Fifth Third Bancorp",
+   "date": "2026-07-17",
+   "when": "BMO",
+   "market_cap": 52103850895.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RF",
+   "name": "Regions Financial Corporation",
+   "date": "2026-07-17",
+   "when": "BMO",
+   "market_cap": 26284089770.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ALV",
+   "name": "Autoliv, Inc.",
+   "date": "2026-07-17",
+   "when": "BMO",
+   "market_cap": 8485010729.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RBCAA",
+   "name": "Republic Bancorp, Inc.",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 1820721521.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BFC",
+   "name": "Bank First Corporation",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 1707853225.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SIFY",
+   "name": "Sify Technologies Limited",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 1203138955.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MCBS",
+   "name": "MetroCity Bankshares, Inc.",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 1057268949.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OVLY",
+   "name": "Oak Valley Bancorp (CA)",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 290096032.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "DIT",
+   "name": "AMCON Distributing Company",
+   "date": "2026-07-17",
+   "when": "TNS",
+   "market_cap": 71572133.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "STLD",
+   "name": "Steel Dynamics, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 31980626315.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RYAAY",
+   "name": "Ryanair Holdings plc",
+   "date": "2026-07-20",
+   "when": "BMO",
+   "market_cap": 30174496126.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WRB",
+   "name": "W.R. Berkley Corporation",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 26305073883.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PAC",
+   "name": "Grupo Aeroportuario Del Pacifico, S.A. de C.V.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 12754213645.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ELS",
+   "name": "Equity Lifestyle Properties, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 12607880321.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CCK",
+   "name": "Crown Holdings, Inc.",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 12445220735.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "AGNC",
+   "name": "AGNC Investment Corp.",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 12386156845.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WTFC",
+   "name": "Wintrust Financial Corporation",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 10979820199.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ZION",
+   "name": "Zions Bancorporation N.A.",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 10399391462.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "DPZ",
+   "name": "Domino's Pizza Inc",
+   "date": "2026-07-20",
+   "when": "BMO",
+   "market_cap": 10117595617.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BOKF",
+   "name": "BOK Financial Corporation",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 8581892114.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RLI",
+   "name": "RLI Corp.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 5576979158.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CLF",
+   "name": "Cleveland-Cliffs Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 5373306069.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SFBS",
+   "name": "ServisFirst Bancshares, Inc.",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 4856245195.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "AGYS",
+   "name": "Agilysys, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 3067064232.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "DX",
+   "name": "Dynex Capital, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 2788355755.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CALX",
+   "name": "Calix, Inc",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 2365685470.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PFBC",
+   "name": "Preferred Bank",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 1548658308.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HBT",
+   "name": "HBT Financial, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 1191116494.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "VLRS",
+   "name": "Controladora Vuela Compania de Aviacion, S.A.B. de C.V.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 1069002473.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CPAC",
+   "name": "Cementos Pacasmayo S.A.A.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 1002025016.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TRST",
+   "name": "TrustCo Bank Corp NY",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 974045965.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PGC",
+   "name": "Peapack-Gladstone Financial Corporation",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 856329209.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SMBK",
+   "name": "SmartFinancial, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 823462460.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WASH",
+   "name": "Washington Trust Bancorp, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 696656768.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HBCP",
+   "name": "Home Bancorp, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 554160306.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RBB",
+   "name": "RBB Bancorp",
+   "date": "2026-07-20",
+   "when": "AMC",
+   "market_cap": 472849993.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ISTR",
+   "name": "Investar Holding Corporation",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 416704203.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FUNC",
+   "name": "First United Corporation",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 297709391.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PEBK",
+   "name": "Peoples Bancorp of North Carolina, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 239322492.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HIT",
+   "name": "Health In Tech, Inc.",
+   "date": "2026-07-20",
+   "when": "TNS",
+   "market_cap": 69491568.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SCHW",
+   "name": "The Charles Schwab Corporation",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 166574398860.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "IBKR",
+   "name": "Interactive Brokers Group, Inc.",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 158184986442.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "DHR",
+   "name": "Danaher Corporation",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 137109325862.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CB",
+   "name": "Chubb Limited",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 136422035083.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "COF",
+   "name": "Capital One Financial Corporation",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 126173110098.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MRSH",
+   "name": "Marsh",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 82936105402.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NOC",
+   "name": "Northrop Grumman Corporation",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 73850305846.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GM",
+   "name": "General Motors Company",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 68093755526.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "DHI",
+   "name": "D.R. Horton, Inc.",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 44539014018.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MSCI",
+   "name": "MSCI Inc.",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 42371784000.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HAL",
+   "name": "Halliburton Company",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 27576479232.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "JBHT",
+   "name": "J.B. Hunt Transport Services, Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 27353369814.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SYF",
+   "name": "Synchrony Financial",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 25823143478.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "KEY",
+   "name": "KeyCorp",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 25208247246.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OMC",
+   "name": "Omnicom Group Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 21691821578.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "EWBC",
+   "name": "East West Bancorp, Inc.",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 17905411443.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NLY",
+   "name": "Annaly Capital Management Inc.",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 16261071673.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GPC",
+   "name": "Genuine Parts Company",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 16157121583.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ALLY",
+   "name": "Ally Financial Inc.",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 14124582697.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HAS",
+   "name": "Hasbro, Inc.",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 11525831770.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "VMI",
+   "name": "Valmont Industries, Inc.",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 10852619182.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ACI",
+   "name": "Albertsons Companies, Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 6829526168.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "AUB",
+   "name": "Atlantic Union Bankshares Corporation",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 6181165874.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HWC",
+   "name": "Hancock Whitney Corporation",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 6140411859.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OZK",
+   "name": "Bank OZK",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 5979244576.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WFRD",
+   "name": "Weatherford International plc",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 5769130880.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "UCB",
+   "name": "United Community Banks, Inc.",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 4314703480.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FFBC",
+   "name": "First Financial Bancorp.",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 3637901397.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NIC",
+   "name": "Nicolet Bankshares Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 3587746602.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OFG",
+   "name": "OFG Bancorp",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 2119258309.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FOR",
+   "name": "Forestar Group Inc",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 1591982557.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WINA",
+   "name": "Winmark Corporation",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 1502943810.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PEBO",
+   "name": "Peoples Bancorp Inc.",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 1406971573.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MBWM",
+   "name": "Mercantile Bank Corporation",
+   "date": "2026-07-21",
+   "when": "BMO",
+   "market_cap": 1017460688.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PKE",
+   "name": "Park Aerospace Corp.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 798160550.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NPB",
+   "name": "Northpointe Bancshares, Inc.",
+   "date": "2026-07-21",
+   "when": "AMC",
+   "market_cap": 667775369.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "UNTY",
+   "name": "Unity Bancorp, Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 594421398.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "LOOP",
+   "name": "Loop Industries, Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 46396776.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NTRP",
+   "name": "NextTrip, Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 31160956.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CCEL",
+   "name": "Cryo-Cell International, Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 26420892.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FNGR",
+   "name": "FingerMotion, Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 24206117.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RMCF",
+   "name": "Rocky Mountain Chocolate Factory, Inc.",
+   "date": "2026-07-21",
+   "when": "TNS",
+   "market_cap": 10100360.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NEE",
+   "name": "NextEra Energy, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 180110941555.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "T",
+   "name": "AT&T Inc.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 142301979341.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NOW",
+   "name": "ServiceNow, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 109079800000.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GD",
+   "name": "General Dynamics Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 98128297655.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CSX",
+   "name": "CSX Corporation",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 89803850910.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FCX",
+   "name": "Freeport-McMoran, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 87015498628.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CME",
+   "name": "CME Group Inc.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 83705009157.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MCO",
+   "name": "Moody's Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 81825986000.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "EQNR",
+   "name": "Equinor ASA",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 78033458846.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ORLY",
+   "name": "O'Reilly Automotive, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 76813600673.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "URI",
+   "name": "United Rentals, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 69647936210.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TEL",
+   "name": "TE Connectivity plc",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 58799489751.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WAB",
+   "name": "Westinghouse Air Brake Technologies Corporation",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 44794819344.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "INFY",
+   "name": "Infosys Limited",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 43200234969.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WCN",
+   "name": "Waste Connections, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 42465795398.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CCI",
+   "name": "Crown Castle Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 33401670259.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NTRS",
+   "name": "Northern Trust Corporation",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 32494298505.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RJF",
+   "name": "Raymond James Financial, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 30828547148.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "LVS",
+   "name": "Las Vegas Sands Corp.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 30646976281.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TDY",
+   "name": "Teledyne Technologies Incorporated",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 30632826046.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OTIS",
+   "name": "Otis Worldwide Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 27105703609.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FISV",
+   "name": "Fiserv, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 27051974710.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PHM",
+   "name": "PulteGroup, Inc.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 25256585544.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "LUV",
+   "name": "Southwest Airlines Company",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 24668409295.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PKG",
+   "name": "Packaging Corporation of America",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 21199241081.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ROL",
+   "name": "Rollins, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 20288878759.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "LII",
+   "name": "Lennox International, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 19873565725.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RS",
+   "name": "Reliance, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 19010469593.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RCI",
+   "name": "Rogers Communication, Inc.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 18118569446.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NVR",
+   "name": "NVR, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 17933367239.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MEDP",
+   "name": "Medpace Holdings, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 15524190150.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SSNC",
+   "name": "SS&C Technologies Holdings, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 15391703432.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PNFP",
+   "name": "Pinnacle Financial Partners, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 15234588786.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RPM",
+   "name": "RPM International Inc.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 14125704008.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GL",
+   "name": "Globe Life Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 13981492113.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RNR",
+   "name": "RenaissanceRe Holdings Ltd.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 13507852710.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ICLR",
+   "name": "ICON plc",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 13403110241.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "KNX",
+   "name": "Knight Transportation, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 12572160780.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GGG",
+   "name": "Graco Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 12417739003.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MOH",
+   "name": "Molina Healthcare Inc",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 12115855000.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RDY",
+   "name": "Dr. Reddy's Laboratories Ltd",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 11676851010.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "EGP",
+   "name": "EastGroup Properties, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 11044549350.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SEIC",
+   "name": "SEI Investments Company",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 10830581489.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MXL",
+   "name": "MaxLinear, Inc",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 10064070332.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PLXS",
+   "name": "Plexus Corp.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 7763910682.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FAF",
+   "name": "First American Corporation (The)",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 7179874000.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TMHC",
+   "name": "Taylor Morrison Home Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 6701565621.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "EPRT",
+   "name": "Essential Properties Realty Trust, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 6489541110.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WH",
+   "name": "Wyndham Hotels & Resorts, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 6258336295.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SIGI",
+   "name": "Selective Insurance Group, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 5868410350.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ALK",
+   "name": "Alaska Air Group, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 5710735123.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "KOF",
+   "name": "Coca Cola Femsa S.A.B. de C.V.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 5556701381.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SON",
+   "name": "Sonoco Products Company",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 5551476887.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SEI",
+   "name": "Solaris Energy Infrastructure, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 5399452832.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WFG",
+   "name": "West Fraser Timber Co. Ltd",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 5291591770.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "WEX",
+   "name": "WEX Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 4943330510.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NP",
+   "name": "Neptune Insurance Holdings Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 4710611284.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TNL",
+   "name": "Travel   Leisure Co.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 4693481307.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "QS",
+   "name": "QuantumScape Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 4681254028.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FULT",
+   "name": "Fulton Financial Corporation",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 4675127514.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "VKTX",
+   "name": "Viking Therapeutics, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 4351639500.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BMI",
+   "name": "Badger Meter, Inc.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 4267805901.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FBP",
+   "name": "First BanCorp.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 4128525355.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CVBF",
+   "name": "CVB Financial Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 4077879580.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MAT",
+   "name": "Mattel, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 3992844000.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OII",
+   "name": "Oceaneering International, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 3928965358.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SLG",
+   "name": "SL Green Realty Corp",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 3714120502.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BKU",
+   "name": "BankUnited, Inc.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 3533784935.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "JOE",
+   "name": "St. Joe Company (The)",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 3526106599.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RHI",
+   "name": "Robert Half Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 3372619629.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PTEN",
+   "name": "Patterson-UTI Energy, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 3253323286.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BANC",
+   "name": "Banc of California, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 3160581621.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "VTMX",
+   "name": "Corporacion Inmobiliaria Vesta, S.A.B de C.V.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 3047055786.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "KALU",
+   "name": "Kaiser Aluminum Corporation",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 3018763552.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FRME",
+   "name": "First Merchants Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 2791277199.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TOWN",
+   "name": "Towne Bank",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 2737709838.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FBNC",
+   "name": "First Bancorp",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 2703883240.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SYBT",
+   "name": "Stock Yards Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 2310153765.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BANR",
+   "name": "Banner Corporation",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 2304045574.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "ARR",
+   "name": "ARMOUR Residential REIT, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 2139795501.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "STC",
+   "name": "Stewart Information Services Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 2056262269.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NTST",
+   "name": "NetSTREIT Corp.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 2050253596.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GTY",
+   "name": "Getty Realty Corporation",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 2031692141.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CCS",
+   "name": "Century Communities, Inc.",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 2009248331.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "LOB",
+   "name": "Live Oak Bancshares, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1933305320.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "PRG",
+   "name": "PROG Holdings, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1809761526.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GSHD",
+   "name": "Goosehead Insurance, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1802022393.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HCSG",
+   "name": "Healthcare Services Group, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1723681273.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "QCRH",
+   "name": "QCR Holdings, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1631992643.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OBK",
+   "name": "Origin Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1607630918.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "UVSP",
+   "name": "Univest Financial Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1257237960.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HLX",
+   "name": "Helix Energy Solutions Group, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1253489743.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OSBC",
+   "name": "Old Second Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1214832627.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CVLG",
+   "name": "Covenant Logistics Group, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1128415437.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CFFN",
+   "name": "Capitol Federal Financial, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1092755909.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FSBC",
+   "name": "Five Star Bancorp",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1059402143.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "HBNC",
+   "name": "Horizon Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 1051233567.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NBBK",
+   "name": "NB Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 966547244.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "MPB",
+   "name": "Mid Penn Bancorp",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 904307531.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FMNB",
+   "name": "Farmers National Banc Corp.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 879935212.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "EGBN",
+   "name": "Eagle Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 871259749.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "SMBC",
+   "name": "Southern Missouri Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 856795857.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "EFOR",
+   "name": "Everforth, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 722677024.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "TCBX",
+   "name": "Third Coast Bancshares, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 678947545.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NFBK",
+   "name": "Northfield Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 622699033.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NRIM",
+   "name": "Northrim BanCorp Inc",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 616624914.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BWB",
+   "name": "Bridgewater Bancshares, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 604511397.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "GCBC",
+   "name": "Greene County Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 583293116.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BDN",
+   "name": "Brandywine Realty Trust",
+   "date": "2026-07-22",
+   "when": "AMC",
+   "market_cap": 557615022.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CLB",
+   "name": "Core Laboratories Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 533338611.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NVEC",
+   "name": "NVE Corporation",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 512594481.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CYH",
+   "name": "Community Health Systems, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 498845160.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "CBAN",
+   "name": "Colony Bankcorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 433561618.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FPI",
+   "name": "Farmland Partners Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 421342162.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "RBBN",
+   "name": "Ribbon Communications Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 413926807.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FNLC",
+   "name": "First Bancorp, Inc (ME)",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 400627682.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "NWFL",
+   "name": "Norwood Financial Corp.",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 355036787.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "BRBS",
+   "name": "Blue Ridge Bankshares, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 322783042.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "JMSB",
+   "name": "John Marshall Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 317948384.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FCCO",
+   "name": "First Community Corporation",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 312764109.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "FDBC",
+   "name": "Fidelity D & D Bancorp, Inc.",
+   "date": "2026-07-22",
+   "when": "TNS",
+   "market_cap": 309706353.0,
+   "bucket": "watch"
+  },
+  {
+   "ticker": "OTLY",
+   "name": "Oatly Group AB",
+   "date": "2026-07-22",
+   "when": "BMO",
+   "market_cap": 296949750.0,
+   "bucket": "watch"
   }
  ],
  "errors": []
