@@ -62,10 +62,13 @@ KELLY = {
     "calendar_frac": 0.06,      # 10% Kelly of 60%  -> 6% of account as debit
     "straddle_frac": 0.02,      # 30% Kelly of 6.5% -> 2% of account as premium
 }
-# Enhanced-filter thresholds (our additions)
+# Enhanced-filter thresholds (our additions — TIER 1 = RECOMMENDED plus ALL of
+# these; every one is about turning the theoretical edge into a realized one)
 MAX_ATM_SPREAD_PCT = 0.10       # ATM bid/ask spread <= 10% of mid
 MIN_PRICE = 20.0                # avoid wide-relative-spread cheap stocks
 RICHNESS_MIN = 1.15             # expected move >= 1.15x avg historical move
+MIN_ATM_OI = 500                # ATM open interest (min of call/put side)
+                                # — thin OI means bad fills at both ends
 
 MIN_MARKET_CAP = 1_000_000_000  # only scan liquid-ish names (the 1.5M-share
                                 # volume filter would reject most below this
@@ -333,6 +336,8 @@ def analyze_ticker(symbol, earnings_date):
     atm_strike = None
     spread_pct = None
     front_exp = None
+    atm_oi = None
+    strike_width = None
 
     for i, exp in enumerate(exp_dates):
         chain = stock.option_chain(exp)
@@ -351,6 +356,18 @@ def analyze_ticker(symbol, earnings_date):
         if straddle is None:  # first usable expiry = front month
             front_exp = exp
             atm_strike = float(calls.loc[c_idx, "strike"])
+            try:
+                atm_oi = int(min(float(calls.loc[c_idx, "openInterest"] or 0),
+                                 float(puts.loc[p_idx, "openInterest"] or 0)))
+            except Exception:
+                atm_oi = None
+            try:  # strike spacing around ATM (coarse strikes = off-model fills)
+                ks = sorted(set(calls["strike"].astype(float)))
+                ki = ks.index(atm_strike)
+                gaps = [ks[j + 1] - ks[j] for j in range(max(0, ki - 1), min(len(ks) - 1, ki + 1))]
+                strike_width = float(min(gaps)) if gaps else None
+            except Exception:
+                strike_width = None
             c_mid = mid(calls.loc[c_idx, "bid"], calls.loc[c_idx, "ask"])
             p_mid = mid(puts.loc[p_idx, "bid"], puts.loc[p_idx, "ask"])
             if c_mid and p_mid:
@@ -429,9 +446,13 @@ def analyze_ticker(symbol, earnings_date):
         "price_ok": price >= MIN_PRICE,
         "premium_rich": bool(richness is None or richness >= RICHNESS_MIN),
         "richness_known": richness is not None,
+        "oi_ok": bool(atm_oi is not None and atm_oi >= MIN_ATM_OI),
+        "date_confirmed": bool(mismatch is not True),  # None (no Yahoo data) tolerated
+        "em_vs_width": bool(straddle and strike_width and straddle >= strike_width),
     }
-    tier1 = tier == "RECOMMENDED" and enh_checks["tight_spread"] and \
-        enh_checks["price_ok"] and enh_checks["premium_rich"]
+    tier1 = (tier == "RECOMMENDED" and enh_checks["tight_spread"] and
+             enh_checks["price_ok"] and enh_checks["premium_rich"] and
+             enh_checks["oi_ok"] and enh_checks["date_confirmed"])
 
     return {
         "price": round(price, 2),
@@ -449,6 +470,8 @@ def analyze_ticker(symbol, earnings_date):
         "iv30_rv30": round(float(ivrv), 3) if ivrv else None,
         "avg_volume30": int(avg_vol),
         "atm_spread_pct": round(float(spread_pct), 4) if spread_pct is not None else None,
+        "atm_oi": atm_oi,
+        "strike_width": strike_width,
         "term_structure": term_points,
         "hist_moves": hist,
         "richness": round(float(richness), 2) if richness else None,
@@ -599,6 +622,7 @@ def run_scan(max_analyze=45, tickers_override=None):
             "max_atm_spread_pct": MAX_ATM_SPREAD_PCT,
             "min_price": MIN_PRICE,
             "richness_min": RICHNESS_MIN,
+            "min_atm_oi": MIN_ATM_OI,
             "calendar_gap_days": CALENDAR_GAP_DAYS,
             "min_market_cap": MIN_MARKET_CAP,
         },

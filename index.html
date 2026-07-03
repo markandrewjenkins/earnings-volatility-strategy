@@ -174,6 +174,34 @@ tr.selected td { background: #241d0e }
 .prose li { margin-bottom: 4px }
 .prose code { background: #1f1a10; border: 1px solid var(--border); border-radius: 3px; padding: 0 5px; font-size: 0.8rem; color: var(--cyan) }
 .acct-input { background: var(--panel2); color: var(--text); border: 1px solid var(--border2); border-radius: 3px; padding: 4px 8px; font-family: 'Saira', sans-serif; font-size: 0.8rem; width: 110px }
+
+/* ── Signal monitor (VIX-dashboard style) ───────────────────────────── */
+table.sig-mon { width:100%; border-collapse:collapse; font-size:0.8rem; }
+table.sig-mon th { text-align:left; color:var(--dim); font-weight:600; text-transform:uppercase; font-size:0.64rem; letter-spacing:0.04em; padding:6px 10px; border-bottom:1px solid var(--border); white-space:nowrap; background:transparent; }
+table.sig-mon td { padding:7px 10px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:middle; white-space:nowrap; }
+table.sig-mon td.sig-name { color:var(--yellow); font-weight:600; }
+table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:normal; }
+.eb { display:inline-block; padding:2px 8px; border-radius:3px; font-size:0.72rem; font-weight:700; letter-spacing:0.02em; }
+.eb-pass { background:#0c211c; color:var(--teal);  border:1px solid var(--teal) }
+.eb-fail { background:#2a120c; color:var(--coral); border:1px solid var(--coral) }
+.eb-na   { background:#1b180f; color:var(--gray);  border:1px solid var(--gray) }
+.gate-base { color:var(--cyan); font-size:0.7rem; font-weight:700; letter-spacing:0.04em }
+.gate-t1   { color:var(--yellow); font-size:0.7rem; font-weight:700; letter-spacing:0.04em }
+.gate-diag { color:var(--gray); font-size:0.7rem; font-weight:700; letter-spacing:0.04em }
+
+/* ── Mini monitor ───────────────────────────────────────────────────── */
+.mini-grid { display:flex; flex-wrap:wrap; gap:7px; }
+.mini-card { background:var(--panel2); border:1px solid var(--border); border-radius:5px; padding:7px 10px 6px; cursor:pointer; min-width:118px; }
+.mini-card:hover { border-color:var(--border2) }
+.mini-card.sel { border-color:var(--yellow); background:#1c160b }
+.mini-tick { font-weight:700; font-size:0.82rem; display:flex; align-items:baseline; gap:6px }
+.mini-tick .mini-when { font-size:0.6rem; color:var(--dim); font-weight:600 }
+.mini-dots { display:flex; gap:3px; margin-top:5px }
+.mini-dot { width:11px; height:11px; border-radius:2px; }
+.mini-dot.on  { background:var(--teal) }
+.mini-dot.off { background:#3a1712; border:1px solid var(--coral) }
+.mini-dot.na  { background:#1b180f; border:1px solid var(--border2) }
+.mini-lbl { font-size:0.56rem; color:var(--dim); letter-spacing:0.05em; margin-top:4px; text-transform:uppercase }
 #loading { text-align: center; padding: 70px 20px; color: var(--dim) }
 .spinner { width: 34px; height: 34px; border: 3px solid var(--border); border-top-color: var(--yellow); border-radius: 50%; margin: 0 auto 14px; animation: spin 0.9s linear infinite }
 @keyframes spin { to { transform: rotate(360deg) } }
@@ -197,6 +225,7 @@ tr.selected td { background: #241d0e }
   </div>
   <div class="tabs">
     <button class="tab active" id="tabbtn-scanner" onclick="showTab('scanner')">Scanner</button>
+    <button class="tab" id="tabbtn-pnl" onclick="showTab('pnl')">P&amp;L Tracker</button>
     <button class="tab" id="tabbtn-sim" onclick="showTab('sim')">Simulation</button>
     <button class="tab" id="tabbtn-strategy" onclick="showTab('strategy')">How It Works</button>
     <button class="tab" id="tabbtn-improve" onclick="showTab('improve')">Improvements</button>
@@ -250,6 +279,21 @@ tr.selected td { background: #241d0e }
       </div>
     </div>
 
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Mini monitor — all analyzed events at a glance</span>
+        <span class="dimtxt" style="text-transform:none">each square = one check, in the order of the signal monitor below (3 base + 5 Tier 1). Click a card to inspect.</span></div>
+      <div class="pb"><div class="mini-grid" id="mini-grid"></div></div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t" id="sigmon-title">Signal monitor — thresholds &amp; tolerances</span>
+        <span class="dimtxt" style="text-transform:none">
+          <span class="gate-base">BASE</span> gates the RECOMMENDED / CONSIDER / AVOID rating ·
+          <span class="gate-t1">TIER 1</span> = RECOMMENDED plus all five execution checks ·
+          <span class="gate-diag">DIAG</span> shown for information only</span></div>
+      <div class="pb" style="overflow-x:auto"><table class="sig-mon" id="sigmon-table"></table></div>
+    </div>
+
     <div class="row" style="margin-top:12px" id="detail-row" >
       <div class="panel" style="flex:1.2 1 420px">
         <div class="ph"><span class="t" id="ts-title">IV term structure</span><span class="dimtxt" id="ts-sub" style="text-transform:none"></span></div>
@@ -293,6 +337,55 @@ tr.selected td { background: #241d0e }
     <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">On the calendar but not scanned</span><span class="dimtxt" style="text-transform:none">below $1B market cap or beyond scan budget — the 1.5M-share volume filter rejects nearly all of these anyway</span></div>
       <div class="pb" id="skipped-body" style="font-size:0.82rem;color:var(--dim);line-height:1.9"></div>
+    </div>
+  </div>
+
+  <!-- ══ P&L TRACKER TAB ══ -->
+  <div id="tab-pnl" style="display:none">
+    <div class="note-box"><strong>Paper-trade tracker — live grading of the strategy.</strong>
+      Every scheduled scan in the last ~40 min before the close (15:20–16:00 ET) opens a hypothetical
+      ATM call-calendar on each <span class="pill pill-rec">RECOMMENDED</span> candidate in that day's trade
+      window (TBD-time reporters excluded), priced at delayed Yahoo mid quotes. The first scan at/after
+      9:40 ET on the reaction day closes it — the research's "jump" exit. Account model: <strong>$10,000 start,
+      6% of current equity per trade</strong> (fractional, matching the Monte Carlo sizing). Tier 1 status is
+      recorded per trade so the two rating levels can be compared as the sample grows. Delayed mids grade the
+      <em>strategy</em>, not your fills — expect your real executions to differ slightly.</div>
+
+    <div class="kpi-grid" id="pnl-kpis" style="margin-top:12px"></div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Equity curve — closed trades</span><span class="dimtxt" id="pnl-eqsub" style="text-transform:none"></span></div>
+      <div class="pb" style="position:relative;height:260px"><canvas id="pnlEqChart"></canvas></div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Open positions</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Ticker</th><th>Tier</th><th>Earnings</th><th>Opened (ET)</th><th>Calendar legs</th>
+            <th>Strike</th><th>Debit</th><th>Exp. move</th><th>Exit due</th>
+          </tr></thead>
+          <tbody id="pnl-open-tbody"></tbody>
+        </table>
+        <div id="pnl-open-empty" class="dimtxt" style="display:none;padding:12px 4px;font-size:0.85rem">No open positions.</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Closed trades</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Result</th><th>Ticker</th><th>Tier</th><th>Earnings</th><th>Implied move</th><th>Actual move</th>
+            <th>Debit</th><th>Exit value</th><th>Return</th><th>P&amp;L $ (6%)</th><th>Equity after</th>
+          </tr></thead>
+          <tbody id="pnl-closed-tbody"></tbody>
+        </table>
+        <div id="pnl-closed-empty" class="dimtxt" style="display:none;padding:12px 4px;font-size:0.85rem">
+          No closed trades yet — the tracker starts logging with the next qualifying RECOMMENDED setup
+          (first candidates: NRIX 7/8 AMC, SMPL 7/9 BMO, if they still qualify at entry time).</div>
+      </div>
     </div>
   </div>
 
@@ -361,13 +454,19 @@ tr.selected td { background: #241d0e }
       </div>
     </div>
 
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Ratings</span></div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Ratings — two levels, one hierarchy</span></div>
       <div class="pb prose">
-        <p><span class="pill pill-rec">RECOMMENDED</span>&nbsp; all three filters pass.&nbsp;
-           <span class="pill pill-con">CONSIDER</span>&nbsp; slope passes plus exactly one other.&nbsp;
-           <span class="pill pill-avoid">AVOID</span>&nbsp; slope fails or fewer than two pass.&nbsp;
-           <span class="pill pill-t1">TIER 1 ★</span>&nbsp; our stricter cut — RECOMMENDED plus execution-quality
-           and premium-richness checks (see Improvements tab).</p>
+        <p><strong style="color:var(--yellow)">Level 1 — the base rating</strong> (original research, three filters):<br>
+           <span class="pill pill-rec">RECOMMENDED</span>&nbsp; all three filters pass ·
+           <span class="pill pill-con">CONSIDER</span>&nbsp; slope passes plus exactly one other ·
+           <span class="pill pill-avoid">AVOID</span>&nbsp; slope fails or fewer than two pass.</p>
+        <p><strong style="color:var(--yellow)">Level 2 — Tier 1</strong> is <em>not</em> a separate rating: it is a
+           <strong>subset of RECOMMENDED</strong>. A <span class="pill pill-t1">TIER 1 ★</span> badge means the trade
+           is RECOMMENDED <em>and</em> passes all five of our execution checks: ATM spread ≤ 10% of mid, price ≥ $20,
+           expected move ≥ 1.15× the stock's own historical earnings moves, ATM open interest ≥ 500, and the earnings
+           date confirmed (Nasdaq and Yahoo agree within a day). In short: RECOMMENDED says the <em>edge</em> is there;
+           Tier 1 says you can actually <em>capture</em> it after real-world execution costs. Every threshold is shown
+           live in the Scanner tab's signal monitor.</p>
       </div>
     </div>
 
@@ -417,6 +516,23 @@ tr.selected td { background: #241d0e }
         <div class="mc"><h4>C · Minimum share price $20</h4>
           <p>Cheap stocks have structurally wide relative spreads and coarse strike spacing, so the "ATM" calendar is
           often meaningfully off-strike. Filtering them removes a cluster of poor fills and off-model losses.</p></div>
+        <div class="mc"><h4>C2 · ATM open interest ≥ 500</h4>
+          <p>Open interest on the thinner side of the ATM pair must clear <code>500</code> contracts. Thin OI means you're
+          negotiating with one market maker at entry <em>and</em> exit — the realized spread is far worse than the quoted
+          one. (Live example from the first scan: SMPL rated RECOMMENDED with 66 contracts of OI and a 41% quoted spread —
+          exactly the trade this filter exists to block.)</p></div>
+        <div class="mc"><h4>C3 · Confirmed earnings date</h4>
+          <p>Nasdaq and Yahoo must agree on the date within ±1 day. A projected (unconfirmed) date that shifts means you
+          sold a calendar around an event that isn't there — pure decay loss with no IV crush. Blocks Tier 1 until
+          the sources agree.</p></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Displayed as diagnostics (not gating yet)</span></div>
+      <div class="pb mc-grid">
+        <div class="mc"><h4>Expected move vs strike width</h4>
+          <p>If the option-implied move is smaller than the strike spacing, the "ATM" calendar can't be placed where the
+          model assumes — shown in the signal monitor as <code>DIAG</code>. Would become a Tier 1 gate if the tracker shows
+          off-model fills hurting.</p></div>
       </div>
     </div>
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Backtest queue — most promising next</span></div>
@@ -477,11 +593,12 @@ function acctChanged() {
 }
 
 function showTab(name) {
-  ['scanner', 'sim', 'strategy', 'improve'].forEach(function (t) {
+  ['scanner', 'pnl', 'sim', 'strategy', 'improve'].forEach(function (t) {
     $('tab-' + t).style.display = (t === name) ? '' : 'none';
     $('tabbtn-' + t).className = 'tab' + (t === name ? ' active' : '');
   });
   if (name === 'sim') loadSim();
+  if (name === 'pnl') loadPnl();
 }
 
 function tierPill(ev) {
@@ -625,6 +742,99 @@ function selectTicker(t) {
   selectedTicker = t;
   renderCandidates();
   renderDetail();
+  renderSigMon();
+  renderMiniGrid();
+}
+
+/* ── Signal monitor & mini monitor ──────────────────────────────────── */
+// One definition drives both: [key, name, rule text, gate, valueFn, passFn]
+function sigDefs() {
+  var th = DATA.thresholds;
+  return [
+    { n: 'TS slope 0→45d', rule: '≤ ' + th.ts_slope_0_45 + ' (backwardation; the gate — no slope, no trade)', gate: 'BASE',
+      val: function (e) { return e.ts_slope_0_45 === null ? null : fmt(e.ts_slope_0_45, 5); },
+      margin: function (e) { return e.ts_slope_0_45 === null ? null : fmt(e.ts_slope_0_45 / th.ts_slope_0_45, 2) + '× threshold'; },
+      pass: function (e) { return e.pass_slope; } },
+    { n: 'IV30 / RV30', rule: '≥ ' + th.iv30_rv30 + ' (implied rich vs Yang-Zhang realized)', gate: 'BASE',
+      val: function (e) { return e.iv30_rv30 === null ? null : fmt(e.iv30_rv30, 2); },
+      margin: function (e) { return e.iv30_rv30 === null ? null : fmt(e.iv30_rv30 / th.iv30_rv30, 2) + '× threshold'; },
+      pass: function (e) { return e.pass_ivrv; } },
+    { n: 'Avg volume 30d', rule: '≥ ' + (th.avg_volume30 / 1e6).toFixed(1) + 'M shares (price-insensitive flow)', gate: 'BASE',
+      val: function (e) { return e.avg_volume30 === null || e.avg_volume30 === undefined ? null : (e.avg_volume30 / 1e6).toFixed(2) + 'M'; },
+      margin: function (e) { return e.avg_volume30 ? fmt(e.avg_volume30 / th.avg_volume30, 2) + '× threshold' : null; },
+      pass: function (e) { return e.pass_volume; } },
+    { n: 'ATM spread', rule: '≤ ' + (th.max_atm_spread_pct * 100) + '% of mid (slippage kills a 7% edge)', gate: 'TIER 1',
+      val: function (e) { return e.atm_spread_pct === null || e.atm_spread_pct === undefined ? null : fmt(e.atm_spread_pct * 100, 1) + '%'; },
+      margin: function (e) { return (e.atm_spread_pct === null || e.atm_spread_pct === undefined) ? null : fmt(e.atm_spread_pct / th.max_atm_spread_pct, 2) + '× limit'; },
+      pass: function (e) { return e.enhanced ? e.enhanced.tight_spread : null; } },
+    { n: 'Share price', rule: '≥ $' + th.min_price + ' (cheap stocks: coarse strikes, wide relative spreads)', gate: 'TIER 1',
+      val: function (e) { return e.price ? '$' + fmt(e.price, 2) : null; },
+      margin: function (e) { return e.price ? fmt(e.price / th.min_price, 2) + '× minimum' : null; },
+      pass: function (e) { return e.enhanced ? e.enhanced.price_ok : null; } },
+    { n: 'Premium richness', rule: '≥ ' + th.richness_min + '× the stock’s avg realized earnings move (last ≤8 qtrs); unknown history tolerated', gate: 'TIER 1',
+      val: function (e) { return e.richness ? fmt(e.richness, 2) + '×' : (e.expected_move_pct ? 'no history' : null); },
+      margin: function (e) { return e.richness ? fmt(e.richness / th.richness_min, 2) + '× threshold' : null; },
+      pass: function (e) { return e.enhanced ? e.enhanced.premium_rich : null; } },
+    { n: 'ATM open interest', rule: '≥ ' + (th.min_atm_oi || 500) + ' contracts on the thinner side (fills at both ends)', gate: 'TIER 1',
+      val: function (e) { return (e.atm_oi === null || e.atm_oi === undefined) ? null : fmtInt(e.atm_oi); },
+      margin: function (e) { return (e.atm_oi === null || e.atm_oi === undefined) ? null : fmt(e.atm_oi / (th.min_atm_oi || 500), 2) + '× minimum'; },
+      pass: function (e) { return e.enhanced ? e.enhanced.oi_ok : null; } },
+    { n: 'Date confirmed', rule: 'Nasdaq and Yahoo agree within ±1 day (projected dates shift)', gate: 'TIER 1',
+      val: function (e) { return e.date_mismatch === true ? (e.date + ' vs ' + e.yahoo_date) : (e.yahoo_date ? 'agree' : 'no Yahoo data'); },
+      margin: function () { return null; },
+      pass: function (e) { return e.enhanced ? e.enhanced.date_confirmed : null; } },
+    { n: 'EM vs strike width', rule: 'expected move $ ≥ strike spacing (else the calendar is off-model)', gate: 'DIAG',
+      val: function (e) { return (e.straddle_mid && e.strike_width) ? ('$' + fmt(e.straddle_mid, 2) + ' vs $' + fmt(e.strike_width, 2)) : null; },
+      margin: function (e) { return (e.straddle_mid && e.strike_width) ? fmt(e.straddle_mid / e.strike_width, 2) + '× spacing' : null; },
+      pass: function (e) { return e.enhanced ? e.enhanced.em_vs_width : null; } }
+  ];
+}
+
+function currentEvent() {
+  for (var i = 0; i < DATA.events.length; i++) if (DATA.events[i].ticker === selectedTicker) return DATA.events[i];
+  return DATA.events.filter(function (e) { return e.bucket === 'now'; })[0] || DATA.events[0] || null;
+}
+
+function renderSigMon() {
+  var ev = currentEvent();
+  var tbl = $('sigmon-table');
+  if (!ev) { tbl.innerHTML = '<tr><td class="sig-desc">No analyzed events in this scan.</td></tr>'; return; }
+  $('sigmon-title').textContent = 'Signal monitor — ' + ev.ticker + ' (earnings ' + ev.date + ' ' + ev.when + ')';
+  var gateCls = { 'BASE': 'gate-base', 'TIER 1': 'gate-t1', 'DIAG': 'gate-diag' };
+  var rows = sigDefs().map(function (d) {
+    var v = d.val(ev), m = d.margin(ev), p = d.pass(ev);
+    var badge = (p === null || v === null) ? '<span class="eb eb-na">N/A</span>'
+      : (p ? '<span class="eb eb-pass">PASS</span>' : '<span class="eb eb-fail">FAIL</span>');
+    return '<tr>' +
+      '<td class="sig-name">' + d.n + '</td>' +
+      '<td class="sig-desc">' + d.rule + '</td>' +
+      '<td><b>' + (v === null ? '—' : v) + '</b></td>' +
+      '<td class="sig-desc">' + (m === null ? '—' : m) + '</td>' +
+      '<td><span class="' + gateCls[d.gate] + '">' + d.gate + '</span></td>' +
+      '<td>' + badge + '</td></tr>';
+  }).join('');
+  var verdict = '<tr><td class="sig-name">VERDICT</td><td class="sig-desc">base rating, then Tier 1 if all five execution checks also pass</td>' +
+    '<td colspan="4">' + tierPill(ev) + '</td></tr>';
+  tbl.innerHTML = '<thead><tr><th>Signal</th><th>Rule / tolerance</th><th>Current</th><th>Margin</th><th>Gates</th><th>Status</th></tr></thead>' +
+    '<tbody>' + rows + verdict + '</tbody>';
+}
+
+function renderMiniGrid() {
+  var defs = sigDefs();
+  var evs = DATA.events.slice().sort(function (a, b) {
+    return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.market_cap || 0) - (a.market_cap || 0);
+  });
+  $('mini-grid').innerHTML = evs.map(function (ev) {
+    var dots = defs.filter(function (d) { return d.gate !== 'DIAG'; }).map(function (d) {
+      var p = d.pass(ev);
+      var cls = p === null ? 'na' : (p ? 'on' : 'off');
+      return '<span class="mini-dot ' + cls + '" title="' + d.n + ': ' + (p === null ? 'n/a' : (p ? 'pass' : 'fail')) + '"></span>';
+    }).join('');
+    return '<div class="mini-card' + (ev.ticker === selectedTicker ? ' sel' : '') + '" onclick="selectTicker(\'' + ev.ticker + '\')">' +
+      '<div class="mini-tick">' + ev.ticker + '<span class="mini-when">' + ev.date.slice(5) + ' ' + ev.when + '</span></div>' +
+      '<div class="mini-dots">' + dots + '</div>' +
+      '<div class="mini-lbl">' + ev.tier + (ev.tier1 ? ' · T1★' : '') + '</div></div>';
+  }).join('') || '<span class="dimtxt" style="font-size:0.82rem">No analyzed events in this scan.</span>';
 }
 
 function renderDetail() {
@@ -734,10 +944,103 @@ function render() {
   renderKpis();
   renderCandidates();
   renderDetail();
+  renderSigMon();
+  renderMiniGrid();
   // thresholds into strategy tab
   $('th-slope').textContent = '≤ ' + DATA.thresholds.ts_slope_0_45;
   $('th-ivrv').textContent = '≥ ' + DATA.thresholds.iv30_rv30;
   $('th-vol').textContent = '≥ ' + (DATA.thresholds.avg_volume30 / 1e6).toFixed(1) + 'M shares';
+}
+
+/* ── P&L tracker tab ────────────────────────────────────────────────── */
+var PNL = null;
+var pnlEqChart = null;
+
+function loadPnl() {
+  fetch('trades_log.json?t=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (j) { PNL = j; renderPnl(); })
+    .catch(function (e) {
+      $('pnl-kpis').innerHTML = '<div class="kpi"><div class="kpi-label">Tracker</div>' +
+        '<div class="kpi-val neg">unavailable</div><div class="kpi-sub">' + e.message + '</div></div>';
+    });
+}
+
+function renderPnl() {
+  var acct = PNL.account, closed = PNL.closed || [], open = PNL.open || [];
+  var wins = closed.filter(function (t) { return t.result.win; });
+  var losses = closed.filter(function (t) { return !t.result.win; });
+  var totRet = (acct.equity / acct.start - 1) * 100;
+  var avgW = wins.length ? wins.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0) / wins.length : null;
+  var avgL = losses.length ? losses.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0) / losses.length : null;
+  var grossW = wins.reduce(function (a, t) { return a + t.result.pnl_usd; }, 0);
+  var grossL = Math.abs(losses.reduce(function (a, t) { return a + t.result.pnl_usd; }, 0));
+  var t1 = closed.filter(function (t) { return t.tier1; });
+  var t1pnl = t1.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0);
+  var kpis = [
+    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 6%/trade', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
+    { l: 'Total return', v: (totRet >= 0 ? '+' : '') + fmt(totRet, 2) + '%', s: 'compounded, fractional sizing', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
+    { l: 'Closed trades', v: String(closed.length), s: open.length + ' open now' },
+    { l: 'Win rate', v: closed.length ? fmt(wins.length / closed.length * 100, 0) + '%' : '—', s: 'target ≈66% (research)' },
+    { l: 'Avg win / loss', v: (avgW === null ? '—' : '+' + fmt(avgW, 1) + '%') + ' / ' + (avgL === null ? '—' : fmt(avgL, 1) + '%'), s: 'per trade, on debit' },
+    { l: 'Profit factor', v: grossL > 0 ? fmt(grossW / grossL, 2) + 'x' : (grossW > 0 ? '∞' : '—'), s: 'gross wins / gross losses' },
+    { l: 'Tier 1 subset', v: t1.length ? (t1pnl >= 0 ? '+' : '') + fmt(t1pnl / t1.length, 1) + '%/tr' : '—', s: t1.length + ' Tier 1 trades closed', c: 'var(--yellow)' }
+  ];
+  $('pnl-kpis').innerHTML = kpis.map(function (k) {
+    return '<div class="kpi"><div class="kpi-label">' + k.l + '</div>' +
+      '<div class="kpi-val"' + (k.c ? ' style="color:' + k.c + '"' : '') + '>' + k.v + '</div>' +
+      '<div class="kpi-sub">' + k.s + '</div></div>';
+  }).join('');
+
+  $('pnl-open-tbody').innerHTML = open.map(function (t) {
+    return '<tr>' +
+      '<td><b>' + t.ticker + '</b></td>' +
+      '<td>' + (t.tier1 ? '<span class="pill pill-t1">T1 ★</span>' : '<span class="pill pill-rec">REC</span>') + '</td>' +
+      '<td>' + t.earnings_date + ' ' + whenPill(t.when) + '</td>' +
+      '<td>' + (t.entry.et || '').replace('T', ' ') + '</td>' +
+      '<td style="font-size:0.78rem">sell ' + t.front_exp + ' / buy ' + t.back_exp + '</td>' +
+      '<td>' + fmt(t.strike, t.strike >= 100 ? 0 : 1) + '</td>' +
+      '<td>$' + fmt(t.entry.debit, 2) + '</td>' +
+      '<td>' + (t.entry.expected_move_pct ? '±' + fmt(t.entry.expected_move_pct, 1) + '%' : '—') + '</td>' +
+      '<td>' + t.reaction_date + ' 9:40+</td></tr>';
+  }).join('');
+  $('pnl-open-empty').style.display = open.length ? 'none' : '';
+
+  var rows = closed.slice().reverse();
+  $('pnl-closed-tbody').innerHTML = rows.map(function (t) {
+    var r = t.result, win = r.win;
+    return '<tr>' +
+      '<td><span class="eb ' + (win ? 'eb-pass' : 'eb-fail') + '">' + (win ? 'WIN' : 'LOSS') + '</span></td>' +
+      '<td><b>' + t.ticker + '</b></td>' +
+      '<td>' + (t.tier1 ? '<span class="pill pill-t1">T1 ★</span>' : '<span class="pill pill-rec">REC</span>') + '</td>' +
+      '<td>' + t.earnings_date + ' ' + whenPill(t.when) + '</td>' +
+      '<td>' + (t.entry.expected_move_pct ? '±' + fmt(t.entry.expected_move_pct, 1) + '%' : '—') + '</td>' +
+      '<td>' + (t.exit && t.exit.actual_move_pct !== null && t.exit.actual_move_pct !== undefined ? fmt(t.exit.actual_move_pct, 1) + '%' : '—') + '</td>' +
+      '<td>$' + fmt(t.entry.debit, 2) + '</td>' +
+      '<td>$' + fmt(t.exit.value, 2) + '</td>' +
+      '<td class="' + (win ? 'pos' : 'neg') + '"><b>' + (r.pnl_pct >= 0 ? '+' : '') + fmt(r.pnl_pct, 1) + '%</b></td>' +
+      '<td class="' + (win ? 'pos' : 'neg') + '">' + (r.pnl_usd >= 0 ? '+' : '') + '$' + fmt(Math.abs(r.pnl_usd), 2) + '</td>' +
+      '<td>$' + fmtInt(Math.round(r.equity_after)) + '</td></tr>';
+  }).join('');
+  $('pnl-closed-empty').style.display = closed.length ? 'none' : '';
+
+  var pts = [{ x: 0, y: acct.start }];
+  closed.forEach(function (t, i) { pts.push({ x: i + 1, y: t.result.equity_after }); });
+  $('pnl-eqsub').textContent = closed.length + ' closed · updated ' + (PNL.updated_utc || '—').slice(0, 16).replace('T', ' ') + ' UTC';
+  if (pnlEqChart) pnlEqChart.destroy();
+  pnlEqChart = new Chart($('pnlEqChart'), {
+    type: 'line',
+    data: { datasets: [{ label: 'equity', data: pts, borderColor: '#e8b94f', backgroundColor: 'rgba(232,185,79,0.12)',
+      pointBackgroundColor: '#e8b94f', tension: 0.15, fill: true, pointRadius: 3 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: {
+        x: { type: 'linear', title: { display: true, text: 'closed trade #', color: '#b39a52' }, ticks: { color: '#b39a52', stepSize: 1 }, grid: { color: 'rgba(106,85,31,0.25)' } },
+        y: { title: { display: true, text: 'paper account $', color: '#b39a52' }, ticks: { color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' } }
+      },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return '$' + Math.round(c.parsed.y).toLocaleString(); } } } }
+    }
+  });
 }
 
 /* ── Simulation tab ─────────────────────────────────────────────────── */
