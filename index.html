@@ -241,6 +241,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <span class="live-item"><span class="live-lbl">Tier 1</span><span class="live-val" id="lv-t1" style="color:var(--yellow)">—</span></span>
   <span class="live-item"><span class="live-lbl">Analyzed</span><span class="live-val" id="lv-analyzed">—</span></span>
   <span class="live-item"><span class="live-lbl">Watch high</span><span class="live-val neu" id="lv-watch">—</span></span>
+  <span class="live-item"><span class="live-lbl">VIX</span><span class="live-val" id="lv-vix">—</span></span>
+  <span class="live-item"><span class="live-lbl">Regime</span><span class="live-val" id="lv-regime">—</span></span>
   <span class="live-updated">Data as of: <span class="live-val" id="lv-updated">—</span></span>
 </div>
 </div>
@@ -281,7 +283,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
     <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">Mini monitor — all analyzed events at a glance</span>
-        <span class="dimtxt" style="text-transform:none">each square = one check, in the order of the signal monitor below (3 base + 5 Tier 1). Click a card to inspect.</span></div>
+        <span class="dimtxt" style="text-transform:none">each square = one check, in the order of the signal monitor below (3 base + 6 Tier 1). Click a card to inspect.</span></div>
       <div class="pb"><div class="mini-grid" id="mini-grid"></div></div>
     </div>
 
@@ -289,7 +291,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="ph"><span class="t" id="sigmon-title">Signal monitor — thresholds &amp; tolerances</span>
         <span class="dimtxt" style="text-transform:none">
           <span class="gate-base">BASE</span> gates the RECOMMENDED / CONSIDER / AVOID rating ·
-          <span class="gate-t1">TIER 1</span> = RECOMMENDED plus all five execution checks ·
+          <span class="gate-t1">TIER 1</span> = RECOMMENDED plus all six execution &amp; event checks ·
           <span class="gate-diag">DIAG</span> shown for information only</span></div>
       <div class="pb" style="overflow-x:auto"><table class="sig-mon" id="sigmon-table"></table></div>
     </div>
@@ -462,9 +464,10 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
            <span class="pill pill-avoid">AVOID</span>&nbsp; slope fails or fewer than two pass.</p>
         <p><strong style="color:var(--yellow)">Level 2 — Tier 1</strong> is <em>not</em> a separate rating: it is a
            <strong>subset of RECOMMENDED</strong>. A <span class="pill pill-t1">TIER 1 ★</span> badge means the trade
-           is RECOMMENDED <em>and</em> passes all five of our execution checks: ATM spread ≤ 10% of mid, price ≥ $20,
-           expected move ≥ 1.15× the stock's own historical earnings moves, ATM open interest ≥ 500, and the earnings
-           date confirmed (Nasdaq and Yahoo agree within a day). In short: RECOMMENDED says the <em>edge</em> is there;
+           is RECOMMENDED <em>and</em> passes all six of our execution &amp; event checks: ATM spread ≤ 10% of mid, price ≥ $20,
+           expected move ≥ 1.15× the stock's own historical earnings moves, ATM open interest ≥ 500, the earnings
+           date confirmed (Nasdaq and Yahoo agree within a day), and no FOMC decision within ±1 trading day of the trade
+           window. In short: RECOMMENDED says the <em>edge</em> is there;
            Tier 1 says you can actually <em>capture</em> it after real-world execution costs. Every threshold is shown
            live in the Scanner tab's signal monitor.</p>
       </div>
@@ -535,8 +538,47 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           off-model fills hurting.</p></div>
       </div>
     </div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">What the data says — conditioner study (2,432 earnings events, 102 tickers, ~2019–2026)</span></div>
+      <div class="pb prose">
+        <p>We measured <code>move_z</code> — each earnings reaction normalized by that stock's own trailing 21-day
+        volatility — across 2,432 past events, then bucketed by market and history conditions. Bigger move_z = worse
+        for short earnings vol. "Blowthrough" = share of events with move_z &gt; 2. Baseline: median 2.10, blowthrough 52.1%.
+        Full data: <code>analysis/conditioner_study.json</code>. *** = bootstrap 95% CI excludes zero.</p>
+      </div>
+      <div class="pb" style="overflow-x:auto;padding-top:0">
+        <table>
+          <thead><tr><th>Condition</th><th>n</th><th>Median z</th><th>Blowthrough</th><th>vs rest</th><th>Verdict for the strategy</th></tr></thead>
+          <tbody>
+            <tr><td>FOMC within ±1 trading day</td><td>482</td><td class="neg">2.39</td><td class="neg">56.6%</td><td>+0.34 ***</td><td><b style="color:var(--yellow)">Now blocks Tier 1</b> — Fed vol lands inside the trade</td></tr>
+            <tr><td>VIX &lt; 15 (calm)</td><td>288</td><td class="neg">2.66</td><td class="neg">59.7%</td><td>+0.61 ***</td><td>Counterintuitive: calm ≠ safe. IV/RV is least trustworthy here — lean on the richness check</td></tr>
+            <tr><td>VIX ≥ 28 (stressed)</td><td>283</td><td class="pos">1.67</td><td class="pos">41.7%</td><td>−0.50 ***</td><td>Relative reactions are <em>smaller</em>; the stressed-regime risk is the calendar's back-month IV (vega), not the move</td></tr>
+            <tr><td>VIX/VIX3M inverted</td><td>158</td><td class="pos">1.46</td><td class="pos">38.6%</td><td>−0.69 ***</td><td>Same pattern as high VIX</td></tr>
+            <tr><td>SPY above 200dma (bull)</td><td>1970</td><td class="neg">2.23</td><td class="neg">54.2%</td><td>+0.51 ***</td><td>Bull tape = calm tape = relatively bigger earnings jumps; advisory only</td></tr>
+            <tr><td>Serial beater (≥75% prior beats)</td><td>1480</td><td class="neg">2.39</td><td class="neg">55.6%</td><td>+0.53 ***</td><td>Priced-for-perfection names blow through more, not less</td></tr>
+            <tr><td>Quiet sector cohort (prior 3 wks)</td><td>58</td><td class="pos">0.79</td><td class="pos">17.2%</td><td>−1.37 ***</td><td><b style="color:var(--teal)">Strongest effect found</b> — when peers reported quietly, reactions collapse. Top of the implementation queue</td></tr>
+            <tr><td>Hot sector cohort</td><td>1122</td><td class="neg">2.46</td><td class="neg">56.6%</td><td>+0.54 ***</td><td>…and the reverse after big peer reactions</td></tr>
+            <tr><td>Sector: Tech / Comm / ConsDisc</td><td>932</td><td class="neg">2.5–3.2</td><td class="neg">58–73%</td><td>+ ***</td><td>Structurally highest blowthrough — demand extra richness</td></tr>
+            <tr><td>Sector: Energy / Fins / Mater / REIT / Util</td><td>684</td><td class="pos">1.1–1.6</td><td class="pos">29–44%</td><td>− ***</td><td>Structurally the calmest earnings reactions</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pb prose" style="padding-top:0">
+        <p style="color:var(--dim);font-size:0.78rem"><b>Caveats:</b> this measures the realized-move half of the trade
+        (relative to the same trailing vol the IV30/RV30 filter uses) — it does not observe option prices, so it can't
+        measure IV-crush behavior directly. FOMC dates cover 2021+ (earlier events count as "no FOMC", which if anything
+        understates that effect). Universe is 102 liquid large/mid caps — survivorship applies. Sector-cohort buckets use
+        peers within this universe.</p>
+      </div>
+    </div>
+
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Backtest queue — most promising next</span></div>
       <div class="pb mc-grid">
+        <div class="mc"><h4>D0 · Sector-cohort heat filter <span style="color:var(--teal)">(validated — strongest effect in the study)</span></h4>
+          <p>When same-sector peers reported quietly over the prior three weeks, reactions collapse (median z 0.79,
+          blowthrough 17% vs 52% baseline); after hot cohorts they run large. Needs live tracking of recent reporters'
+          reactions by sector — next scanner feature. Corollary from the same study: prefer Energy/Financials/Materials
+          setups over Tech/Communications at equal premium richness, and treat serial EPS beaters (≥75% beat rate) as
+          higher-risk, not lower.</p></div>
         <div class="mc"><h4>D · Rank, don't just gate</h4>
           <p>The decile study shows returns rise <em>monotonically</em> as slope gets more negative and IV/RV gets higher.
           When multiple candidates qualify on the same day, allocate to the top-ranked 1–3 by combined decile score
@@ -545,10 +587,12 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           <p>Exclude sectors where the "earnings" event often carries FDA/regulatory-style tail risk (small biotech,
           crypto-levered names). These populate the catastrophic left tail of the straddle distribution — cutting them
           trims tail losses at minimal cost to frequency.</p></div>
-        <div class="mc"><h4>F · Earnings-day VIX regime filter</h4>
-          <p>When index vol itself is spiking (VIX > ~28 or term structure inverted), single-stock back-month IV can
-          crush along with the front, collapsing the calendar's edge. Standing aside (or switching to straddles, which
-          don't need the back month to hold) in those regimes should smooth the equity curve.</p></div>
+        <div class="mc"><h4>F · Earnings-day VIX regime filter <span style="color:var(--amber)">(revised by the study)</span></h4>
+          <p>The conditioner study <em>refutes</em> half of this idea: relative to their own recent vol, stocks react
+          <em>less</em> in stressed regimes (median z 1.67 vs 2.66 in calm ones) — and calm regimes are where the IV/RV
+          filter is most flattered by a low denominator. What survives is the vega argument: in a VIX spike the calendar's
+          back-month IV can crush with the front. Verdict: stay advisory, prefer the straddle structure over calendars
+          in stressed regimes, and demand extra premium richness when VIX &lt; 15.</p></div>
         <div class="mc"><h4>G · Double calendar variant</h4>
           <p>For Tier 1 setups with expected move ≫ strike spacing, a double calendar (one at +EM strike, one at −EM)
           widens the profit zone and cuts gamma pain when the stock moves ~1× the expected move — trading a bit of
@@ -620,11 +664,15 @@ function likePill(l) {
   return '<span class="pill pill-avoid">LOW</span>';
 }
 function mismatchFlag(ev) {
+  var s = '';
   if (ev.date_mismatch) {
-    return ' <span title="Date check: Nasdaq says ' + ev.date + ' but Yahoo says ' + ev.yahoo_date +
+    s += ' <span title="Date check: Nasdaq says ' + ev.date + ' but Yahoo says ' + ev.yahoo_date +
       ' — earnings dates shift; confirm before trading" style="color:var(--amber);cursor:help">&#9888;</span>';
   }
-  return '';
+  if (ev.fomc_window) {
+    s += ' <span title="FOMC decision within ±1 trading day of this trade window — a Fed statement adds market-wide volatility the calendar is implicitly short" style="color:var(--coral);cursor:help">&#9889;</span>';
+  }
+  return s;
 }
 function passTxt(ok, txt) {
   return '<span class="' + (ok ? 'pos' : 'neg') + '">' + txt + '</span>';
@@ -786,7 +834,15 @@ function sigDefs() {
     { n: 'EM vs strike width', rule: 'expected move $ ≥ strike spacing (else the calendar is off-model)', gate: 'DIAG',
       val: function (e) { return (e.straddle_mid && e.strike_width) ? ('$' + fmt(e.straddle_mid, 2) + ' vs $' + fmt(e.strike_width, 2)) : null; },
       margin: function (e) { return (e.straddle_mid && e.strike_width) ? fmt(e.straddle_mid / e.strike_width, 2) + '× spacing' : null; },
-      pass: function (e) { return e.enhanced ? e.enhanced.em_vs_width : null; } }
+      pass: function (e) { return e.enhanced ? e.enhanced.em_vs_width : null; } },
+    { n: 'FOMC window', rule: 'no Fed decision within ±1 trading day — study: reactions near FOMC run significantly larger (median z 2.39 vs 2.05)', gate: 'TIER 1',
+      val: function (e) { return e.fomc_window === true ? 'FOMC nearby' : (e.fomc_window === false ? 'clear' : null); },
+      margin: function () { return null; },
+      pass: function (e) { return e.fomc_window === null || e.fomc_window === undefined ? null : !e.fomc_window; } },
+    { n: 'Market regime', rule: 'advisory — study: reactions are RELATIVELY larger in calm regimes (trust richness over IV/RV when VIX<15); stressed-regime risk is the back-month IV, not bigger moves', gate: 'DIAG',
+      val: function () { var m = DATA.market; return m ? (m.regime + ' (VIX ' + fmt(m.vix, 1) + ', ratio ' + fmt(m.vix_ratio, 2) + ')') : null; },
+      margin: function () { var m = DATA.market; return m ? ('SPY ' + (m.spy_bull ? 'above' : 'below') + ' 200dma') : null; },
+      pass: function () { var m = DATA.market; return m ? m.regime !== 'STRESSED' : null; } }
   ];
 }
 
@@ -931,6 +987,14 @@ function renderStrip() {
   $('lv-t1').textContent = String(c.tier1);
   $('lv-analyzed').textContent = String(c.analyzed);
   $('lv-watch').textContent = String(c.watch_high || 0);
+  var m = DATA.market;
+  if (m) {
+    $('lv-vix').textContent = fmt(m.vix, 1) + ' / ' + fmt(m.vix_ratio, 2) + 'r';
+    var rg = $('lv-regime');
+    rg.textContent = m.regime;
+    rg.style.color = m.regime === 'CALM' ? 'var(--teal)' : (m.regime === 'ELEVATED' ? 'var(--amber)' : 'var(--coral)');
+    rg.title = 'VIX ' + m.vix + ' · VIX/VIX3M ' + m.vix_ratio + ' · SPY ' + (m.spy_bull ? 'above' : 'below') + ' 200dma';
+  }
   var d = new Date(DATA.generated_utc);
   $('lv-updated').textContent = d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
   var strip = $('live-strip');

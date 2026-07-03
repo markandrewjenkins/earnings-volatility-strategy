@@ -74,6 +74,15 @@ MIN_MARKET_CAP = 1_000_000_000  # only scan liquid-ish names (the 1.5M-share
                                 # volume filter would reject most below this
                                 # anyway; keeps API usage sane in peak season)
 
+# FOMC decision (statement) days — source: federalreserve.gov FOMC calendars.
+# Earnings that land within ±1 trading day get an event-risk flag: a Fed
+# decision inside the trade window adds market-wide vol the calendar is
+# implicitly short.
+FOMC_DECISIONS_2026 = [
+    "2026-01-28", "2026-03-18", "2026-04-29", "2026-06-17",
+    "2026-07-29", "2026-09-16", "2026-10-28", "2026-12-09",
+]
+
 CAL_HORIZON_DAYS = 30           # how far ahead we watch the earnings calendar
 NEAR_WINDOW_DAYS = 7            # full options analysis inside this window
 WATCH_MAX = 40                  # watchlist names given light (history-only) analysis
@@ -484,6 +493,54 @@ def analyze_ticker(symbol, earnings_date):
     }
 
 
+# ── Market regime (VIX level, VIX term structure, SPY trend) ────────────
+
+def fetch_market_regime():
+    """Market-level conditions displayed on the dashboard and stamped onto
+    the scan. Advisory (DIAG) — per the conditioner study, high/inverted VIX
+    regimes coincide with larger-than-usual earnings reactions AND put the
+    calendar's back-month IV at risk of crushing along with the front."""
+    try:
+        vix = yf.Ticker("^VIX").history(period="10d")["Close"]
+        vix3m = yf.Ticker("^VIX3M").history(period="10d")["Close"]
+        spy = yf.Ticker("SPY").history(period="1y")["Close"]
+        v, v3 = float(vix.iloc[-1]), float(vix3m.iloc[-1])
+        spy_c = float(spy.iloc[-1])
+        spy200 = float(spy.rolling(200).mean().iloc[-1])
+        ratio = v / v3 if v3 > 0 else None
+        if v >= 28 or (ratio and ratio >= 1.0):
+            regime = "STRESSED"
+        elif v >= 20 or (ratio and ratio >= 0.9):
+            regime = "ELEVATED"
+        else:
+            regime = "CALM"
+        return {
+            "vix": round(v, 2), "vix3m": round(v3, 2),
+            "vix_ratio": round(ratio, 3) if ratio else None,
+            "spy": round(spy_c, 2), "spy_200dma": round(spy200, 2),
+            "spy_bull": bool(spy_c >= spy200),
+            "regime": regime,
+        }
+    except Exception as e:
+        print(f"  market regime fetch failed: {e}")
+        return None
+
+
+def fomc_flag(ev_date: str, when: str):
+    """True when the announce or reaction day is within ±1 trading day of a
+    Fed decision day."""
+    try:
+        d = datetime.strptime(ev_date, "%Y-%m-%d").date()
+        rd = d if when == "BMO" else next_trading_day(d)
+        for f in FOMC_DECISIONS_2026:
+            fd = datetime.strptime(f, "%Y-%m-%d").date()
+            if abs((d - fd).days) <= 1 or abs((rd - fd).days) <= 1:
+                return True
+        return False
+    except Exception:
+        return None
+
+
 # ── Watchlist (light) analysis — no option chains ───────────────────────
 
 def analyze_watch_ticker(symbol, earnings_date):
@@ -551,6 +608,10 @@ def run_scan(max_analyze=45, tickers_override=None):
         # keep old field name for anything that still reads it
         ev["trade_window"] = "today" if ev["bucket"] == "now" else "upcoming"
 
+    market = fetch_market_regime()
+    for ev in events:
+        ev["fomc_window"] = fomc_flag(ev["date"], ev["when"])
+
     def cap(ev):
         return ev["market_cap"] or 0
 
@@ -568,6 +629,12 @@ def run_scan(max_analyze=45, tickers_override=None):
         sym = ev["ticker"]
         try:
             metrics = analyze_ticker(sym, ev["date"])
+            # Conditioner study (2,432 events): reactions near FOMC decisions
+            # are significantly larger (median z 2.39 vs 2.05) — FOMC in the
+            # trade window blocks Tier 1.
+            metrics["enhanced"]["no_fomc"] = not bool(ev.get("fomc_window"))
+            if ev.get("fomc_window"):
+                metrics["tier1"] = False
             analyzed.append({**ev, **metrics, "error": None})
             print(f"  {sym:6s} [{ev['bucket']:5s}] {metrics['tier']:12s} "
                   f"slope={metrics['ts_slope_0_45']} ivrv={metrics['iv30_rv30']} "
@@ -615,6 +682,7 @@ def run_scan(max_analyze=45, tickers_override=None):
         "horizon_days": CAL_HORIZON_DAYS,
         "date_source": "Nasdaq earnings calendar API, cross-checked per ticker "
                        "against Yahoo Finance (date_mismatch flags a >1 day gap)",
+        "market": market,
         "thresholds": {
             "ts_slope_0_45": SLOPE_THRESHOLD,
             "iv30_rv30": IVRV_THRESHOLD,

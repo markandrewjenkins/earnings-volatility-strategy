@@ -1,0 +1,364 @@
+{
+ "baseline": {
+  "n": 2432,
+  "median_z": 2.096,
+  "mean_z": 2.84,
+  "p_blowthrough": 0.5214
+ },
+ "conditioners": {
+  "fomc_window": {
+   "within \u00b11td of FOMC decision": {
+    "n": 482,
+    "median_z": 2.386,
+    "mean_z": 3.108,
+    "p_blowthrough": 0.5664,
+    "median_diff_vs_rest": 0.339,
+    "diff_ci95": [
+     0.032,
+     0.55
+    ],
+    "significant": true
+   },
+   "no FOMC nearby": {
+    "n": 1950,
+    "median_z": 2.047,
+    "mean_z": 2.774,
+    "p_blowthrough": 0.5103,
+    "median_diff_vs_rest": -0.339,
+    "diff_ci95": [
+     -0.556,
+     -0.034
+    ],
+    "significant": true
+   }
+  },
+  "vix_level": {
+   "VIX < 15": {
+    "n": 288,
+    "median_z": 2.662,
+    "mean_z": 3.525,
+    "p_blowthrough": 0.5972,
+    "median_diff_vs_rest": 0.611,
+    "diff_ci95": [
+     0.195,
+     1.063
+    ],
+    "significant": true
+   },
+   "VIX 15-20": {
+    "n": 1192,
+    "median_z": 2.362,
+    "mean_z": 3.013,
+    "p_blowthrough": 0.5629,
+    "median_diff_vs_rest": 0.458,
+    "diff_ci95": [
+     0.237,
+     0.657
+    ],
+    "significant": true
+   },
+   "VIX 20-28": {
+    "n": 669,
+    "median_z": 1.806,
+    "mean_z": 2.525,
+    "p_blowthrough": 0.4589,
+    "median_diff_vs_rest": -0.476,
+    "diff_ci95": [
+     -0.718,
+     -0.255
+    ],
+    "significant": true
+   },
+   "VIX >= 28": {
+    "n": 283,
+    "median_z": 1.669,
+    "mean_z": 2.163,
+    "p_blowthrough": 0.417,
+    "median_diff_vs_rest": -0.498,
+    "diff_ci95": [
+     -0.782,
+     -0.243
+    ],
+    "significant": true
+   }
+  },
+  "vix_term_structure": {
+   "contango (VIX/VIX3M < 0.9)": {
+    "n": 1372,
+    "median_z": 2.124,
+    "mean_z": 2.901,
+    "p_blowthrough": 0.5284,
+    "median_diff_vs_rest": 0.068,
+    "diff_ci95": [
+     -0.162,
+     0.295
+    ],
+    "significant": false
+   },
+   "flat (0.9-1.0)": {
+    "n": 902,
+    "median_z": 2.165,
+    "mean_z": 2.864,
+    "p_blowthrough": 0.5344,
+    "median_diff_vs_rest": 0.099,
+    "diff_ci95": [
+     -0.107,
+     0.357
+    ],
+    "significant": false
+   },
+   "inverted (>= 1.0)": {
+    "n": 158,
+    "median_z": 1.459,
+    "mean_z": 2.183,
+    "p_blowthrough": 0.3861,
+    "median_diff_vs_rest": -0.688,
+    "diff_ci95": [
+     -0.921,
+     -0.333
+    ],
+    "significant": true
+   }
+  },
+  "spy_trend": {
+   "SPY above 200dma (bull)": {
+    "n": 1970,
+    "median_z": 2.228,
+    "mean_z": 2.954,
+    "p_blowthrough": 0.5421,
+    "median_diff_vs_rest": 0.514,
+    "diff_ci95": [
+     0.262,
+     0.804
+    ],
+    "significant": true
+   },
+   "SPY below 200dma (bear)": {
+    "n": 462,
+    "median_z": 1.713,
+    "mean_z": 2.356,
+    "p_blowthrough": 0.4329,
+    "median_diff_vs_rest": -0.514,
+    "diff_ci95": [
+     -0.809,
+     -0.271
+    ],
+    "significant": true
+   }
+  },
+  "beat_history": {
+   "serial beater (>=75% prior beats)": {
+    "n": 1480,
+    "median_z": 2.39,
+    "mean_z": 3.04,
+    "p_blowthrough": 0.5561,
+    "median_diff_vs_rest": 0.529,
+    "diff_ci95": [
+     0.282,
+     0.758
+    ],
+    "significant": true
+   },
+   "mixed (50-75%)": {
+    "n": 442,
+    "median_z": 2.094,
+    "mean_z": 2.87,
+    "p_blowthrough": 0.5181,
+    "median_diff_vs_rest": -0.002,
+    "diff_ci95": [
+     -0.273,
+     0.321
+    ],
+    "significant": false
+   },
+   "inconsistent (<50%)": {
+    "n": 102,
+    "median_z": 1.792,
+    "mean_z": 2.635,
+    "p_blowthrough": 0.4412,
+    "median_diff_vs_rest": -0.324,
+    "diff_ci95": [
+     -0.64,
+     0.12
+    ],
+    "significant": false
+   }
+  },
+  "sector_cohort_heat": {
+   "quiet cohort (avg peer z < 1.0)": {
+    "n": 58,
+    "median_z": 0.788,
+    "mean_z": 1.171,
+    "p_blowthrough": 0.1724,
+    "median_diff_vs_rest": -1.369,
+    "diff_ci95": [
+     -1.576,
+     -1.096
+    ],
+    "significant": true
+   },
+   "normal cohort (1.0-1.5)": {
+    "n": 139,
+    "median_z": 1.963,
+    "mean_z": 2.389,
+    "p_blowthrough": 0.4964,
+    "median_diff_vs_rest": -0.147,
+    "diff_ci95": [
+     -0.683,
+     0.287
+    ],
+    "significant": false
+   },
+   "hot cohort (>= 1.5)": {
+    "n": 1122,
+    "median_z": 2.457,
+    "mean_z": 3.111,
+    "p_blowthrough": 0.566,
+    "median_diff_vs_rest": 0.537,
+    "diff_ci95": [
+     0.294,
+     0.784
+    ],
+    "significant": true
+   }
+  },
+  "sector": {
+   "Comm": {
+    "n": 120,
+    "median_z": 3.163,
+    "mean_z": 4.256,
+    "p_blowthrough": 0.725,
+    "median_diff_vs_rest": 1.113,
+    "diff_ci95": [
+     0.626,
+     2.04
+    ],
+    "significant": true
+   },
+   "ConsDisc": {
+    "n": 358,
+    "median_z": 2.514,
+    "mean_z": 3.258,
+    "p_blowthrough": 0.581,
+    "median_diff_vs_rest": 0.463,
+    "diff_ci95": [
+     0.098,
+     0.839
+    ],
+    "significant": true
+   },
+   "Energy": {
+    "n": 168,
+    "median_z": 1.135,
+    "mean_z": 1.453,
+    "p_blowthrough": 0.2857,
+    "median_diff_vs_rest": -1.062,
+    "diff_ci95": [
+     -1.299,
+     -0.835
+    ],
+    "significant": true
+   },
+   "Fins": {
+    "n": 324,
+    "median_z": 1.582,
+    "mean_z": 2.21,
+    "p_blowthrough": 0.4352,
+    "median_diff_vs_rest": -0.585,
+    "diff_ci95": [
+     -0.841,
+     -0.179
+    ],
+    "significant": true
+   },
+   "Health": {
+    "n": 336,
+    "median_z": 2.247,
+    "mean_z": 2.85,
+    "p_blowthrough": 0.5357,
+    "median_diff_vs_rest": 0.167,
+    "diff_ci95": [
+     -0.176,
+     0.568
+    ],
+    "significant": false
+   },
+   "Indus": {
+    "n": 288,
+    "median_z": 2.145,
+    "mean_z": 3.103,
+    "p_blowthrough": 0.5382,
+    "median_diff_vs_rest": 0.057,
+    "diff_ci95": [
+     -0.215,
+     0.489
+    ],
+    "significant": false
+   },
+   "Mater": {
+    "n": 96,
+    "median_z": 1.307,
+    "mean_z": 1.992,
+    "p_blowthrough": 0.3438,
+    "median_diff_vs_rest": -0.831,
+    "diff_ci95": [
+     -1.172,
+     -0.435
+    ],
+    "significant": true
+   },
+   "REIT": {
+    "n": 48,
+    "median_z": 1.123,
+    "mean_z": 1.631,
+    "p_blowthrough": 0.3333,
+    "median_diff_vs_rest": -0.996,
+    "diff_ci95": [
+     -1.418,
+     -0.237
+    ],
+    "significant": true
+   },
+   "Staples": {
+    "n": 192,
+    "median_z": 2.094,
+    "mean_z": 2.703,
+    "p_blowthrough": 0.5156,
+    "median_diff_vs_rest": -0.003,
+    "diff_ci95": [
+     -0.356,
+     0.474
+    ],
+    "significant": false
+   },
+   "Tech": {
+    "n": 454,
+    "median_z": 2.683,
+    "mean_z": 3.387,
+    "p_blowthrough": 0.6322,
+    "median_diff_vs_rest": 0.7,
+    "diff_ci95": [
+     0.45,
+     1.073
+    ],
+    "significant": true
+   },
+   "Util": {
+    "n": 48,
+    "median_z": 1.569,
+    "mean_z": 1.945,
+    "p_blowthrough": 0.2917,
+    "median_diff_vs_rest": -0.561,
+    "diff_ci95": [
+     -1.032,
+     -0.262
+    ],
+    "significant": true
+   }
+  }
+ },
+ "generated_utc": "2026-07-03T17:26:13",
+ "universe_size": 102,
+ "failed_tickers": [],
+ "methodology": "move_z = |reaction-day log return| / trailing 21d daily std (per stock). Bigger move_z is worse for short-earnings-vol. p_blowthrough = share of events with move_z > 2. diff_ci95 = bootstrap 95% CI of the median difference vs all other events; 'significant' = CI excludes zero. Measures the realized-move half of the trade only \u2014 IV-crush behavior (especially back-month) is NOT captured."
+}
