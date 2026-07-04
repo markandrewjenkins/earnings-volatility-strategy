@@ -247,23 +247,32 @@ def kelly_fraction(draw, mean_shift=0.0, n=300_000):
     return round(float(fs[i]), 2)
 
 
-def path_stats(acct_r, trades_yr):
-    eq = np.cumprod(1.0 + acct_r, axis=1)
-    eq = np.concatenate([np.ones((acct_r.shape[0], 1)), eq], axis=1)
+def stats_from_equity(eq, trades_yr):
+    """eq: (n_paths, n_trades+1) equity curves starting at 1.0."""
     terminal = eq[:, -1]
-    yrs = acct_r.shape[1] / trades_yr
+    yrs = (eq.shape[1] - 1) / trades_yr
     cagr = terminal ** (1.0 / yrs) - 1.0
     mdd = np.array([max_drawdown(e) for e in eq])
+    # longest stretch below a prior peak, converted to months
+    ldd_m = np.array([longest_dd(e) for e in eq]) / (trades_yr / 12.0)
     return {
         "cagr_median": round(float(np.percentile(cagr, 50)), 4),
         "cagr_p5": round(float(np.percentile(cagr, 5)), 4),
         "cagr_p95": round(float(np.percentile(cagr, 95)), 4),
         "mdd_mean": round(float(mdd.mean()), 4),
         "mdd_p95_worst": round(float(np.percentile(mdd, 5)), 4),
+        "ldd_months_median": round(float(np.percentile(ldd_m, 50)), 1),
+        "ldd_months_p95": round(float(np.percentile(ldd_m, 95)), 1),
         "p_halved": round(float((mdd <= -0.5).mean()), 4),
         "p_dd80": round(float((mdd <= -0.8).mean()), 4),
         "p_loss_10y": round(float((terminal < 1.0).mean()), 4),
     }
+
+
+def path_stats(acct_r, trades_yr):
+    eq = np.cumprod(1.0 + acct_r, axis=1)
+    eq = np.concatenate([np.ones((acct_r.shape[0], 1)), eq], axis=1)
+    return stats_from_equity(eq, trades_yr)
 
 
 def sizing_study(trades_yr=120, years=10, n_paths=2500):
@@ -296,7 +305,68 @@ def sizing_study(trades_yr=120, years=10, n_paths=2500):
     conf = tiered(0.043, 0.086)       # avg exposure = 0.6*4.3 + 0.4*8.6 ≈ 6.0%
     conf_up = tiered(0.06, 0.12)      # avg ≈ 8.4% — sized up AND tilted
 
+    # ── Two-tier grid: every REC% × Tier1% combination ──────────────────
+    grid = []
+    for f_rec in (0.04, 0.06, 0.08, 0.10, 0.12):
+        for f_t1 in (0.06, 0.08, 0.10, 0.12, 0.15, 0.18):
+            if f_t1 < f_rec:
+                continue
+            s = tiered(f_rec, f_t1)
+            s["f_rec"] = f_rec
+            s["f_t1"] = f_t1
+            s["avg_exposure"] = round((1 - t1_share) * f_rec + t1_share * f_t1, 3)
+            grid.append(s)
+
+    # ── Dynamic drawdown-responsive sizing ───────────────────────────────
+    # Under the model's i.i.d. assumption, your own drawdown carries no
+    # information about the next trade — so scaling size by your own P&L is
+    # pure variance re-timing, not edge. We test it anyway so the numbers
+    # (not just theory) make the case. Modes scale the base two-tier size
+    # linearly with current drawdown, capped at ±50% adjustment by DD=30%.
+    def dynamic(mode, f_rec=0.06, f_t1=0.12, n_paths_d=2000):
+        n = n_paths_d * n_tr
+        r = calendar_returns(n, rng).reshape(n_paths_d, n_tr) / 100.0
+        is_t1 = rng.random((n_paths_d, n_tr)) < t1_share
+        r = np.where(is_t1, r + 0.015, r)
+        f_base = np.where(is_t1, f_t1, f_rec)
+        eq = np.ones(n_paths_d)
+        peak = np.ones(n_paths_d)
+        eq_path = np.empty((n_paths_d, n_tr + 1))
+        eq_path[:, 0] = 1.0
+        for t in range(n_tr):
+            dd = np.clip(1.0 - eq / peak, 0.0, 0.30) / 0.30  # 0..1 at 30% DD
+            if mode == "boost_in_dd":
+                mult = 1.0 + 0.5 * dd
+            elif mode == "cut_in_dd":
+                mult = 1.0 - 0.5 * dd
+            else:
+                mult = 1.0
+            f = f_base[:, t] * mult
+            eq = eq * (1.0 + np.maximum(f * r[:, t], -0.95))
+            peak = np.maximum(peak, eq)
+            eq_path[:, t + 1] = eq
+        return stats_from_equity(eq_path, trades_yr)
+
+    dyn = {
+        "constant": dynamic("constant"),
+        "boost_in_dd": dynamic("boost_in_dd"),
+        "cut_in_dd": dynamic("cut_in_dd"),
+        "labels": {
+            "constant": "Constant 6%/12% (baseline)",
+            "boost_in_dd": "Boost in drawdown (+50% size by 30% DD) - 'it should bounce back'",
+            "cut_in_dd": "Cut in drawdown (-50% size by 30% DD) - classic risk throttle",
+        },
+        "note": ("All three use the same 6%/12% two-tier base. Under the "
+                 "model's independent-trades assumption, drawdown-responsive "
+                 "sizing cannot add edge — it only re-times variance. Sizing "
+                 "on MARKET conditions (the conditioner study) is the "
+                 "information-bearing version of the same instinct."),
+    }
+
     return {
+        "grid": grid,
+        "dynamic": dyn,
+        "t1_share": t1_share,
         "full_kelly_frac": full_kelly,
         "note": ("Full Kelly computed numerically on the calibrated fat-tailed "
                  "distribution. Sweep uses the baseline calendar distribution "
@@ -337,6 +407,18 @@ def main():
         s = tt[k]
         print(f"  {tt['labels'][k]:48s} medCAGR={s['cagr_median']*100:6.1f}%  "
               f"meanDD={s['mdd_mean']*100:5.1f}%  P(halve)={s['p_halved']*100:4.1f}%")
+    print("\nGRID (REC% / T1%):")
+    for g in sizing["grid"]:
+        print(f"  {g['f_rec']*100:4.1f}/{g['f_t1']*100:4.1f}  avg={g['avg_exposure']*100:4.1f}%  "
+              f"CAGR={g['cagr_median']*100:6.1f}%  meanDD={g['mdd_mean']*100:5.1f}%  "
+              f"worst5%DD={g['mdd_p95_worst']*100:5.1f}%  ldd={g['ldd_months_median']:4.1f}m/"
+              f"{g['ldd_months_p95']:4.1f}m  P(halve)={g['p_halved']*100:4.1f}%")
+    print("\nDYNAMIC SIZING (base 6/12):")
+    for k in ("constant", "boost_in_dd", "cut_in_dd"):
+        s = sizing["dynamic"][k]
+        print(f"  {sizing['dynamic']['labels'][k]:64s} CAGR={s['cagr_median']*100:6.1f}%  "
+              f"meanDD={s['mdd_mean']*100:5.1f}%  ldd={s['ldd_months_median']:4.1f}m  "
+              f"P(halve)={s['p_halved']*100:4.1f}%")
 
     out = {
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),

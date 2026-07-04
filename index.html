@@ -443,7 +443,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="pb" style="overflow-x:auto;padding-top:0">
         <table>
           <thead><tr><th>Size/trade</th><th>× Kelly</th><th>Median CAGR</th><th>CAGR p5–p95</th>
-            <th>Mean max DD</th><th>Worst 5% DD</th><th>P(ever halved)</th><th>P(DD ≥ 80%)</th></tr></thead>
+            <th>Mean max DD</th><th>Worst 5% DD</th><th>Longest DD (med/p95)</th><th>P(ever halved)</th><th>P(DD ≥ 80%)</th></tr></thead>
           <tbody id="sizing-tbody"></tbody>
         </table>
       </div>
@@ -455,6 +455,44 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         </table>
       </div>
       <div class="pb" id="sizing-verdict" style="padding-top:0"></div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Two-tier grid — every REC% × Tier 1% combination</span>
+        <span class="dimtxt" style="text-transform:none">40% of trades assumed Tier 1 (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr><th>REC / Tier 1</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
+            <th>Worst 5% DD</th><th>Longest DD (med / p95)</th><th>P(ever halved)</th></tr></thead>
+          <tbody id="grid-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Dynamic sizing — scaling by your own drawdown</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Policy (base 6% / 12%)</th><th>Median CAGR</th><th>Mean max DD</th><th>Longest DD (med)</th><th>P(ever halved)</th></tr></thead>
+          <tbody id="dyn-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pb prose" style="padding-top:0">
+        <p><strong style="color:var(--yellow)">Is boosting size in a drawdown strategically sound?</strong> The numbers above
+        say boost-in-DD earns slightly more and recovers faster — but read <em>why</em> before copying it. Trades here are
+        independent: after a losing streak the next trade's odds are <em>unchanged</em> ("the situation reverses itself soon"
+        is the gambler's fallacy — there is no mean-reversion in your own P&L). Boost-in-DD wins only because it raises
+        <em>average</em> exposure while the edge is positive; you'd get the same growth more safely by just sizing up
+        constantly. Its true cost shows up exactly when it matters: if a drawdown is happening because the <em>edge itself
+        degraded</em> (the usual reason live), boost-in-DD adds size to a broken strategy — the classic blow-up pattern.
+        Cut-in-DD is the defensible throttle if you fear edge decay: shallower holes, but slower recoveries (longest DD
+        stretches from 5.7 to 6.2 months) and less growth.</p>
+        <p><strong style="color:var(--yellow)">The sound version of the instinct:</strong> scale size on <em>information</em>,
+        not on your own P&L — that's what the two-tier REC/Tier-1 split already does, and what the conditioner study
+        supports extending: downsize or skip FOMC-window trades (done — blocks Tier 1), size down after hot sector cohorts,
+        up after quiet ones, and demand extra richness when VIX &lt; 15. Your own losing streak carries no information;
+        market conditions do.</p>
+      </div>
     </div>
   </div>
 
@@ -1207,9 +1245,37 @@ function renderSizing() {
       '<td class="dimtxt">' + (s.cagr_p5 * 100).toFixed(0) + '% … ' + (s.cagr_p95 * 100).toFixed(0) + '%</td>' +
       '<td class="' + (s.mdd_mean > -0.25 ? 'pos' : 'neg') + '">' + (s.mdd_mean * 100).toFixed(1) + '%</td>' +
       '<td>' + (s.mdd_p95_worst * 100).toFixed(1) + '%</td>' +
+      '<td>' + (s.ldd_months_median !== undefined ? s.ldd_months_median.toFixed(1) + 'm / ' + s.ldd_months_p95.toFixed(1) + 'm' : '—') + '</td>' +
       '<td class="' + (s.p_halved > 0.02 ? 'neg' : 'pos') + '">' + (s.p_halved * 100).toFixed(1) + '%</td>' +
       '<td>' + (s.p_dd80 * 100).toFixed(1) + '%</td></tr>';
   }).join('');
+
+  if (sz.grid && $('grid-tbody')) {
+    $('grid-tbody').innerHTML = sz.grid.map(function (g) {
+      var live = g.f_rec === 0.06 && g.f_t1 === 0.12;
+      return '<tr' + (live ? ' style="background:#191408"' : '') + '>' +
+        '<td><b>' + (g.f_rec * 100).toFixed(0) + '% / ' + (g.f_t1 * 100).toFixed(0) + '%</b>' +
+        (live ? ' <span class="pill pill-t1">LIVE</span>' : '') + '</td>' +
+        '<td>' + (g.avg_exposure * 100).toFixed(1) + '%</td>' +
+        '<td><b>' + (g.cagr_median * 100).toFixed(0) + '%</b></td>' +
+        '<td class="' + (g.mdd_mean > -0.25 ? 'pos' : 'neg') + '">' + (g.mdd_mean * 100).toFixed(1) + '%</td>' +
+        '<td>' + (g.mdd_p95_worst * 100).toFixed(1) + '%</td>' +
+        '<td>' + g.ldd_months_median.toFixed(1) + 'm / ' + g.ldd_months_p95.toFixed(1) + 'm</td>' +
+        '<td class="' + (g.p_halved > 0.02 ? 'neg' : 'pos') + '">' + (g.p_halved * 100).toFixed(1) + '%</td></tr>';
+    }).join('');
+  }
+
+  if (sz.dynamic && $('dyn-tbody')) {
+    $('dyn-tbody').innerHTML = ['constant', 'boost_in_dd', 'cut_in_dd'].map(function (k) {
+      var s = sz.dynamic[k];
+      return '<tr>' +
+        '<td><b>' + sz.dynamic.labels[k] + '</b></td>' +
+        '<td>' + (s.cagr_median * 100).toFixed(0) + '%</td>' +
+        '<td>' + (s.mdd_mean * 100).toFixed(1) + '%</td>' +
+        '<td>' + s.ldd_months_median.toFixed(1) + 'm</td>' +
+        '<td>' + (s.p_halved * 100).toFixed(1) + '%</td></tr>';
+    }).join('');
+  }
 
   var tt = sz.two_tier;
   $('tiered-tbody').innerHTML = ['flat_6pct', 'confidence_scaled_same_exposure', 'confidence_scaled_sized_up'].map(function (k) {
