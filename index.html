@@ -349,8 +349,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       ATM call-calendar on each <span class="pill pill-rec">RECOMMENDED</span> candidate in that day's trade
       window (TBD-time reporters excluded), priced at delayed Yahoo mid quotes. The first scan at/after
       9:40 ET on the reaction day closes it — the research's "jump" exit. Account model: <strong>$10,000 start,
-      two-tier sizing: 6% of current equity on plain RECOMMENDED, 12% on Tier 1 ★</strong> (fractional; see the
-      Simulation tab's sizing study for why). Tier 1 status is
+      two-tier sizing: 12% of current equity on plain RECOMMENDED, 18% on Tier 1 ★, max 3 concurrent positions</strong>
+      (fractional; the aggressive point from the Simulation tab's sizing grid — max CAGR subject to worst-5% drawdown
+      &lt; 50% and fast recovery). Tier 1 status is
       recorded per trade so the two rating levels can be compared as the sample grows. Delayed mids grade the
       <em>strategy</em>, not your fills — expect your real executions to differ slightly.</div>
 
@@ -463,7 +464,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="pb" style="overflow-x:auto">
         <table>
           <thead><tr><th>REC / Tier 1</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
-            <th>Worst 5% DD</th><th>Longest DD (med / p95)</th><th>P(ever halved)</th></tr></thead>
+            <th>Worst 5% DD</th><th>Best 5% DD</th><th>Longest DD (med / p95)</th>
+            <th>Recovery from ≥30% trough (med · ≤6m)</th><th>P(ever halved)</th></tr></thead>
           <tbody id="grid-tbody"></tbody>
         </table>
       </div>
@@ -1104,7 +1106,7 @@ function renderPnl() {
   var t1 = closed.filter(function (t) { return t.tier1; });
   var t1pnl = t1.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0);
   var kpis = [
-    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 6% REC / 12% T1', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
+    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 12% REC / 18% T1', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
     { l: 'Total return', v: (totRet >= 0 ? '+' : '') + fmt(totRet, 2) + '%', s: 'compounded, fractional sizing', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
     { l: 'Closed trades', v: String(closed.length), s: open.length + ' open now' },
     { l: 'Win rate', v: closed.length ? fmt(wins.length / closed.length * 100, 0) + '%' : '—', s: 'target ≈66% (research)' },
@@ -1252,15 +1254,21 @@ function renderSizing() {
 
   if (sz.grid && $('grid-tbody')) {
     $('grid-tbody').innerHTML = sz.grid.map(function (g) {
-      var live = g.f_rec === 0.06 && g.f_t1 === 0.12;
+      var live = g.f_rec === 0.12 && g.f_t1 === 0.18;
+      var rc = g.recovery || {};
+      var recTxt = (rc.p_major_dd30 && rc.rec_months_median !== null)
+        ? rc.rec_months_median.toFixed(1) + 'm · ' + (rc.p_rec_6m * 100).toFixed(0) + '%'
+        : '<span class="dimtxt">no ≥30% DDs</span>';
       return '<tr' + (live ? ' style="background:#191408"' : '') + '>' +
         '<td><b>' + (g.f_rec * 100).toFixed(0) + '% / ' + (g.f_t1 * 100).toFixed(0) + '%</b>' +
         (live ? ' <span class="pill pill-t1">LIVE</span>' : '') + '</td>' +
         '<td>' + (g.avg_exposure * 100).toFixed(1) + '%</td>' +
         '<td><b>' + (g.cagr_median * 100).toFixed(0) + '%</b></td>' +
         '<td class="' + (g.mdd_mean > -0.25 ? 'pos' : 'neg') + '">' + (g.mdd_mean * 100).toFixed(1) + '%</td>' +
-        '<td>' + (g.mdd_p95_worst * 100).toFixed(1) + '%</td>' +
+        '<td class="' + (g.mdd_p95_worst > -0.5 ? '' : 'neg') + '">' + (g.mdd_p95_worst * 100).toFixed(1) + '%</td>' +
+        '<td class="dimtxt">' + (g.mdd_p5_best !== undefined ? (g.mdd_p5_best * 100).toFixed(1) + '%' : '—') + '</td>' +
         '<td>' + g.ldd_months_median.toFixed(1) + 'm / ' + g.ldd_months_p95.toFixed(1) + 'm</td>' +
+        '<td>' + recTxt + '</td>' +
         '<td class="' + (g.p_halved > 0.02 ? 'neg' : 'pos') + '">' + (g.p_halved * 100).toFixed(1) + '%</td></tr>';
     }).join('');
   }
@@ -1287,14 +1295,16 @@ function renderSizing() {
       '<td>' + (s.p_halved * 100).toFixed(1) + '%</td></tr>';
   }).join('');
 
-  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Verdict:</strong> 6% flat is very conservative (~7% of Kelly). ' +
-    'The frontier says the 8–12% band is defensible if a 20–30% average max drawdown is acceptable; beyond ~15% the ' +
-    'halving probability turns real, and 22%+ makes it likely. The best balance found is <strong>two-tier: 6% on plain ' +
-    'RECOMMENDED, 12% on Tier 1</strong> — median CAGR ~119% vs ~74% for flat 6%, still ~zero halving probability. The ' +
-    'paper tracker now uses exactly this. <strong>Big caveats:</strong> the model assumes independent trades and a stationary ' +
-    '+7.3% edge — real earnings cluster (3 positions at 12% = 36% of the account exposed in one overnight window; cap ' +
-    'concurrent positions), real edges decay, and CAGR figures inherit the ~120 trades/yr assumption. Trust the ' +
-    '<em>ordering</em> of these rows, not the absolute CAGRs.</div>';
+  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Live setting: 12% REC / 18% Tier 1, max 3 concurrent</strong> — ' +
+    'the aggressive point chosen to maximize CAGR subject to: worst-5% max drawdown under 50% (−43.7%), ~1% ' +
+    'halving probability, and fast recovery (median 2.9 months from a ≥30% trough; 89% of such troughs recover within ' +
+    '6 months; ~3% don\'t recover inside the simulated window, mostly drawdowns starting near its end). A key grid ' +
+    'insight: drawdown <em>duration</em> barely changes with size — bigger sizing digs deeper holes but climbs out just ' +
+    'as fast, so if depth-tolerance is high and duration is the concern, aggressive sizing costs less than it looks. ' +
+    '<strong>Big caveats:</strong> the model assumes independent trades and a stationary +7.3% edge — real earnings ' +
+    'cluster (hence the 3-position cap: 3 × 18% = 54% of the account through one macro night without it), real edges ' +
+    'decay (real halving risk is well above 1%), and CAGRs inherit the ~120 trades/yr assumption. Trust the ' +
+    '<em>ordering</em> of rows, not the absolute numbers.</div>';
 
   var pts_cagr = sz.sweep.map(function (s) { return { x: s.frac * 100, y: s.cagr_median * 100 }; });
   var pts_dd = sz.sweep.map(function (s) { return { x: s.frac * 100, y: -s.mdd_mean * 100 }; });

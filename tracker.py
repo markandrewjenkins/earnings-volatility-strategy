@@ -45,13 +45,15 @@ SCAN_PATH = os.path.join(HERE, "scan_results.json")
 LOG_PATH = os.path.join(HERE, "trades_log.json")
 
 START_EQUITY = 10_000.0
-# Two-tier confidence-scaled sizing (see the Simulation tab's sizing study):
-# plain RECOMMENDED trades risk 6% of current equity; Tier 1 setups (edge +
-# execution both confirmed) risk 12%. Both are far below the ~85% numeric
-# Kelly of the calibrated distribution; the binding constraint is drawdown
-# tolerance and same-night concentration, not growth.
-SIZING_FRAC_REC = 0.06
-SIZING_FRAC_T1 = 0.12
+# Two-tier confidence-scaled sizing (see the Simulation tab's sizing study).
+# User-selected aggressive point (2026-07-04): max CAGR subject to
+# worst-5% max drawdown < 50%, ~1% halving probability, and fast recovery
+# (median 2.9 months from a major trough, ~89% within 6 months — model
+# assumptions apply). The concurrency cap is what keeps a single earnings
+# night from stacking 3+ positions x 18% into one correlated macro event.
+SIZING_FRAC_REC = 0.12
+SIZING_FRAC_T1 = 0.18
+MAX_CONCURRENT = 3
 ENTRY_START = (15, 20)      # ET
 ENTRY_END = (16, 0)
 EXIT_AFTER = (9, 40)        # ET, on/after the reaction day
@@ -169,7 +171,13 @@ def try_entries(log, scan, et, force=False):
         return 0
     known = {t["id"] for t in log["open"]} | {t["id"] for t in log["closed"]}
     opened = 0
-    for ev in scan.get("events", []):
+    # Tier 1 candidates first — if the concurrency cap binds, keep the best
+    cands = sorted(scan.get("events", []),
+                   key=lambda e: (not e.get("tier1"), e.get("ts_slope_0_45") or 0))
+    for ev in cands:
+        if len(log["open"]) >= MAX_CONCURRENT:
+            print(f"  concurrency cap ({MAX_CONCURRENT}) reached — no more entries")
+            break
         if ev.get("bucket") != "now" or ev.get("tier") != "RECOMMENDED":
             continue
         if ev.get("when") == "TNS":
