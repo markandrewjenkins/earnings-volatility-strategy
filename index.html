@@ -349,7 +349,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       ATM call-calendar on each <span class="pill pill-rec">RECOMMENDED</span> candidate in that day's trade
       window (TBD-time reporters excluded), priced at delayed Yahoo mid quotes. The first scan at/after
       9:40 ET on the reaction day closes it — the research's "jump" exit. Account model: <strong>$10,000 start,
-      6% of current equity per trade</strong> (fractional, matching the Monte Carlo sizing). Tier 1 status is
+      two-tier sizing: 6% of current equity on plain RECOMMENDED, 12% on Tier 1 ★</strong> (fractional; see the
+      Simulation tab's sizing study for why). Tier 1 status is
       recorded per trade so the two rating levels can be compared as the sample grows. Delayed mids grade the
       <em>strategy</em>, not your fills — expect your real executions to differ slightly.</div>
 
@@ -380,7 +381,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         <table>
           <thead><tr>
             <th>Result</th><th>Ticker</th><th>Tier</th><th>Earnings</th><th>Implied move</th><th>Actual move</th>
-            <th>Debit</th><th>Exit value</th><th>Return</th><th>P&amp;L $ (6%)</th><th>Equity after</th>
+            <th>Debit</th><th>Exit value</th><th>Return</th><th>P&amp;L $</th><th>Equity after</th>
           </tr></thead>
           <tbody id="pnl-closed-tbody"></tbody>
         </table>
@@ -428,6 +429,33 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </div>
 
     <div class="note-box" style="margin-top:12px" id="sim-takeaway"></div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Position sizing study — growth vs drawdown frontier</span>
+        <span class="dimtxt" style="text-transform:none" id="sizing-sub"></span></div>
+      <div class="pb prose" style="padding-bottom:6px">
+        <p><strong style="color:var(--yellow)">Reading the numbers:</strong> the "mean/trade +7.3%" is the return
+        <em>on the calendar debit</em>, averaged over a wide distribution — individual trades routinely land +50–100%
+        or −100%; the small mean is what's left after netting. The <em>portfolio</em> gains per-trade fraction × trade
+        return: at 6% sizing, a +50% trade adds +3% to the account. Sizing is what converts the small per-trade edge
+        into CAGR — but every step up buys growth with drawdown:</p>
+      </div>
+      <div class="pb" style="overflow-x:auto;padding-top:0">
+        <table>
+          <thead><tr><th>Size/trade</th><th>× Kelly</th><th>Median CAGR</th><th>CAGR p5–p95</th>
+            <th>Mean max DD</th><th>Worst 5% DD</th><th>P(ever halved)</th><th>P(DD ≥ 80%)</th></tr></thead>
+          <tbody id="sizing-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pb" style="position:relative;height:300px"><canvas id="sizingChart"></canvas></div>
+      <div class="pb" style="overflow-x:auto;padding-top:0">
+        <table>
+          <thead><tr><th>Two-tier (confidence-scaled) sizing</th><th>Median CAGR</th><th>Mean max DD</th><th>P(ever halved)</th></tr></thead>
+          <tbody id="tiered-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pb" id="sizing-verdict" style="padding-top:0"></div>
+    </div>
   </div>
 
   <!-- ══ STRATEGY TAB ══ -->
@@ -480,6 +508,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           <tbody>
             <tr><td class="dimtxt">Legs</td><td>Sell front-month ATM, buy ~+30d same-strike ATM (debit)</td><td>Sell ATM call + ATM put, same expiry (credit)</td></tr>
             <tr><td class="dimtxt">Max loss</td><td class="pos">Debit paid (defined risk)</td><td class="neg">Unlimited — worst observed −9,200%</td></tr>
+            <tr><td class="dimtxt">Capital / margin up front</td><td class="pos">Just the debit (a few $100 per contract)</td><td class="neg">Naked-short margin — typically several × the equivalent calendar debit, and it can balloon intraday</td></tr>
+            <tr><td class="dimtxt">Used here</td><td class="pos">✓ The only structure traded &amp; tracked</td><td class="dimtxt">Reference only (research comparison)</td></tr>
             <tr><td class="dimtxt">Filtered mean return</td><td>+7.3% per trade (σ 28%)</td><td>+9.0% per trade (σ 48%)</td></tr>
             <tr><td class="dimtxt">Full Kelly</td><td>60% (misleading — 100% losses happen)</td><td>6.5%</td></tr>
             <tr><td class="dimtxt">Sizing used here</td><td class="pos">10% Kelly → ~6% of account per trade</td><td>30% Kelly → ~2% of account premium</td></tr>
@@ -965,13 +995,7 @@ function renderDetail() {
       (ev.calendar_debit_est ? ' · est. debit <b>$' + fmt(ev.calendar_debit_est) + '</b>' : '') +
       (n !== null ? ' · <b>' + n + ' contract' + (n === 1 ? '' : 's') + '</b> ≈ ' + (DATA.sizing.calendar_frac * 100) + '% of $' + fmtInt(acct()) : '') +
       '</div>';
-    if (ev.straddle_mid) {
-      var ns = Math.floor((acct() * DATA.sizing.straddle_frac) / (ev.straddle_mid * 100));
-      html += '<div style="margin-top:6px;padding:9px 12px;background:#170f0b;border:1px solid var(--border);border-radius:5px">' +
-        '<b style="color:var(--amber)">STRADDLE (alt) ·</b> sell ' + ev.front_exp + ' ATM call+put' +
-        ' · premium <b>$' + fmt(ev.straddle_mid) + '</b> · ' + ns + ' contract' + (ns === 1 ? '' : 's') +
-        ' ≈ ' + (DATA.sizing.straddle_frac * 100) + '% premium</div>';
-    }
+    html += '<div class="dimtxt" style="font-size:0.72rem;margin-top:6px">Calendars only — a short straddle is naked short options: broker margin runs several times the equivalent calendar debit and the loss is unbounded, vs the calendar’s defined-risk debit.</div>';
     html += '<div class="dimtxt" style="font-size:0.72rem;margin-top:6px">Enter final ~15 min before the close preceding the announcement · exit ~15 min after the next open. Quotes are delayed — reprice at your broker.</div>';
   }
   html += '</div>';
@@ -1042,7 +1066,7 @@ function renderPnl() {
   var t1 = closed.filter(function (t) { return t.tier1; });
   var t1pnl = t1.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0);
   var kpis = [
-    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 6%/trade', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
+    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 6% REC / 12% T1', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
     { l: 'Total return', v: (totRet >= 0 ? '+' : '') + fmt(totRet, 2) + '%', s: 'compounded, fractional sizing', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
     { l: 'Closed trades', v: String(closed.length), s: open.length + ' open now' },
     { l: 'Win rate', v: closed.length ? fmt(wins.length / closed.length * 100, 0) + '%' : '—', s: 'target ≈66% (research)' },
@@ -1166,6 +1190,65 @@ function renderSim() {
       'A middle path — Tier 1 execution filters only — keeps most of the growth while still improving every risk metric.';
   }
   $('sim-takeaway').innerHTML = takeHtml;
+  renderSizing();
+}
+
+function renderSizing() {
+  var sz = SIM.sizing;
+  if (!sz) return;
+  $('sizing-sub').textContent = 'full Kelly (numeric, fat-tailed): ' + (sz.full_kelly_frac * 100).toFixed(0) +
+    '%/trade — the research quotes 60%; the gap is model-fit sensitivity. Size nowhere near either.';
+  $('sizing-tbody').innerHTML = sz.sweep.map(function (s) {
+    var hl = (s.frac === 0.06 || s.frac === 0.12) ? ' style="background:#191408"' : '';
+    return '<tr' + hl + '>' +
+      '<td><b>' + (s.frac * 100).toFixed(0) + '%</b>' + (s.frac === 0.06 ? ' <span class="dimtxt">(REC)</span>' : (s.frac === 0.12 ? ' <span class="dimtxt">(Tier 1)</span>' : '')) + '</td>' +
+      '<td>' + (s.kelly_mult * 100).toFixed(0) + '%</td>' +
+      '<td><b>' + (s.cagr_median * 100).toFixed(0) + '%</b></td>' +
+      '<td class="dimtxt">' + (s.cagr_p5 * 100).toFixed(0) + '% … ' + (s.cagr_p95 * 100).toFixed(0) + '%</td>' +
+      '<td class="' + (s.mdd_mean > -0.25 ? 'pos' : 'neg') + '">' + (s.mdd_mean * 100).toFixed(1) + '%</td>' +
+      '<td>' + (s.mdd_p95_worst * 100).toFixed(1) + '%</td>' +
+      '<td class="' + (s.p_halved > 0.02 ? 'neg' : 'pos') + '">' + (s.p_halved * 100).toFixed(1) + '%</td>' +
+      '<td>' + (s.p_dd80 * 100).toFixed(1) + '%</td></tr>';
+  }).join('');
+
+  var tt = sz.two_tier;
+  $('tiered-tbody').innerHTML = ['flat_6pct', 'confidence_scaled_same_exposure', 'confidence_scaled_sized_up'].map(function (k) {
+    var s = tt[k];
+    var hl = k === 'confidence_scaled_sized_up' ? ' style="background:#191408"' : '';
+    return '<tr' + hl + '><td><b>' + tt.labels[k] + '</b>' + (k === 'confidence_scaled_sized_up' ? ' <span class="pill pill-t1">LIVE ON TRACKER</span>' : '') + '</td>' +
+      '<td><b>' + (s.cagr_median * 100).toFixed(0) + '%</b></td>' +
+      '<td>' + (s.mdd_mean * 100).toFixed(1) + '%</td>' +
+      '<td>' + (s.p_halved * 100).toFixed(1) + '%</td></tr>';
+  }).join('');
+
+  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Verdict:</strong> 6% flat is very conservative (~7% of Kelly). ' +
+    'The frontier says the 8–12% band is defensible if a 20–30% average max drawdown is acceptable; beyond ~15% the ' +
+    'halving probability turns real, and 22%+ makes it likely. The best balance found is <strong>two-tier: 6% on plain ' +
+    'RECOMMENDED, 12% on Tier 1</strong> — median CAGR ~119% vs ~74% for flat 6%, still ~zero halving probability. The ' +
+    'paper tracker now uses exactly this. <strong>Big caveats:</strong> the model assumes independent trades and a stationary ' +
+    '+7.3% edge — real earnings cluster (3 positions at 12% = 36% of the account exposed in one overnight window; cap ' +
+    'concurrent positions), real edges decay, and CAGR figures inherit the ~120 trades/yr assumption. Trust the ' +
+    '<em>ordering</em> of these rows, not the absolute CAGRs.</div>';
+
+  var pts_cagr = sz.sweep.map(function (s) { return { x: s.frac * 100, y: s.cagr_median * 100 }; });
+  var pts_dd = sz.sweep.map(function (s) { return { x: s.frac * 100, y: -s.mdd_mean * 100 }; });
+  if (window.sizingChart2) window.sizingChart2.destroy();
+  window.sizingChart2 = new Chart($('sizingChart'), {
+    type: 'line',
+    data: { datasets: [
+      { label: 'median CAGR %', data: pts_cagr, borderColor: '#52e6bd', backgroundColor: 'rgba(82,230,189,0.1)', yAxisID: 'y', pointRadius: 3, tension: 0.2 },
+      { label: 'mean max drawdown % (abs)', data: pts_dd, borderColor: '#f2563a', backgroundColor: 'rgba(242,86,58,0.1)', yAxisID: 'y1', pointRadius: 3, tension: 0.2 }
+    ]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: {
+        x: { type: 'linear', title: { display: true, text: 'per-trade size (% of account)', color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } },
+        y: { position: 'left', title: { display: true, text: 'median CAGR %', color: '#52e6bd' }, grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#52e6bd' } },
+        y1: { position: 'right', title: { display: true, text: 'mean max DD % (abs)', color: '#f2563a' }, grid: { display: false }, ticks: { color: '#f2563a' } }
+      },
+      plugins: { legend: { labels: { color: '#f6ecc6', boxWidth: 18, font: { size: 10 } } } }
+    }
+  });
 }
 
 function selectSimVariant(id) {

@@ -45,7 +45,13 @@ SCAN_PATH = os.path.join(HERE, "scan_results.json")
 LOG_PATH = os.path.join(HERE, "trades_log.json")
 
 START_EQUITY = 10_000.0
-SIZING_FRAC = 0.06          # fraction of current equity per trade (10% Kelly)
+# Two-tier confidence-scaled sizing (see the Simulation tab's sizing study):
+# plain RECOMMENDED trades risk 6% of current equity; Tier 1 setups (edge +
+# execution both confirmed) risk 12%. Both are far below the ~85% numeric
+# Kelly of the calibrated distribution; the binding constraint is drawdown
+# tolerance and same-night concentration, not growth.
+SIZING_FRAC_REC = 0.06
+SIZING_FRAC_T1 = 0.12
 ENTRY_START = (15, 20)      # ET
 ENTRY_END = (16, 0)
 EXIT_AFTER = (9, 40)        # ET, on/after the reaction day
@@ -112,13 +118,17 @@ def load_log():
     return {
         "created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "account": {"start": START_EQUITY, "equity": START_EQUITY,
-                    "sizing_frac": SIZING_FRAC, "mode": "fractional (idealized)"},
+                    "sizing": {"rec": SIZING_FRAC_REC, "tier1": SIZING_FRAC_T1},
+                    "mode": "fractional (idealized), two-tier"},
         "open": [],
         "closed": [],
     }
 
 
 def save_log(log):
+    log["account"]["sizing"] = {"rec": SIZING_FRAC_REC, "tier1": SIZING_FRAC_T1}
+    log["account"]["mode"] = "fractional (idealized), two-tier"
+    log["account"].pop("sizing_frac", None)
     log["updated_utc"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     tmp = LOG_PATH + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
@@ -227,7 +237,8 @@ def try_exits(log, et, force=False):
         actual_move = (abs(legs["spot"] / ep - 1.0) * 100.0) if (legs.get("spot") and ep) else None
 
         eq_before = log["account"]["equity"]
-        alloc = eq_before * SIZING_FRAC
+        frac = SIZING_FRAC_T1 if tr.get("tier1") else SIZING_FRAC_REC
+        alloc = eq_before * frac
         pnl_usd = alloc * pnl_pct / 100.0
         log["account"]["equity"] = round(eq_before + pnl_usd, 2)
 

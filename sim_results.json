@@ -1,8 +1,183 @@
 {
- "generated_utc": "2026-07-03T03:49:22+00:00",
+ "generated_utc": "2026-07-04T01:36:25+00:00",
  "n_paths": 4000,
  "years": 10,
  "start_equity": 10000.0,
+ "sizing": {
+  "full_kelly_frac": 0.85,
+  "note": "Full Kelly computed numerically on the calibrated fat-tailed distribution. Sweep uses the baseline calendar distribution (120 trades/yr, 10y, 2500 paths). Two-tier variants assume 40% of trades are Tier 1 with +1.5pp mean (the execution-filter assumption) \u2014 same distribution otherwise.",
+  "sweep": [
+   {
+    "cagr_median": 0.1889,
+    "cagr_p5": 0.1519,
+    "cagr_p95": 0.2267,
+    "mdd_mean": -0.0531,
+    "mdd_p95_worst": -0.0758,
+    "p_halved": 0.0,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0,
+    "frac": 0.02,
+    "kelly_mult": 0.02
+   },
+   {
+    "cagr_median": 0.4079,
+    "cagr_p5": 0.3182,
+    "cagr_p95": 0.4997,
+    "mdd_mean": -0.1039,
+    "mdd_p95_worst": -0.1496,
+    "p_halved": 0.0,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0,
+    "frac": 0.04,
+    "kelly_mult": 0.05
+   },
+   {
+    "cagr_median": 0.6639,
+    "cagr_p5": 0.5113,
+    "cagr_p95": 0.8315,
+    "mdd_mean": -0.153,
+    "mdd_p95_worst": -0.2183,
+    "p_halved": 0.0,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0,
+    "frac": 0.06,
+    "kelly_mult": 0.07
+   },
+   {
+    "cagr_median": 0.9554,
+    "cagr_p5": 0.7318,
+    "cagr_p95": 1.2047,
+    "mdd_mean": -0.1989,
+    "mdd_p95_worst": -0.2771,
+    "p_halved": 0.0,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0,
+    "frac": 0.08,
+    "kelly_mult": 0.09
+   },
+   {
+    "cagr_median": 1.2956,
+    "cagr_p5": 0.9525,
+    "cagr_p95": 1.6851,
+    "mdd_mean": -0.2435,
+    "mdd_p95_worst": -0.3387,
+    "p_halved": 0.0008,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0,
+    "frac": 0.1,
+    "kelly_mult": 0.12
+   },
+   {
+    "cagr_median": 1.6665,
+    "cagr_p5": 1.1954,
+    "cagr_p95": 2.1999,
+    "mdd_mean": -0.2867,
+    "mdd_p95_worst": -0.3992,
+    "p_halved": 0.0048,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0,
+    "frac": 0.12,
+    "kelly_mult": 0.14
+   },
+   {
+    "cagr_median": 2.3335,
+    "cagr_p5": 1.6378,
+    "cagr_p95": 3.1888,
+    "mdd_mean": -0.3473,
+    "mdd_p95_worst": -0.4709,
+    "p_halved": 0.0276,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0,
+    "frac": 0.15,
+    "kelly_mult": 0.18
+   },
+   {
+    "cagr_median": 3.1458,
+    "cagr_p5": 2.1207,
+    "cagr_p95": 4.4846,
+    "mdd_mean": -0.4067,
+    "mdd_p95_worst": -0.5388,
+    "p_halved": 0.1048,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0,
+    "frac": 0.18,
+    "kelly_mult": 0.21
+   },
+   {
+    "cagr_median": 4.4158,
+    "cagr_p5": 2.8728,
+    "cagr_p95": 6.6161,
+    "mdd_mean": -0.4781,
+    "mdd_p95_worst": -0.628,
+    "p_halved": 0.3604,
+    "p_dd80": 0.0008,
+    "p_loss_10y": 0.0,
+    "frac": 0.22,
+    "kelly_mult": 0.26
+   },
+   {
+    "cagr_median": 5.9988,
+    "cagr_p5": 3.7002,
+    "cagr_p95": 9.5265,
+    "mdd_mean": -0.5387,
+    "mdd_p95_worst": -0.6934,
+    "p_halved": 0.6416,
+    "p_dd80": 0.0028,
+    "p_loss_10y": 0.0,
+    "frac": 0.26,
+    "kelly_mult": 0.31
+   },
+   {
+    "cagr_median": 7.9215,
+    "cagr_p5": 4.6577,
+    "cagr_p95": 13.6051,
+    "mdd_mean": -0.5982,
+    "mdd_p95_worst": -0.7487,
+    "p_halved": 0.8712,
+    "p_dd80": 0.0148,
+    "p_loss_10y": 0.0,
+    "frac": 0.3,
+    "kelly_mult": 0.35
+   }
+  ],
+  "two_tier": {
+   "flat_6pct": {
+    "cagr_median": 0.7408,
+    "cagr_p5": 0.5801,
+    "cagr_p95": 0.9126,
+    "mdd_mean": -0.1444,
+    "mdd_p95_worst": -0.2076,
+    "p_halved": 0.0,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0
+   },
+   "confidence_scaled_same_exposure": {
+    "cagr_median": 0.7649,
+    "cagr_p5": 0.6011,
+    "cagr_p95": 0.9541,
+    "mdd_mean": -0.155,
+    "mdd_p95_worst": -0.2183,
+    "p_halved": 0.0,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0
+   },
+   "confidence_scaled_sized_up": {
+    "cagr_median": 1.1943,
+    "cagr_p5": 0.9065,
+    "cagr_p95": 1.5096,
+    "mdd_mean": -0.2105,
+    "mdd_p95_worst": -0.2965,
+    "p_halved": 0.0,
+    "p_dd80": 0.0,
+    "p_loss_10y": 0.0
+   },
+   "labels": {
+    "flat_6pct": "Flat 6% on every trade",
+    "confidence_scaled_same_exposure": "REC 4.3% / Tier 1 8.6% (same ~6% avg exposure)",
+    "confidence_scaled_sized_up": "REC 6% / Tier 1 12% (~8.4% avg exposure)"
+   }
+  }
+ },
  "methodology": "Monte Carlo, not an options-level backtest: free historical option chains do not exist, so per-trade return distributions are calibrated to the published Volatility Vibes research (72,500 events, 2007+). Improvement variants apply explicitly stated assumptions (mean shifts, trade-count cuts, tail trims) to the baseline distribution. Treat differences BETWEEN variants as the signal; absolute dollar outcomes inherit all the assumptions.",
  "variants": [
   {

@@ -234,6 +234,90 @@ def simulate(variant):
     }
 
 
+# ── Position sizing study ────────────────────────────────────────────────
+
+def kelly_fraction(draw, mean_shift=0.0, n=300_000):
+    """Numeric full Kelly: argmax_f E[log(1 + f*r)] on the actual (fat-tailed)
+    distribution — NOT mean/variance, which understates tail risk."""
+    rng = np.random.default_rng(5)
+    r = (draw(n, rng) + mean_shift) / 100.0
+    fs = np.linspace(0.01, 0.95, 95)
+    growth = [float(np.mean(np.log1p(np.maximum(f * r, -0.999)))) for f in fs]
+    i = int(np.argmax(growth))
+    return round(float(fs[i]), 2)
+
+
+def path_stats(acct_r, trades_yr):
+    eq = np.cumprod(1.0 + acct_r, axis=1)
+    eq = np.concatenate([np.ones((acct_r.shape[0], 1)), eq], axis=1)
+    terminal = eq[:, -1]
+    yrs = acct_r.shape[1] / trades_yr
+    cagr = terminal ** (1.0 / yrs) - 1.0
+    mdd = np.array([max_drawdown(e) for e in eq])
+    return {
+        "cagr_median": round(float(np.percentile(cagr, 50)), 4),
+        "cagr_p5": round(float(np.percentile(cagr, 5)), 4),
+        "cagr_p95": round(float(np.percentile(cagr, 95)), 4),
+        "mdd_mean": round(float(mdd.mean()), 4),
+        "mdd_p95_worst": round(float(np.percentile(mdd, 5)), 4),
+        "p_halved": round(float((mdd <= -0.5).mean()), 4),
+        "p_dd80": round(float((mdd <= -0.8).mean()), 4),
+        "p_loss_10y": round(float((terminal < 1.0).mean()), 4),
+    }
+
+
+def sizing_study(trades_yr=120, years=10, n_paths=2500):
+    """Sweep the per-trade fraction for the baseline calendar distribution,
+    plus two-tier 'confidence-scaled' sizing (Tier 1 setups get more)."""
+    rng = np.random.default_rng(99)
+    n_tr = trades_yr * years
+    full_kelly = kelly_fraction(calendar_returns)
+
+    sweep = []
+    for f in (0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15, 0.18, 0.22, 0.26, 0.30):
+        r = calendar_returns(n_paths * n_tr, rng).reshape(n_paths, n_tr) / 100.0
+        s = path_stats(np.maximum(f * r, -0.95), trades_yr)
+        s["frac"] = f
+        s["kelly_mult"] = round(f / full_kelly, 2)
+        sweep.append(s)
+
+    # Two-tier sizing: assume 40% of RECOMMENDED trades are Tier 1 with
+    # +1.5pp better mean (the execution-filter assumption). Same ~6% average
+    # exposure in both variants — only the allocation differs.
+    t1_share = 0.40
+    def tiered(f_rec, f_t1):
+        r = calendar_returns(n_paths * n_tr, rng).reshape(n_paths, n_tr) / 100.0
+        is_t1 = rng.random((n_paths, n_tr)) < t1_share
+        r = np.where(is_t1, r + 0.015, r)
+        f = np.where(is_t1, f_t1, f_rec)
+        return path_stats(np.maximum(f * r, -0.95), trades_yr)
+
+    flat = tiered(0.06, 0.06)
+    conf = tiered(0.043, 0.086)       # avg exposure = 0.6*4.3 + 0.4*8.6 ≈ 6.0%
+    conf_up = tiered(0.06, 0.12)      # avg ≈ 8.4% — sized up AND tilted
+
+    return {
+        "full_kelly_frac": full_kelly,
+        "note": ("Full Kelly computed numerically on the calibrated fat-tailed "
+                 "distribution. Sweep uses the baseline calendar distribution "
+                 f"({trades_yr} trades/yr, {years}y, {n_paths} paths). Two-tier "
+                 "variants assume 40% of trades are Tier 1 with +1.5pp mean "
+                 "(the execution-filter assumption) — same distribution "
+                 "otherwise."),
+        "sweep": sweep,
+        "two_tier": {
+            "flat_6pct": flat,
+            "confidence_scaled_same_exposure": conf,
+            "confidence_scaled_sized_up": conf_up,
+            "labels": {
+                "flat_6pct": "Flat 6% on every trade",
+                "confidence_scaled_same_exposure": "REC 4.3% / Tier 1 8.6% (same ~6% avg exposure)",
+                "confidence_scaled_sized_up": "REC 6% / Tier 1 12% (~8.4% avg exposure)",
+            },
+        },
+    }
+
+
 def main():
     results = []
     for v in VARIANTS:
@@ -242,9 +326,22 @@ def main():
         print(f"{r['label']:52s} med.term=${r['terminal']['median']:>12,} "
               f"CAGR={r['cagr']['median']*100:5.1f}% win={r['per_trade']['win_rate']*100:4.1f}% "
               f"meanDD={r['max_dd']['mean']*100:5.1f}% Sharpe={r['sharpe']}")
+    sizing = sizing_study()
+    print(f"\nfull Kelly (numeric, fat-tailed): {sizing['full_kelly_frac']*100:.0f}% per trade")
+    for s in sizing["sweep"]:
+        print(f"  f={s['frac']*100:4.1f}%  medCAGR={s['cagr_median']*100:6.1f}%  "
+              f"meanDD={s['mdd_mean']*100:5.1f}%  P(halve)={s['p_halved']*100:4.1f}%  "
+              f"P(DD>80)={s['p_dd80']*100:4.1f}%")
+    tt = sizing["two_tier"]
+    for k in ("flat_6pct", "confidence_scaled_same_exposure", "confidence_scaled_sized_up"):
+        s = tt[k]
+        print(f"  {tt['labels'][k]:48s} medCAGR={s['cagr_median']*100:6.1f}%  "
+              f"meanDD={s['mdd_mean']*100:5.1f}%  P(halve)={s['p_halved']*100:4.1f}%")
+
     out = {
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "n_paths": N_PATHS, "years": YEARS, "start_equity": START_EQUITY,
+        "sizing": sizing,
         "methodology": (
             "Monte Carlo, not an options-level backtest: free historical option chains do not "
             "exist, so per-trade return distributions are calibrated to the published Volatility "
