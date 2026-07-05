@@ -348,10 +348,11 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       Every scheduled scan in the last ~40 min before the close (15:20–16:00 ET) opens a hypothetical
       ATM call-calendar on each <span class="pill pill-rec">RECOMMENDED</span> candidate in that day's trade
       window (TBD-time reporters excluded), priced at delayed Yahoo mid quotes. The first scan at/after
-      9:40 ET on the reaction day closes it — the research's "jump" exit. Account model: <strong>$10,000 start,
-      two-tier sizing: 12% of current equity on plain RECOMMENDED, 18% on Tier 1 ★, max 3 concurrent positions</strong>
-      (fractional; the aggressive point from the Simulation tab's sizing grid — max CAGR subject to worst-5% drawdown
-      &lt; 50% and fast recovery). Tier 1 status is
+      9:40 ET on the reaction day closes it — the research's "jump" exit. Account model — the <strong>public-account
+      policy</strong>: $10,000 start; <strong>6% of current equity per RECOMMENDED trade, 10% per Tier 1 ★; max 3 concurrent
+      positions; circuit breaker</strong> (below −25% from peak equity all sizes halve, below −40% new entries pause).
+      Sizing is anchored to the published research's own 10%-Kelly figure, not this site's Monte Carlo — the account must
+      survive the edge being weaker than modeled, not just bad luck within the model. Tier 1 status is
       recorded per trade so the two rating levels can be compared as the sample grows. Delayed mids grade the
       <em>strategy</em>, not your fills — expect your real executions to differ slightly.</div>
 
@@ -1106,7 +1107,7 @@ function renderPnl() {
   var t1 = closed.filter(function (t) { return t.tier1; });
   var t1pnl = t1.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0);
   var kpis = [
-    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 12% REC / 18% T1', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
+    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 6% REC / 10% T1 + breaker', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
     { l: 'Total return', v: (totRet >= 0 ? '+' : '') + fmt(totRet, 2) + '%', s: 'compounded, fractional sizing', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
     { l: 'Closed trades', v: String(closed.length), s: open.length + ' open now' },
     { l: 'Win rate', v: closed.length ? fmt(wins.length / closed.length * 100, 0) + '%' : '—', s: 'target ≈66% (research)' },
@@ -1254,7 +1255,7 @@ function renderSizing() {
 
   if (sz.grid && $('grid-tbody')) {
     $('grid-tbody').innerHTML = sz.grid.map(function (g) {
-      var live = g.f_rec === 0.12 && g.f_t1 === 0.18;
+      var live = g.f_rec === 0.06 && g.f_t1 === 0.10;
       var rc = g.recovery || {};
       var recTxt = (rc.p_major_dd30 && rc.rec_months_median !== null)
         ? rc.rec_months_median.toFixed(1) + 'm · ' + (rc.p_rec_6m * 100).toFixed(0) + '%'
@@ -1295,16 +1296,19 @@ function renderSizing() {
       '<td>' + (s.p_halved * 100).toFixed(1) + '%</td></tr>';
   }).join('');
 
-  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Live setting: 12% REC / 18% Tier 1, max 3 concurrent</strong> — ' +
-    'the aggressive point chosen to maximize CAGR subject to: worst-5% max drawdown under 50% (−43.7%), ~1% ' +
-    'halving probability, and fast recovery (median 2.9 months from a ≥30% trough; 89% of such troughs recover within ' +
-    '6 months; ~3% don\'t recover inside the simulated window, mostly drawdowns starting near its end). A key grid ' +
-    'insight: drawdown <em>duration</em> barely changes with size — bigger sizing digs deeper holes but climbs out just ' +
-    'as fast, so if depth-tolerance is high and duration is the concern, aggressive sizing costs less than it looks. ' +
-    '<strong>Big caveats:</strong> the model assumes independent trades and a stationary +7.3% edge — real earnings ' +
-    'cluster (hence the 3-position cap: 3 × 18% = 54% of the account through one macro night without it), real edges ' +
-    'decay (real halving risk is well above 1%), and CAGRs inherit the ~120 trades/yr assumption. Trust the ' +
-    '<em>ordering</em> of rows, not the absolute numbers.</div>';
+  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Live setting — the public-account policy: 6% REC / 10% Tier 1, ' +
+    'max 3 concurrent, drawdown circuit breaker</strong> (sizes halve below −25% from peak equity; new entries pause below −40%). ' +
+    'Why not the aggressive corner the grid tempts with: every CAGR in these tables sits on assumptions (a stationary +7.3% edge, ' +
+    'independent trades, ~120 trades/yr) that no free data source can verify — there is no historical options data behind this model. ' +
+    'A public account has to survive being <em>wrong about the edge</em>, not just unlucky within it. At 6/10 the model shows ' +
+    '~100% median CAGR, worst-5% drawdown −26%, 95% of paths\' longest underwater spell ≤ ~10.5 months, and zero halvings — ' +
+    'numbers that leave room to be substantially wrong and still be defensible. What actually guarantees "no blow-up": ' +
+    'defined-risk debits sized as a fraction of current equity (equity can\'t reach zero), the concurrency cap (worst single ' +
+    'night bounded at ~30%... of which only part can be lost), and the breaker (a deep drawdown at this sizing means the edge ' +
+    'itself is in question — the breaker stops feeding capital to a possibly-broken strategy). Recovery to prior highs is ' +
+    '<em>expected</em>, never guaranteed — it depends on the edge staying real, which is exactly what this paper tracker exists ' +
+    'to test before real money. Validation gate: a full earnings season (~30+ closed trades) with a win rate near the ~66% ' +
+    'research figure and positive expectancy.</div>';
 
   var pts_cagr = sz.sweep.map(function (s) { return { x: s.frac * 100, y: s.cagr_median * 100 }; });
   var pts_dd = sz.sweep.map(function (s) { return { x: s.frac * 100, y: -s.mdd_mean * 100 }; });

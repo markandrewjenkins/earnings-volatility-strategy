@@ -45,15 +45,25 @@ SCAN_PATH = os.path.join(HERE, "scan_results.json")
 LOG_PATH = os.path.join(HERE, "trades_log.json")
 
 START_EQUITY = 10_000.0
-# Two-tier confidence-scaled sizing (see the Simulation tab's sizing study).
-# User-selected aggressive point (2026-07-04): max CAGR subject to
-# worst-5% max drawdown < 50%, ~1% halving probability, and fast recovery
-# (median 2.9 months from a major trough, ~89% within 6 months — model
-# assumptions apply). The concurrency cap is what keeps a single earnings
-# night from stacking 3+ positions x 18% into one correlated macro event.
-SIZING_FRAC_REC = 0.12
-SIZING_FRAC_T1 = 0.18
+# Public-account policy (2026-07-04). Sizing anchored to the published
+# research's own 10% Kelly (~6%/trade) rather than the model's aggressive
+# frontier — the model has no historical options data behind it, and a
+# public account has to survive being wrong about the edge, not just
+# unlucky within it. Structural guarantees (these, not the sizing, are
+# what "never blows up" actually rests on):
+#   - defined-risk calendars sized as a fraction of CURRENT equity
+#     -> equity can never reach zero
+#   - concurrency cap: max 3 positions -> worst single night is bounded
+#   - circuit breaker: below -25% from peak equity all sizes halve; below
+#     -40% new entries stop entirely (they resume at half size once the
+#     drawdown improves past -40%, full size past -25%). A drawdown that
+#     deep on ~6% sizing means the EDGE is in question, not the luck —
+#     the breaker forces that conversation before more capital goes in.
+SIZING_FRAC_REC = 0.06
+SIZING_FRAC_T1 = 0.10
 MAX_CONCURRENT = 3
+CB_HALVE_DD = 0.25      # halve sizing below this drawdown from peak equity
+CB_PAUSE_DD = 0.40      # stop new entries below this drawdown
 ENTRY_START = (15, 20)      # ET
 ENTRY_END = (16, 0)
 EXIT_AFTER = (9, 40)        # ET, on/after the reaction day
@@ -128,8 +138,11 @@ def load_log():
 
 
 def save_log(log):
-    log["account"]["sizing"] = {"rec": SIZING_FRAC_REC, "tier1": SIZING_FRAC_T1}
-    log["account"]["mode"] = "fractional (idealized), two-tier"
+    log["account"]["sizing"] = {"rec": SIZING_FRAC_REC, "tier1": SIZING_FRAC_T1,
+                                "max_concurrent": MAX_CONCURRENT,
+                                "cb_halve_dd": CB_HALVE_DD, "cb_pause_dd": CB_PAUSE_DD}
+    log["account"]["mode"] = "fractional (idealized), two-tier + circuit breaker"
+    account_drawdown(log)  # refresh peak_equity
     log["account"].pop("sizing_frac", None)
     log["updated_utc"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     tmp = LOG_PATH + ".tmp"
@@ -165,10 +178,32 @@ def exit_eligible(trade, et, force=False):
     return True  # past the reaction day (weekend runs, missed scans) — close ASAP
 
 
+def account_drawdown(log):
+    peak = log["account"].get("peak_equity", log["account"]["start"])
+    peak = max(peak, log["account"]["equity"])
+    log["account"]["peak_equity"] = peak
+    return 1.0 - log["account"]["equity"] / peak if peak > 0 else 0.0
+
+
+def sized_frac(tier1, log):
+    f = SIZING_FRAC_T1 if tier1 else SIZING_FRAC_REC
+    if account_drawdown(log) >= CB_HALVE_DD:
+        f *= 0.5
+    return f
+
+
 def try_entries(log, scan, et, force=False):
     if not in_entry_window(et, force):
         print(f"entry window closed (ET {et:%H:%M}) — skipping entries")
         return 0
+    dd = account_drawdown(log)
+    if dd >= CB_PAUSE_DD:
+        print(f"circuit breaker: account {dd*100:.1f}% below peak (>= {CB_PAUSE_DD*100:.0f}%) "
+              f"— new entries paused until equity recovers above the "
+              f"{CB_HALVE_DD*100:.0f}% line")
+        return 0
+    if dd >= CB_HALVE_DD:
+        print(f"circuit breaker: account {dd*100:.1f}% below peak — sizing halved")
     known = {t["id"] for t in log["open"]} | {t["id"] for t in log["closed"]}
     opened = 0
     # Tier 1 candidates first — if the concurrency cap binds, keep the best
@@ -203,6 +238,7 @@ def try_entries(log, scan, et, force=False):
             "when": ev["when"],
             "tier": ev["tier"],
             "tier1": bool(ev.get("tier1")),
+            "frac": sized_frac(bool(ev.get("tier1")), log),
             "structure": "call calendar",
             "strike": float(ev["atm_strike"]),
             "front_exp": ev["front_exp"],
@@ -245,7 +281,7 @@ def try_exits(log, et, force=False):
         actual_move = (abs(legs["spot"] / ep - 1.0) * 100.0) if (legs.get("spot") and ep) else None
 
         eq_before = log["account"]["equity"]
-        frac = SIZING_FRAC_T1 if tr.get("tier1") else SIZING_FRAC_REC
+        frac = tr.get("frac") or (SIZING_FRAC_T1 if tr.get("tier1") else SIZING_FRAC_REC)
         alloc = eq_before * frac
         pnl_usd = alloc * pnl_pct / 100.0
         log["account"]["equity"] = round(eq_before + pnl_usd, 2)
