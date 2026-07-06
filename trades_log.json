@@ -3,10 +3,17 @@
  "account": {
   "start": 10000.0,
   "equity": 10000.0,
-  "sizing_frac": 0.06,
-  "mode": "fractional (idealized)"
+  "mode": "fractional (idealized), two-tier + circuit breaker",
+  "sizing": {
+   "rec": 0.06,
+   "tier1": 0.1,
+   "max_concurrent": 3,
+   "cb_halve_dd": 0.25,
+   "cb_pause_dd": 0.4
+  },
+  "peak_equity": 10000.0
  },
  "open": [],
  "closed": [],
- "updated_utc": "2026-07-04T00:17:32+00:00"
+ "updated_utc": "2026-07-06T16:27:23+00:00"
 }
