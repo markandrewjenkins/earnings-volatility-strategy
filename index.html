@@ -175,6 +175,34 @@ tr.selected td { background: #241d0e }
 #g-mon .gm-hd { display: flex; align-items: baseline; gap: 9px; margin-bottom: 4px }
 #g-mon .gm-hd b { font-size: 1.05rem }
 @media (max-width: 900px) { .gantt-wrap { flex-direction: column } #g-mon { flex: 1 1 auto } }
+
+/* lanes rework */
+.gantt-scroll { cursor: grab; scrollbar-width: none; -ms-overflow-style: none }
+.gantt-scroll::-webkit-scrollbar { display: none }
+.gantt-scroll.dragging { cursor: grabbing; user-select: none }
+.g-hdr { display: flex }
+.g-lane { display: flex; border-top: 1px solid rgba(106,85,31,0.3) }
+.g-lanelbl { position: sticky; left: 0; z-index: 3; flex: 0 0 108px; background: var(--panel);
+  display: flex; align-items: center; padding: 4px 6px; border-right: 1px solid var(--border2) }
+.g-cell { flex: 0 0 64px; min-width: 64px; border-left: 1px solid rgba(106,85,31,0.22);
+  padding: 3px 2px; display: flex; flex-direction: column; gap: 3px; min-height: 30px }
+.g-cell.today { background: rgba(232,185,79,0.06) }
+.g-cell.fcst { background: repeating-linear-gradient(45deg, transparent 0 7px, rgba(106,85,31,0.07) 7px 9px) }
+.g-hcell { flex: 0 0 64px; min-width: 64px; font-size: 0.58rem; color: var(--dim); text-align: center;
+  text-transform: uppercase; letter-spacing: 0.04em; padding: 3px 2px; border-left: 1px solid rgba(106,85,31,0.22); white-space: nowrap }
+.g-hcell.today { color: var(--yellow); font-weight: 700 }
+.g-zone { font-size: 0.54rem; letter-spacing: 0.1em; color: var(--cyan); text-align: left; padding-left: 5px }
+#g-mon2 { display: flex; gap: 18px; margin-top: 10px; background: var(--panel2); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 11px 14px; font-size: 0.74rem; line-height: 1.7; flex-wrap: wrap }
+#gm-left { flex: 1.2 1 340px; min-width: 300px }
+#gm-right { flex: 1 1 320px; min-width: 300px; border-left: 1px solid var(--border); padding-left: 16px }
+@media (max-width:900px){ #gm-right { border-left: none; padding-left: 0 } }
+.gm-bar { display: flex; align-items: center; gap: 7px; margin: 4px 0 }
+.gm-bar .l { font-size: 0.64rem; color: var(--dim); min-width: 92px; text-transform: uppercase; letter-spacing: 0.03em }
+.gm-bar .t { flex: 1; height: 5px; background: #0a0805; border-radius: 3px; overflow: hidden; border: 1px solid var(--border) }
+.gm-bar .f { height: 100% }
+.gm-bar .v { font-size: 0.66rem; min-width: 58px; text-align: right; font-weight: 700 }
+
 .pill-amc   { background: #221608; color: var(--purple); border: 1px solid var(--purple) }
 .pill-bmo   { background: #0c1c28; color: var(--cyan);   border: 1px solid var(--cyan) }
 .pill-tns   { background: #1b180f; color: var(--gray);   border: 1px solid var(--gray) }
@@ -286,15 +314,13 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <!-- ══ SCANNER TAB ══ -->
   <div id="tab-scanner">
     <div class="panel">
-      <div class="ph"><span class="t">Earnings timeline — next 30 days</span>
-        <span class="dimtxt" style="text-transform:none">AM = pre-open (BMO) · PM = after-close (AMC) · hover a ticker for the full read-out; click to load it in the chart &amp; signal monitor below. Faded cyan = watchlist (metrics firm up near the date).</span></div>
+      <div class="ph"><span class="t">Trade calendar — entry days, next 30 days</span>
+        <span class="dimtxt" style="text-transform:none">x-axis = the day you BUY (always 15:20–16:00 ET; pre-open reporters map to the prior session) · lanes = rating · drag to pan · hover for the read-out, click to load below. Hatched zone = forecast (full options analysis begins 7 days out).</span></div>
       <div class="pb">
-        <div class="gantt-wrap">
-          <div class="gantt-scroll"><div class="gantt-grid" id="gantt-grid"></div></div>
-          <div id="g-mon">
-            <div id="gm-body"><span class="dimtxt">Hover an event on the timeline.</span></div>
-            <div id="gm-payoff-wrap" style="position:relative;height:190px;margin-top:8px;display:none"><canvas id="payoffChart"></canvas></div>
-          </div>
+        <div class="gantt-scroll" id="gantt-scroll"><div id="gantt-grid"></div></div>
+        <div id="g-mon2">
+          <div id="gm-left"><span class="dimtxt">Hover an event on the chart.</span></div>
+          <div id="gm-right"></div>
         </div>
       </div>
     </div>
@@ -809,9 +835,8 @@ function candRow(ev) {
   var legs = (ev.front_exp && ev.back_exp)
     ? ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) + ' @ ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1)
     : '—';
-  var windowCell = ev.bucket === 'now'
-    ? '<span class="pill pill-t1">NOW</span> ' + whenPill(ev.when)
-    : '<span class="dimtxt">' + ev.date.slice(5) + '</span> ' + whenPill(ev.when);
+  var windowCell = (ev.bucket === 'now' ? '<span class="pill pill-t1">NOW</span> ' : '') +
+    '<span class="dimtxt">buy</span> <b>' + entryDateOf(ev).slice(5) + '</b>';
   return [
     '<td><b>' + ev.ticker + '</b>' + mismatchFlag(ev) + ' <span class="dimtxt" style="font-size:0.72rem">' + (ev.sector || fmtCap(ev.market_cap)) + '</span></td>',
     '<td>' + windowCell + '</td>',
@@ -862,108 +887,126 @@ function selectTicker(t) {
 }
 
 /* ── Earnings timeline (Gantt) ──────────────────────────────────────── */
+/* ── Trade calendar (lanes by rating, x = entry day) ────────────────── */
+function entryDateOf(ev) {
+  var d = new Date(ev.date + 'T12:00:00');
+  if (ev.when === 'BMO') { do { d.setDate(d.getDate() - 1); } while (d.getDay() === 0 || d.getDay() === 6); }
+  return d.toISOString().slice(0, 10);
+}
+function reportTxt(ev) {
+  return ev.when === 'BMO' ? 'reports next morning pre-open' :
+         ev.when === 'AMC' ? 'reports after the close' : 'report time unconfirmed';
+}
+var LANES = [
+  { id: 'exec',  lbl: '<span class="pill pill-t1">EXECUTE ★</span>',  cls: 'gc-exec' },
+  { id: 'qual',  lbl: '<span class="pill pill-rec">QUALIFIED</span>', cls: 'gc-qual' },
+  { id: 'watch', lbl: '<span class="pill pill-con">WATCH</span>',     cls: 'gc-watch' },
+  { id: 'aside', lbl: '<span class="pill pill-avoid">STAND ASIDE</span>', cls: 'gc-aside' },
+  { id: 'wl',    lbl: '<span class="pill" style="color:var(--cyan);border:1px solid rgba(84,210,239,0.45)">FORECAST</span>', cls: 'gc-wl' }
+];
+function laneOf(ev, isW) {
+  if (isW) return 'wl';
+  if (ev.tier1) return 'exec';
+  if (ev.tier === 'RECOMMENDED') return 'qual';
+  if (ev.tier === 'CONSIDER') return 'watch';
+  return 'aside';
+}
 function renderGantt() {
-  var grid = $('gantt-grid');
-  var byDay = {};
-  function push(ev, isWatch) {
+  var byKey = {};
+  function push(ev, isW) {
     if (!ev.date) return;
-    var slot = ev.when === 'BMO' ? 'AM' : 'PM';
-    (byDay[ev.date] = byDay[ev.date] || { AM: [], PM: [] })[slot].push({ ev: ev, w: isWatch });
+    var k = entryDateOf(ev) + '|' + laneOf(ev, isW);
+    (byKey[k] = byKey[k] || []).push({ ev: ev, w: isW });
   }
   DATA.events.forEach(function (e) { if (e.bucket !== 'past') push(e, false); });
   (DATA.watchlist || []).forEach(function (e) { push(e, true); });
-  var html2 = '';
+
+  var days = [];
   var d = new Date(DATA.scan_date + 'T12:00:00');
-  var count = 0;
-  while (count < 22) {
-    var dow = d.getDay();
-    if (dow !== 0 && dow !== 6) {
-      var ds = d.toISOString().slice(0, 10);
-      var slots = byDay[ds] || { AM: [], PM: [] };
-      var lbl = d.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
-      html2 += '<div class="g-day' + (ds === DATA.scan_date ? ' today' : '') + '">' +
-        '<div class="g-day-hd">' + lbl + '</div><div class="g-halves">' +
-        ['AM', 'PM'].map(function (s) {
-          return '<div class="g-half"><div class="g-half-lbl">' + s + '</div>' +
-            slots[s].map(function (x) { return ganttChip(x.ev, x.w); }).join('') + '</div>';
-        }).join('') + '</div></div>';
-      count++;
-    }
+  while (days.length < 22) {
+    if (d.getDay() !== 0 && d.getDay() !== 6) days.push(d.toISOString().slice(0, 10));
     d.setDate(d.getDate() + 1);
   }
-  grid.innerHTML = html2;
+  var fcstIdx = 5; // ~7 calendar days ≈ 5 business days: analysis boundary
+  var hdr = '<div class="g-hdr"><div class="g-lanelbl g-zone">BUY DAY →</div>' + days.map(function (ds, i) {
+    var dd = new Date(ds + 'T12:00:00');
+    var lbl = dd.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
+    return '<div class="g-hcell' + (ds === DATA.scan_date ? ' today' : '') + '">' +
+      (i === fcstIdx ? '<span class="g-zone">FORECAST →</span>' : '') + lbl + '</div>';
+  }).join('') + '</div>';
+  var lanes = LANES.map(function (ln) {
+    return '<div class="g-lane"><div class="g-lanelbl">' + ln.lbl + '</div>' + days.map(function (ds, i) {
+      var items = byKey[ds + '|' + ln.id] || [];
+      return '<div class="g-cell' + (ds === DATA.scan_date ? ' today' : '') + (i >= fcstIdx ? ' fcst' : '') + '">' +
+        items.map(function (x) {
+          var cls = x.w ? (x.ev.likelihood === 'HIGH' ? 'gc-wl' : 'gc-wl-lo') : ln.cls;
+          return '<span class="g-chip ' + cls + (x.ev.ticker === selectedTicker ? ' sel' : '') +
+            '" onmouseover="ganttMon(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ')"' +
+            ' onclick="ganttPick(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ')">' + x.ev.ticker +
+            (x.ev.tier1 ? '★' : '') + '</span>';
+        }).join('') + '</div>';
+    }).join('') + '</div>';
+  }).join('');
+  $('gantt-grid').innerHTML = hdr + lanes;
 }
+function ganttPick(t, isW) { if (!isW) selectTicker(t); ganttMon(t, isW); }
 
-function ganttChip(ev, isWatch) {
-  var cls = isWatch ? (ev.likelihood === 'HIGH' ? 'gc-wl' : 'gc-wl-lo')
-    : (ev.tier1 ? 'gc-exec' : ev.tier === 'RECOMMENDED' ? 'gc-qual'
-       : ev.tier === 'CONSIDER' ? 'gc-watch' : 'gc-aside');
-  var star = (!isWatch && ev.tier1) ? '★' : '';
-  return '<span class="g-chip ' + cls + (ev.ticker === selectedTicker ? ' sel' : '') +
-    '" onmouseover="ganttMon(\'' + ev.ticker + '\',' + (isWatch ? 1 : 0) + ')"' +
-    ' onclick="ganttPick(\'' + ev.ticker + '\',' + (isWatch ? 1 : 0) + ')">' + ev.ticker + star + '</span>';
+function gmBar(lbl, pct, ok, txt) {
+  return '<div class="gm-bar"><span class="l">' + lbl + '</span><span class="t"><span class="f" style="width:' +
+    Math.max(3, Math.min(100, pct)) + '%;background:var(--' + (ok ? 'teal' : 'coral') + ')"></span></span>' +
+    '<span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span></div>';
 }
-
-function ganttPick(t, isW) {
-  if (!isW) selectTicker(t);
-  ganttMon(t, isW);
-}
-
 function ganttMon(t, isW) {
   var ev = null;
   var pool = isW ? (DATA.watchlist || []) : DATA.events;
   for (var i = 0; i < pool.length; i++) if (pool[i].ticker === t) { ev = pool[i]; break; }
   if (!ev) return;
-  var b = '<div class="gm-hd"><b>' + ev.ticker + '</b>' + (isW ? likePill(ev.likelihood) : tierPill(ev)) + whenPill(ev.when) + '</div>' +
-    '<div class="dimtxt" style="font-size:0.68rem">' + (ev.name || '') + ' · earnings ' + ev.date +
-    (ev.sector ? ' · ' + ev.sector : '') + mismatchFlag(ev) + '</div>';
+  var th = DATA.thresholds;
+  var buy = entryDateOf(ev);
+  var left = '<div class="gm-hd"><b>' + ev.ticker + '</b>' + (isW ? likePill(ev.likelihood) : tierPill(ev)) + '</div>' +
+    '<div class="dimtxt" style="font-size:0.68rem">' + (ev.name || '') + (ev.sector ? ' · ' + ev.sector : '') + mismatchFlag(ev) + '</div>' +
+    '<div style="font-size:0.7rem;margin:3px 0"><span class="live-lbl">Buy</span> <b>' + buy + '</b> 15:20–16:00 ET · ' +
+    reportTxt(ev) + ' · <span class="live-lbl">sell</span> next open +15m</div>';
   if (isW) {
-    b += '<div style="margin-top:6px">Price <b>' + fmt(ev.price) + '</b> · vol30 <b>' +
-      (ev.avg_volume30 ? (ev.avg_volume30 / 1e6).toFixed(1) + 'M' : '—') + '</b> ' +
-      passTxt(ev.pass_volume, ev.pass_volume ? 'PASS' : 'FAIL') +
-      (ev.hist_moves ? '<br>avg earnings move (8q) <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b>' : '') +
-      '<br><span class="dimtxt" style="font-size:0.66rem">Watchlist — the slope and IV/RV signals only form in the final days; full analysis begins inside 7 days.</span></div>';
-    $('gm-payoff-wrap').style.display = 'none';
+    left += '<div style="margin-top:5px">Price <b>' + fmt(ev.price) + '</b>' +
+      (ev.hist_moves ? ' · avg move (8q) <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b>' : '') + '</div>' +
+      gmBar('Volume 30d', (ev.avg_volume30 || 0) / (4 * th.avg_volume30) * 100, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M') +
+      gmBar('Price ≥ $20', Math.min(100, (ev.price || 0) / 80 * 100), (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0));
+    $('gm-right').innerHTML = '<div class="dimtxt" style="font-size:0.72rem;padding-top:8px">Forecast only — the slope and IV/RV signals form in the final days. Full options analysis, odds and a trade ticket appear once this name is inside the 7-day window.</div>';
     if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
   } else {
     var evp = (ev.odds !== null && ev.odds !== undefined) ? (ev.odds * 22 - (1 - ev.odds) * 21.2) : null;
-    b += '<div style="margin-top:5px"><span class="live-lbl">Rank</span> <b>' +
-      (ev.rank_score !== null && ev.rank_score !== undefined ? ev.rank_score + '/100' : '—') + '</b> · ' +
+    left += '<div style="margin:2px 0 4px"><span class="live-lbl">Rank</span> <b>' + (ev.rank_score || '—') + '/100</b> · ' +
       '<span class="live-lbl">Odds</span> ' + oddsTxt(ev) +
-      (evp !== null ? ' · <span class="live-lbl" title="odds x research mean win (+22%) minus (1-odds) x mean loss (-21.2%), on the debit">est. EV</span> <b class="' +
-        (evp >= 0 ? 'pos' : 'neg') + '">' + (evp >= 0 ? '+' : '') + evp.toFixed(1) + '%</b>' : '') + '</div>';
-    var defs = sigDefs().filter(function (d2) { return d2.gate !== 'DIAG'; });
-    b += '<div class="mini-dots" style="margin:5px 0">' + defs.map(function (d2) {
-      var p = d2.pass(ev);
-      return '<span class="mini-dot ' + (p === null ? 'na' : (p ? 'on' : 'off')) + '" title="' + d2.n + '"></span>';
-    }).join('') + '</div>';
-    if (ev.odds_factors && ev.odds_factors.length) {
-      b += '<div>' + ev.odds_factors.map(function (f) {
-        var up = f.d > 0;
-        var cls2 = f.d === 0 ? 'pill-con' : (up ? 'pill-rec' : 'pill-avoid');
-        return '<span class="pill ' + cls2 + '" style="font-size:0.58rem;margin:1px 2px 0 0">' +
-          (f.d === 0 ? '◆' : (up ? '▲' : '▼')) + ' ' + f.f + '</span>';
-      }).join('') + '</div>';
-    }
+      (evp !== null ? ' · <span class="live-lbl">est. EV</span> <b class="' + (evp >= 0 ? 'pos' : 'neg') + '">' +
+        (evp >= 0 ? '+' : '') + evp.toFixed(1) + '%</b>' : '') + '</div>';
+    var sm = ev.ts_slope_0_45 === null ? 0 : (ev.ts_slope_0_45 / th.ts_slope_0_45);
+    left += gmBar('TS slope', sm / 3 * 100, ev.pass_slope, fmt(ev.ts_slope_0_45, 4));
+    left += gmBar('IV30/RV30', (ev.iv30_rv30 || 0) / (2 * th.iv30_rv30) * 100, ev.pass_ivrv, fmt(ev.iv30_rv30, 2));
+    left += gmBar('Volume 30d', (ev.avg_volume30 || 0) / (4 * th.avg_volume30) * 100, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M');
+    left += gmBar('ATM spread', 100 - Math.min(100, (ev.atm_spread_pct || 0.2) / 0.2 * 100), ev.enhanced && ev.enhanced.tight_spread, ev.atm_spread_pct !== null ? fmt(ev.atm_spread_pct * 100, 1) + '%' : '—');
+    left += gmBar('Richness', (ev.richness || 0) / 2.5 * 100, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'n/a');
+    left += gmBar('ATM OI', Math.min(100, (ev.atm_oi || 0) / 2000 * 100), ev.enhanced && ev.enhanced.oi_ok, ev.atm_oi !== null && ev.atm_oi !== undefined ? fmtInt(ev.atm_oi) : '—');
+    var right = '';
     if (ev.front_exp && ev.back_exp) {
       var dc = ev.double_calendar;
       var theDebit = dc ? dc.debit_est : ev.calendar_debit_est;
-      b += '<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:5px">';
-      if (dc) b += '<b style="color:var(--yellow)">DOUBLE CAL</b> · calls @ ' + dc.strike_up + ' + puts @ ' + dc.strike_dn;
-      else b += '<b style="color:var(--yellow)">CALENDAR</b> · ATM ' + ev.atm_strike;
-      b += ' · ' + ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) +
+      right += '<div style="font-size:0.76rem;line-height:1.8">';
+      if (dc) right += '<b style="color:var(--yellow)">DOUBLE CAL</b> · calls @ ' + dc.strike_up + ' + puts @ ' + dc.strike_dn;
+      else right += '<b style="color:var(--yellow)">CALENDAR</b> · ATM ' + ev.atm_strike;
+      right += ' · ' + ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) +
         (theDebit ? ' · debit <b>$' + fmt(theDebit) + '</b>' : '');
       if (ev.suggested_frac && theDebit) {
         var n2 = Math.floor(acct() * ev.suggested_frac / (theDebit * 100));
-        b += '<br>size <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> ≈ $' +
-          fmtInt(Math.round(acct() * ev.suggested_frac)) + ' (' + n2 + 'x)';
+        right += ' · size <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> ≈ $' + fmtInt(Math.round(acct() * ev.suggested_frac)) + ' (' + n2 + 'x)';
       }
-      b += '<br><span class="dimtxt" style="font-size:0.64rem">enter 15:20–16:00 ET before the announcement · exit ≥9:40 ET reaction day</span></div>';
+      right += '</div>';
     }
-    $('gm-payoff-wrap').style.display = '';
+    right += '<div id="gm-payoff-wrap" style="position:relative;height:180px;margin-top:4px"><canvas id="payoffChart"></canvas></div>';
+    $('gm-right').innerHTML = right;
     renderPayoff(ev);
   }
-  $('gm-body').innerHTML = b;
+  $('gm-left').innerHTML = left;
 }
 
 /* ── Signal monitor & mini monitor ──────────────────────────────────── */
@@ -1587,6 +1630,14 @@ function load() {
 }
 
 try { var saved = localStorage.getItem('evs_acct'); if (saved) $('acct').value = saved; } catch (e) {}
+(function () {
+  var sc = $('gantt-scroll');
+  if (!sc) return;
+  var down = false, sx = 0, sl = 0;
+  sc.addEventListener('mousedown', function (e) { down = true; sx = e.pageX; sl = sc.scrollLeft; sc.classList.add('dragging'); });
+  window.addEventListener('mouseup', function () { down = false; sc.classList.remove('dragging'); });
+  window.addEventListener('mousemove', function (e) { if (down) sc.scrollLeft = sl - (e.pageX - sx); });
+})();
 load();
 setInterval(load, 5 * 60 * 1000);   // re-pull the JSON every 5 minutes
 </script>
