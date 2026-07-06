@@ -140,10 +140,41 @@ tr:hover td { background: #1f1a10 }
 tr.clickable { cursor: pointer }
 tr.selected td { background: #241d0e }
 .pill { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.03em; }
+/* Action-scale rating ramp: EXECUTE (gold) > QUALIFIED (teal) > WATCH (amber) > STAND ASIDE (muted) */
 .pill-rec   { background: #0c211c; color: var(--teal);   border: 1px solid var(--teal) }
 .pill-con   { background: #2a2008; color: var(--amber);  border: 1px solid var(--amber) }
-.pill-avoid { background: #2a120c; color: var(--coral);  border: 1px solid var(--coral) }
-.pill-t1    { background: #2a2210; color: var(--yellow); border: 1px solid var(--yellow) }
+.pill-avoid { background: #17150f; color: #8f8f8f;       border: 1px solid #55503c }
+.pill-t1    { background: #2a2210; color: var(--yellow); border: 1px solid var(--yellow); text-shadow: 0 0 8px rgba(232,185,79,0.4) }
+
+/* ── Earnings timeline (Gantt) ─────────────────────────────────────── */
+.gantt-wrap { display: flex; gap: 12px; align-items: stretch }
+.gantt-scroll { flex: 1; overflow-x: auto; min-width: 0 }
+.gantt-grid { display: flex; min-height: 190px }
+.g-day { min-width: 92px; flex: 0 0 92px; border-left: 1px solid var(--border); display: flex; flex-direction: column }
+.g-day.today { background: rgba(232,185,79,0.05); border-left-color: var(--yellow) }
+.g-day-hd { font-size: 0.64rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 4px 6px; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap }
+.g-day.today .g-day-hd { color: var(--yellow); font-weight: 700 }
+.g-halves { display: flex; flex: 1 }
+.g-half { flex: 1; padding: 3px 2px; display: flex; flex-direction: column; gap: 3px; min-height: 60px }
+.g-half + .g-half { border-left: 1px dashed rgba(106,85,31,0.35) }
+.g-half-lbl { font-size: 0.52rem; color: var(--gray); text-align: center; letter-spacing: 0.08em }
+.g-chip { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em; padding: 1px 5px;
+  border-radius: 3px; border: 1px solid; cursor: pointer; text-align: center; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; background: rgba(12,10,7,0.7); transition: transform .08s }
+.g-chip:hover { transform: scale(1.08) }
+.g-chip.sel { box-shadow: 0 0 7px currentColor }
+.gc-exec  { color: var(--yellow); border-color: var(--yellow) }
+.gc-qual  { color: var(--teal);   border-color: var(--teal) }
+.gc-watch { color: var(--amber);  border-color: var(--amber) }
+.gc-aside { color: #8f8f8f;       border-color: #55503c }
+.gc-wl    { color: var(--cyan);   border-color: rgba(84,210,239,0.45); opacity: 0.75 }
+.gc-wl-lo { color: var(--gray);   border-color: var(--border2); opacity: 0.6 }
+#g-mon { flex: 0 0 320px; background: var(--panel2); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 11px 13px; font-size: 0.74rem; line-height: 1.75; overflow-y: auto; max-height: 500px }
+#g-mon .gm-hd { display: flex; align-items: baseline; gap: 9px; margin-bottom: 4px }
+#g-mon .gm-hd b { font-size: 1.05rem }
+@media (max-width: 900px) { .gantt-wrap { flex-direction: column } #g-mon { flex: 1 1 auto } }
 .pill-amc   { background: #221608; color: var(--purple); border: 1px solid var(--purple) }
 .pill-bmo   { background: #0c1c28; color: var(--cyan);   border: 1px solid var(--cyan) }
 .pill-tns   { background: #1b180f; color: var(--gray);   border: 1px solid var(--gray) }
@@ -237,9 +268,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <span class="live-badge"><span class="live-dot"></span><span id="lv-feed">SCAN</span></span>
   <span class="live-item"><span class="live-lbl">Scan date</span><span class="live-val" id="lv-date">—</span></span>
   <span class="live-item"><span class="live-lbl">Tradeable today</span><span class="live-val" id="lv-today">—</span></span>
-  <span class="live-item"><span class="live-lbl">Recommended</span><span class="live-val pos" id="lv-rec">—</span></span>
-  <span class="live-item"><span class="live-lbl">Consider</span><span class="live-val" id="lv-con" style="color:var(--amber)">—</span></span>
-  <span class="live-item"><span class="live-lbl">Tier 1</span><span class="live-val" id="lv-t1" style="color:var(--yellow)">—</span></span>
+  <span class="live-item"><span class="live-lbl">Qualified</span><span class="live-val pos" id="lv-rec">—</span></span>
+  <span class="live-item"><span class="live-lbl">Watch</span><span class="live-val" id="lv-con" style="color:var(--amber)">—</span></span>
+  <span class="live-item"><span class="live-lbl">Execute ★</span><span class="live-val" id="lv-t1" style="color:var(--yellow)">—</span></span>
   <span class="live-item"><span class="live-lbl">Analyzed</span><span class="live-val" id="lv-analyzed">—</span></span>
   <span class="live-item"><span class="live-lbl">Watch high</span><span class="live-val neu" id="lv-watch">—</span></span>
   <span class="live-item"><span class="live-lbl">VIX</span><span class="live-val" id="lv-vix">—</span></span>
@@ -254,7 +285,21 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
   <!-- ══ SCANNER TAB ══ -->
   <div id="tab-scanner">
-    <div class="kpi-grid" id="kpi-strip"></div>
+    <div class="panel">
+      <div class="ph"><span class="t">Earnings timeline — next 30 days</span>
+        <span class="dimtxt" style="text-transform:none">AM = pre-open (BMO) · PM = after-close (AMC) · hover a ticker for the full read-out; click to load it in the chart &amp; signal monitor below. Faded cyan = watchlist (metrics firm up near the date).</span></div>
+      <div class="pb">
+        <div class="gantt-wrap">
+          <div class="gantt-scroll"><div class="gantt-grid" id="gantt-grid"></div></div>
+          <div id="g-mon">
+            <div id="gm-body"><span class="dimtxt">Hover an event on the timeline.</span></div>
+            <div id="gm-payoff-wrap" style="position:relative;height:190px;margin-top:8px;display:none"><canvas id="payoffChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-grid" id="kpi-strip" style="margin-top:12px"></div>
 
     <div class="note-box" style="margin-top:12px" id="timing-note">
       <strong>Trade window:</strong> candidates below report earnings <strong>after today's close (AMC)</strong> or
@@ -282,12 +327,6 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       </div>
     </div>
 
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Mini monitor — all analyzed events</span>
-        <span class="dimtxt" style="text-transform:none">each square = one check (3 base + 6 Tier 1, signal-monitor order). Click a card to load it below.</span></div>
-      <div class="pb"><div class="mini-grid" id="mini-grid"></div></div>
-    </div>
-
     <div class="row" style="margin-top:12px">
       <div class="panel" style="flex:1.5 1 520px">
         <div class="ph"><span class="t" id="cdl-title">Live chart</span><span class="dimtxt" id="cdl-sub" style="text-transform:none"></span></div>
@@ -296,15 +335,10 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           <div id="cdl-minimon" style="position:absolute;top:22px;right:14px;z-index:5;background:rgba(12,10,7,0.92);border:1px solid var(--border2);border-radius:6px;padding:9px 12px;font-size:0.72rem;min-width:190px;pointer-events:none"></div>
         </div>
       </div>
-      <div class="panel" style="flex:1 1 380px">
-        <div class="ph"><span class="t" id="payoff-title">Calendar payoff at front expiry</span>
-          <span style="display:inline-flex;gap:4px">
-            <button class="tab active" id="rp-payoff" style="padding:3px 10px;font-size:0.68rem" onclick="setRightPanel('payoff')">Payoff</button>
-            <button class="tab" id="rp-term" style="padding:3px 10px;font-size:0.68rem" onclick="setRightPanel('term')">IV term</button>
-          </span></div>
+      <div class="panel" style="flex:1 1 340px">
+        <div class="ph"><span class="t">IV term structure</span></div>
         <div class="pb">
-          <div id="rp-payoff-wrap" style="position:relative;height:300px"><canvas id="payoffChart"></canvas></div>
-          <div id="rp-term-wrap" style="position:relative;height:300px;display:none"><canvas id="tsChart"></canvas></div>
+          <div style="position:relative;height:300px"><canvas id="tsChart"></canvas></div>
           <div id="ticket-line" style="font-size:0.8rem;line-height:1.8;margin-top:8px"></div>
         </div>
       </div>
@@ -314,26 +348,12 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="ph"><span class="t" id="sigmon-title">Signal monitor — thresholds &amp; tolerances</span>
         <span class="dimtxt" style="text-transform:none">
           <span class="gate-base">BASE</span> gates the RECOMMENDED / CONSIDER / AVOID rating ·
-          <span class="gate-t1">TIER 1</span> = RECOMMENDED plus all six execution &amp; event checks ·
+          <span class="gate-t1">TIER 1</span> = QUALIFIED plus all six execution &amp; event checks (earns EXECUTE ★) ·
           <span class="gate-diag">DIAG</span> shown for information only</span></div>
       <div class="pb" style="overflow-x:auto"><table class="sig-mon" id="sigmon-table"></table></div>
     </div>
 
 
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Watchlist — next 30 days</span>
-        <span class="dimtxt" style="text-transform:none">largest names reporting 8–30 days out. The slope &amp; IV/RV filters only form in the final days, so “likely” grades the persistent criteria (volume, price, history). ⚠ = Nasdaq &amp; Yahoo disagree on the date by &gt;1 day</span></div>
-      <div class="pb" style="overflow-x:auto">
-        <table>
-          <thead><tr>
-            <th>Ticker</th><th>Earnings date</th><th>In</th><th>When</th><th>Likely to qualify</th>
-            <th>Price</th><th>Avg vol 30d</th><th>Vol filter</th><th>Avg move (8q)</th><th>Mkt cap</th>
-          </tr></thead>
-          <tbody id="watch-tbody"></tbody>
-        </table>
-        <div id="watch-empty" class="dimtxt" style="display:none;padding:14px 4px;font-size:0.85rem"></div>
-      </div>
-    </div>
 
     <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">On the calendar but not scanned</span><span class="dimtxt" style="text-transform:none">below $1B market cap or beyond scan budget — the 1.5M-share volume filter rejects nearly all of these anyway</span></div>
@@ -524,22 +544,21 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       </div>
     </div>
 
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Ratings — two levels, one hierarchy</span></div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Ratings — the action scale</span></div>
       <div class="pb prose">
-        <p><strong style="color:var(--yellow)">Level 1 — the base rating</strong> (original research, three filters):<br>
-           <span class="pill pill-rec">RECOMMENDED</span>&nbsp; all three filters pass ·
-           <span class="pill pill-con">CONSIDER</span>&nbsp; slope passes plus exactly one other ·
-           <span class="pill pill-avoid">AVOID</span>&nbsp; slope fails or fewer than two pass.</p>
-        <p><strong style="color:var(--yellow)">Level 2 — Tier 1</strong> is the top of the hierarchy and displays as its
-           own rating: <span class="pill pill-t1">TIER 1 ★</span> &gt; <span class="pill pill-rec">RECOMMENDED</span> &gt;
-           <span class="pill pill-con">CONSIDER</span> &gt; <span class="pill pill-avoid">AVOID</span>. Logically it is a
-           <strong>strict subset of RECOMMENDED</strong>, and it is treated distinctly everywhere: its own odds base
-           (70% vs 66%), its own sizing anchor (10% vs 6% of equity), and priority when the concurrency cap binds.
-           A trade earns it by being RECOMMENDED <em>and</em> passing all six execution &amp; event checks: ATM spread ≤ 10% of mid, price ≥ $20,
+        <p>One hierarchy; each level tells you what to do:<br>
+           <span class="pill pill-t1">EXECUTE ★</span>&nbsp; edge <em>and</em> execution confirmed — take it at full size ·
+           <span class="pill pill-rec">QUALIFIED</span>&nbsp; the research's three edge filters pass but an execution check doesn't — tradeable at base size ·
+           <span class="pill pill-con">WATCH</span>&nbsp; slope passes plus exactly one other filter — monitor into the close ·
+           <span class="pill pill-avoid">STAND ASIDE</span>&nbsp; no trade (muted grey deliberately — standing aside is passive; coral is reserved for live warnings like FOMC ⚡).
+           Mapping to the original research's terms: EXECUTE/QUALIFIED = "Recommended", WATCH = "Consider", STAND ASIDE = "Avoid".</p>
+        <p><strong style="color:var(--yellow)">EXECUTE is a strict subset of QUALIFIED</strong> and is treated distinctly
+           everywhere: its own odds base (70% vs 66%), its own sizing anchor (10% vs 6% of equity), and priority when the
+           concurrency cap binds. A trade earns the star by passing all six execution &amp; event checks: ATM spread ≤ 10% of mid, price ≥ $20,
            expected move ≥ 1.15× the stock's own historical earnings moves, ATM open interest ≥ 500, the earnings
            date confirmed (Nasdaq and Yahoo agree within a day), and no FOMC decision within ±1 trading day of the trade
-           window. In short: RECOMMENDED says the <em>edge</em> is there;
-           Tier 1 says you can actually <em>capture</em> it after real-world execution costs. Every threshold is shown
+           window. In short: QUALIFIED says the <em>edge</em> is there;
+           EXECUTE says you can actually <em>capture</em> it after real-world execution costs. Every threshold is shown
            live in the Scanner tab's signal monitor.</p>
       </div>
     </div>
@@ -719,11 +738,11 @@ function showTab(name) {
 }
 
 function tierPill(ev) {
-  // Tier 1 is displayed as its own (top) level: TIER 1 ★ > RECOMMENDED > CONSIDER > AVOID
-  if (ev.tier1) return '<span class="pill pill-t1">TIER 1 ★</span>';
-  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">RECOMMENDED</span>';
-  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">CONSIDER</span>';
-  return '<span class="pill pill-avoid">AVOID</span>';
+  // Action scale: EXECUTE (gold) > QUALIFIED (teal) > WATCH (amber) > STAND ASIDE (muted)
+  if (ev.tier1) return '<span class="pill pill-t1">EXECUTE ★</span>';
+  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">QUALIFIED</span>';
+  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">WATCH</span>';
+  return '<span class="pill pill-avoid">STAND ASIDE</span>';
 }
 function whenPill(w) {
   if (w === 'AMC') return '<span class="pill pill-amc">AMC</span>';
@@ -731,9 +750,9 @@ function whenPill(w) {
   return '<span class="pill pill-tns" title="Announcement time not supplied">TBD</span>';
 }
 function likePill(l) {
-  if (l === 'HIGH') return '<span class="pill pill-rec">HIGH</span>';
-  if (l === 'MEDIUM') return '<span class="pill pill-con">MEDIUM</span>';
-  return '<span class="pill pill-avoid">LOW</span>';
+  if (l === 'HIGH') return '<span class="pill pill-rec">LIKELY</span>';
+  if (l === 'MEDIUM') return '<span class="pill pill-con">POSSIBLE</span>';
+  return '<span class="pill pill-avoid">UNLIKELY</span>';
 }
 function mismatchFlag(ev) {
   var s = '';
@@ -762,9 +781,9 @@ function renderKpis() {
   var avgMove = moves.length ? (moves.reduce(function (a, b) { return a + b; }, 0) / moves.length) : null;
   var kpis = [
     { l: 'Tradeable today', v: String(evs.length), s: 'AMC today + BMO next session' },
-    { l: 'Recommended', v: String(c.recommended), s: 'all 3 filters pass', c: 'var(--teal)' },
-    { l: 'Consider', v: String(c.consider), s: 'slope + 1 of 2', c: 'var(--amber)' },
-    { l: 'Tier 1 ★', v: String(c.tier1), s: 'enhanced filters', c: 'var(--yellow)' },
+    { l: 'Qualified', v: String(c.recommended), s: 'edge filters pass', c: 'var(--teal)' },
+    { l: 'Watch', v: String(c.consider), s: 'slope + 1 of 2', c: 'var(--amber)' },
+    { l: 'Execute ★', v: String(c.tier1), s: 'edge + execution confirmed', c: 'var(--yellow)' },
     { l: 'Avg expected move', v: avgMove === null ? '—' : fmt(avgMove, 1) + '%', s: 'ATM straddle / price' },
     { l: 'Watchlist HIGH', v: String(c.watch_high || 0), s: 'likely qualifiers, next 30d', c: 'var(--cyan)' },
     { l: 'Calendar events', v: String(c.calendar_events), s: (DATA.horizon_days || 30) + '-day horizon' }
@@ -824,26 +843,6 @@ function renderCandidates() {
   $('cand-empty').style.display = evs.length ? 'none' : '';
   $('cand-empty').textContent = 'No analyzed events this week. Quiet weeks are normal between earnings seasons — the strategy only trades ~10–12% of events even in peak season. See the Watchlist below for what’s coming.';
 
-  var watch = (DATA.watchlist || []).slice();
-  watch.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.market_cap || 0) - (a.market_cap || 0); });
-  var todayStr = DATA.scan_date;
-  $('watch-tbody').innerHTML = watch.map(function (w) {
-    var days = Math.round((new Date(w.date) - new Date(todayStr)) / 8.64e7);
-    return '<tr>' +
-      '<td><b>' + w.ticker + '</b>' + mismatchFlag(w) + ' <span class="dimtxt" style="font-size:0.72rem">' + (w.name || '').slice(0, 26) + '</span></td>' +
-      '<td>' + w.date + '</td>' +
-      '<td>' + days + 'd</td>' +
-      '<td>' + whenPill(w.when) + '</td>' +
-      '<td>' + likePill(w.likelihood) + '</td>' +
-      '<td>' + fmt(w.price) + '</td>' +
-      '<td>' + fmtInt(w.avg_volume30) + '</td>' +
-      '<td>' + passTxt(w.pass_volume, w.pass_volume ? 'PASS' : 'FAIL') + '</td>' +
-      '<td>' + (w.hist_moves ? '±' + fmt(w.hist_moves.avg_abs_move_pct, 1) + '%' : '—') + '</td>' +
-      '<td>' + fmtCap(w.market_cap) + '</td>' +
-      '</tr>';
-  }).join('');
-  $('watch-empty').style.display = watch.length ? 'none' : '';
-  $('watch-empty').textContent = 'No watchlist names — either a very quiet month or the scan is stale.';
 
   var sk = DATA.skipped || [];
   $('skipped-body').innerHTML = sk.length
@@ -859,7 +858,112 @@ function selectTicker(t) {
   renderCandidates();
   renderHero();
   renderSigMon();
-  renderMiniGrid();
+  renderGantt();
+}
+
+/* ── Earnings timeline (Gantt) ──────────────────────────────────────── */
+function renderGantt() {
+  var grid = $('gantt-grid');
+  var byDay = {};
+  function push(ev, isWatch) {
+    if (!ev.date) return;
+    var slot = ev.when === 'BMO' ? 'AM' : 'PM';
+    (byDay[ev.date] = byDay[ev.date] || { AM: [], PM: [] })[slot].push({ ev: ev, w: isWatch });
+  }
+  DATA.events.forEach(function (e) { if (e.bucket !== 'past') push(e, false); });
+  (DATA.watchlist || []).forEach(function (e) { push(e, true); });
+  var html2 = '';
+  var d = new Date(DATA.scan_date + 'T12:00:00');
+  var count = 0;
+  while (count < 22) {
+    var dow = d.getDay();
+    if (dow !== 0 && dow !== 6) {
+      var ds = d.toISOString().slice(0, 10);
+      var slots = byDay[ds] || { AM: [], PM: [] };
+      var lbl = d.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
+      html2 += '<div class="g-day' + (ds === DATA.scan_date ? ' today' : '') + '">' +
+        '<div class="g-day-hd">' + lbl + '</div><div class="g-halves">' +
+        ['AM', 'PM'].map(function (s) {
+          return '<div class="g-half"><div class="g-half-lbl">' + s + '</div>' +
+            slots[s].map(function (x) { return ganttChip(x.ev, x.w); }).join('') + '</div>';
+        }).join('') + '</div></div>';
+      count++;
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  grid.innerHTML = html2;
+}
+
+function ganttChip(ev, isWatch) {
+  var cls = isWatch ? (ev.likelihood === 'HIGH' ? 'gc-wl' : 'gc-wl-lo')
+    : (ev.tier1 ? 'gc-exec' : ev.tier === 'RECOMMENDED' ? 'gc-qual'
+       : ev.tier === 'CONSIDER' ? 'gc-watch' : 'gc-aside');
+  var star = (!isWatch && ev.tier1) ? '★' : '';
+  return '<span class="g-chip ' + cls + (ev.ticker === selectedTicker ? ' sel' : '') +
+    '" onmouseover="ganttMon(\'' + ev.ticker + '\',' + (isWatch ? 1 : 0) + ')"' +
+    ' onclick="ganttPick(\'' + ev.ticker + '\',' + (isWatch ? 1 : 0) + ')">' + ev.ticker + star + '</span>';
+}
+
+function ganttPick(t, isW) {
+  if (!isW) selectTicker(t);
+  ganttMon(t, isW);
+}
+
+function ganttMon(t, isW) {
+  var ev = null;
+  var pool = isW ? (DATA.watchlist || []) : DATA.events;
+  for (var i = 0; i < pool.length; i++) if (pool[i].ticker === t) { ev = pool[i]; break; }
+  if (!ev) return;
+  var b = '<div class="gm-hd"><b>' + ev.ticker + '</b>' + (isW ? likePill(ev.likelihood) : tierPill(ev)) + whenPill(ev.when) + '</div>' +
+    '<div class="dimtxt" style="font-size:0.68rem">' + (ev.name || '') + ' · earnings ' + ev.date +
+    (ev.sector ? ' · ' + ev.sector : '') + mismatchFlag(ev) + '</div>';
+  if (isW) {
+    b += '<div style="margin-top:6px">Price <b>' + fmt(ev.price) + '</b> · vol30 <b>' +
+      (ev.avg_volume30 ? (ev.avg_volume30 / 1e6).toFixed(1) + 'M' : '—') + '</b> ' +
+      passTxt(ev.pass_volume, ev.pass_volume ? 'PASS' : 'FAIL') +
+      (ev.hist_moves ? '<br>avg earnings move (8q) <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b>' : '') +
+      '<br><span class="dimtxt" style="font-size:0.66rem">Watchlist — the slope and IV/RV signals only form in the final days; full analysis begins inside 7 days.</span></div>';
+    $('gm-payoff-wrap').style.display = 'none';
+    if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
+  } else {
+    var evp = (ev.odds !== null && ev.odds !== undefined) ? (ev.odds * 22 - (1 - ev.odds) * 21.2) : null;
+    b += '<div style="margin-top:5px"><span class="live-lbl">Rank</span> <b>' +
+      (ev.rank_score !== null && ev.rank_score !== undefined ? ev.rank_score + '/100' : '—') + '</b> · ' +
+      '<span class="live-lbl">Odds</span> ' + oddsTxt(ev) +
+      (evp !== null ? ' · <span class="live-lbl" title="odds x research mean win (+22%) minus (1-odds) x mean loss (-21.2%), on the debit">est. EV</span> <b class="' +
+        (evp >= 0 ? 'pos' : 'neg') + '">' + (evp >= 0 ? '+' : '') + evp.toFixed(1) + '%</b>' : '') + '</div>';
+    var defs = sigDefs().filter(function (d2) { return d2.gate !== 'DIAG'; });
+    b += '<div class="mini-dots" style="margin:5px 0">' + defs.map(function (d2) {
+      var p = d2.pass(ev);
+      return '<span class="mini-dot ' + (p === null ? 'na' : (p ? 'on' : 'off')) + '" title="' + d2.n + '"></span>';
+    }).join('') + '</div>';
+    if (ev.odds_factors && ev.odds_factors.length) {
+      b += '<div>' + ev.odds_factors.map(function (f) {
+        var up = f.d > 0;
+        var cls2 = f.d === 0 ? 'pill-con' : (up ? 'pill-rec' : 'pill-avoid');
+        return '<span class="pill ' + cls2 + '" style="font-size:0.58rem;margin:1px 2px 0 0">' +
+          (f.d === 0 ? '◆' : (up ? '▲' : '▼')) + ' ' + f.f + '</span>';
+      }).join('') + '</div>';
+    }
+    if (ev.front_exp && ev.back_exp) {
+      var dc = ev.double_calendar;
+      var theDebit = dc ? dc.debit_est : ev.calendar_debit_est;
+      b += '<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:5px">';
+      if (dc) b += '<b style="color:var(--yellow)">DOUBLE CAL</b> · calls @ ' + dc.strike_up + ' + puts @ ' + dc.strike_dn;
+      else b += '<b style="color:var(--yellow)">CALENDAR</b> · ATM ' + ev.atm_strike;
+      b += ' · ' + ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) +
+        (theDebit ? ' · debit <b>$' + fmt(theDebit) + '</b>' : '');
+      if (ev.suggested_frac && theDebit) {
+        var n2 = Math.floor(acct() * ev.suggested_frac / (theDebit * 100));
+        b += '<br>size <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> ≈ $' +
+          fmtInt(Math.round(acct() * ev.suggested_frac)) + ' (' + n2 + 'x)';
+      }
+      b += '<br><span class="dimtxt" style="font-size:0.64rem">enter 15:20–16:00 ET before the announcement · exit ≥9:40 ET reaction day</span></div>';
+    }
+    $('gm-payoff-wrap').style.display = '';
+    renderPayoff(ev);
+  }
+  $('gm-body').innerHTML = b;
 }
 
 /* ── Signal monitor & mini monitor ──────────────────────────────────── */
@@ -943,37 +1047,10 @@ function renderSigMon() {
     '<tbody>' + rows + verdict + '</tbody>';
 }
 
-function renderMiniGrid() {
-  var defs = sigDefs();
-  var evs = DATA.events.slice().sort(function (a, b) {
-    return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.market_cap || 0) - (a.market_cap || 0);
-  });
-  $('mini-grid').innerHTML = evs.map(function (ev) {
-    var dots = defs.filter(function (d) { return d.gate !== 'DIAG'; }).map(function (d) {
-      var p = d.pass(ev);
-      var cls = p === null ? 'na' : (p ? 'on' : 'off');
-      return '<span class="mini-dot ' + cls + '" title="' + d.n + ': ' + (p === null ? 'n/a' : (p ? 'pass' : 'fail')) + '"></span>';
-    }).join('');
-    return '<div class="mini-card' + (ev.ticker === selectedTicker ? ' sel' : '') + '" onclick="selectTicker(\'' + ev.ticker + '\')">' +
-      '<div class="mini-tick">' + ev.ticker + '<span class="mini-when">' + ev.date.slice(5) + ' ' + ev.when + '</span></div>' +
-      '<div class="mini-dots">' + dots + '</div>' +
-      '<div class="mini-lbl">' + ev.tier + (ev.tier1 ? ' · T1★' : '') + '</div></div>';
-  }).join('') || '<span class="dimtxt" style="font-size:0.82rem">No analyzed events in this scan.</span>';
-}
 
 /* ── Hero: candles chart + mini-mon overlay + payoff diagram ────────── */
 var lwChart = null, lwSeries = null;
 var payoffChart = null;
-var rightPanel = 'payoff';
-
-function setRightPanel(name) {
-  rightPanel = name;
-  $('rp-payoff-wrap').style.display = name === 'payoff' ? '' : 'none';
-  $('rp-term-wrap').style.display = name === 'term' ? '' : 'none';
-  $('rp-payoff').className = 'tab' + (name === 'payoff' ? ' active' : '');
-  $('rp-term').className = 'tab' + (name === 'term' ? ' active' : '');
-  $('payoff-title').textContent = name === 'payoff' ? 'Calendar payoff at front expiry' : 'IV term structure';
-}
 
 function normCdf(x) {
   var t = 1 / (1 + 0.2316419 * Math.abs(x));
@@ -1046,8 +1123,8 @@ function renderHero() {
     '</div>';
 
   renderTermChart(ev);
-  renderPayoff(ev);
   renderTicket(ev);
+  ganttMon(ev.ticker, 0);
 }
 
 function renderTermChart(ev) {
@@ -1181,7 +1258,7 @@ function render() {
   renderCandidates();
   renderHero();
   renderSigMon();
-  renderMiniGrid();
+  renderGantt();
   // thresholds into strategy tab
   $('th-slope').textContent = '≤ ' + DATA.thresholds.ts_slope_0_45;
   $('th-ivrv').textContent = '≥ ' + DATA.thresholds.iv30_rv30;
@@ -1231,7 +1308,7 @@ function renderPnl() {
   $('pnl-open-tbody').innerHTML = open.map(function (t) {
     return '<tr>' +
       '<td><b>' + t.ticker + '</b></td>' +
-      '<td>' + (t.tier1 ? '<span class="pill pill-t1">T1 ★</span>' : '<span class="pill pill-rec">REC</span>') + '</td>' +
+      '<td>' + (t.tier1 ? '<span class="pill pill-t1">EXEC ★</span>' : '<span class="pill pill-rec">QUAL</span>') + '</td>' +
       '<td>' + t.earnings_date + ' ' + whenPill(t.when) + '</td>' +
       '<td>' + (t.entry.et || '').replace('T', ' ') + '</td>' +
       '<td style="font-size:0.78rem">sell ' + t.front_exp + ' / buy ' + t.back_exp + '</td>' +
@@ -1248,7 +1325,7 @@ function renderPnl() {
     return '<tr>' +
       '<td><span class="eb ' + (win ? 'eb-pass' : 'eb-fail') + '">' + (win ? 'WIN' : 'LOSS') + '</span></td>' +
       '<td><b>' + t.ticker + '</b></td>' +
-      '<td>' + (t.tier1 ? '<span class="pill pill-t1">T1 ★</span>' : '<span class="pill pill-rec">REC</span>') + '</td>' +
+      '<td>' + (t.tier1 ? '<span class="pill pill-t1">EXEC ★</span>' : '<span class="pill pill-rec">QUAL</span>') + '</td>' +
       '<td>' + t.earnings_date + ' ' + whenPill(t.when) + '</td>' +
       '<td>' + (t.entry.expected_move_pct ? '±' + fmt(t.entry.expected_move_pct, 1) + '%' : '—') + '</td>' +
       '<td>' + (t.exit && t.exit.actual_move_pct !== null && t.exit.actual_move_pct !== undefined ? fmt(t.exit.actual_move_pct, 1) + '%' : '—') + '</td>' +
