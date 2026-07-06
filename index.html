@@ -530,9 +530,12 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
            <span class="pill pill-rec">RECOMMENDED</span>&nbsp; all three filters pass ·
            <span class="pill pill-con">CONSIDER</span>&nbsp; slope passes plus exactly one other ·
            <span class="pill pill-avoid">AVOID</span>&nbsp; slope fails or fewer than two pass.</p>
-        <p><strong style="color:var(--yellow)">Level 2 — Tier 1</strong> is <em>not</em> a separate rating: it is a
-           <strong>subset of RECOMMENDED</strong>. A <span class="pill pill-t1">TIER 1 ★</span> badge means the trade
-           is RECOMMENDED <em>and</em> passes all six of our execution &amp; event checks: ATM spread ≤ 10% of mid, price ≥ $20,
+        <p><strong style="color:var(--yellow)">Level 2 — Tier 1</strong> is the top of the hierarchy and displays as its
+           own rating: <span class="pill pill-t1">TIER 1 ★</span> &gt; <span class="pill pill-rec">RECOMMENDED</span> &gt;
+           <span class="pill pill-con">CONSIDER</span> &gt; <span class="pill pill-avoid">AVOID</span>. Logically it is a
+           <strong>strict subset of RECOMMENDED</strong>, and it is treated distinctly everywhere: its own odds base
+           (70% vs 66%), its own sizing anchor (10% vs 6% of equity), and priority when the concurrency cap binds.
+           A trade earns it by being RECOMMENDED <em>and</em> passing all six execution &amp; event checks: ATM spread ≤ 10% of mid, price ≥ $20,
            expected move ≥ 1.15× the stock's own historical earnings moves, ATM open interest ≥ 500, the earnings
            date confirmed (Nasdaq and Yahoo agree within a day), and no FOMC decision within ±1 trading day of the trade
            window. In short: RECOMMENDED says the <em>edge</em> is there;
@@ -716,12 +719,11 @@ function showTab(name) {
 }
 
 function tierPill(ev) {
-  var p = '';
-  if (ev.tier === 'RECOMMENDED') p = '<span class="pill pill-rec">RECOMMENDED</span>';
-  else if (ev.tier === 'CONSIDER') p = '<span class="pill pill-con">CONSIDER</span>';
-  else p = '<span class="pill pill-avoid">AVOID</span>';
-  if (ev.tier1) p += ' <span class="pill pill-t1">T1 ★</span>';
-  return p;
+  // Tier 1 is displayed as its own (top) level: TIER 1 ★ > RECOMMENDED > CONSIDER > AVOID
+  if (ev.tier1) return '<span class="pill pill-t1">TIER 1 ★</span>';
+  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">RECOMMENDED</span>';
+  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">CONSIDER</span>';
+  return '<span class="pill pill-avoid">AVOID</span>';
 }
 function whenPill(w) {
   if (w === 'AMC') return '<span class="pill pill-amc">AMC</span>';
@@ -1006,8 +1008,10 @@ function renderHero() {
       timeScale: { borderColor: '#443714' }, rightPriceScale: { borderColor: '#443714' },
       height: 400, autoSize: true
     });
-    lwSeries = lwChart.addCandlestickSeries({ upColor: '#52e6bd', downColor: '#f2563a',
-      borderVisible: false, wickUpColor: '#52e6bd', wickDownColor: '#f2563a' });
+    // VIX-dashboard candle scheme: hollow gold up-bars, solid gold down-bars
+    lwSeries = lwChart.addCandlestickSeries({ upColor: 'rgba(0,0,0,0)', downColor: '#e8b94f',
+      borderUpColor: '#e8b94f', borderDownColor: '#e8b94f',
+      wickUpColor: '#e8b94f', wickDownColor: '#e8b94f' });
     lwSeries.setData(ev.ohlc.map(function (b) { return { time: b.t, open: b.o, high: b.h, low: b.l, close: b.c }; }));
     if (ev.atm_strike) lwSeries.createPriceLine({ price: ev.atm_strike, color: '#e8b94f', lineWidth: 1, lineStyle: 2, title: 'ATM ' + ev.atm_strike });
     if (ev.expected_move_pct && ev.price) {
@@ -1029,7 +1033,12 @@ function renderHero() {
     '<div style="display:flex;align-items:baseline;gap:8px"><b style="font-size:0.95rem">' + ev.ticker + '</b>' + tierPill(ev) + '</div>' +
     '<div class="mini-dots" style="margin-top:6px">' + dots + '</div>' +
     '<div style="margin-top:7px;line-height:1.7">' +
-    '<span class="live-lbl">Rank</span> <b>' + (ev.rank_score !== undefined && ev.rank_score !== null ? ev.rank_score + '/100' : '—') + '</b><br>' +
+    (function () {
+      var sorted = DATA.events.slice().sort(function (a, b) { return (b.rank_score || 0) - (a.rank_score || 0); });
+      var pos = sorted.findIndex(function (x) { return x.ticker === ev.ticker; }) + 1;
+      return '<span class="live-lbl">Rank</span> <b>' + (ev.rank_score !== undefined && ev.rank_score !== null
+        ? ev.rank_score + '/100 · #' + pos + ' of ' + sorted.length : '—') + '</b><br>';
+    })() +
     '<span class="live-lbl">Odds of profit</span> ' + oddsTxt(ev) + '<br>' +
     '<span class="live-lbl">Suggested size</span> ' + suggSize(ev) +
     (ev.cohort_heat !== null && ev.cohort_heat !== undefined
@@ -1062,15 +1071,23 @@ function renderPayoff(ev) {
     return;
   }
   var K = ev.atm_strike, debit = ev.calendar_debit_est;
+  var dc = ev.double_calendar;
   var Tgap = Math.max(1, dteOf(ev.back_exp) - dteOf(ev.front_exp)) / 365;
   var sigBack = ev.back_iv * 0.95;
   var em = ev.expected_move_pct ? ev.price * ev.expected_move_pct / 100 : ev.price * 0.05;
   var lo = ev.price - 3 * em, hi = ev.price + 3 * em;
   var pts = [], breakevens = [];
   var prev = null;
+  function bsPut(S2, K2, T2, s2) { return bsCall(S2, K2, T2, s2) - S2 + K2; } // r=0 parity
   for (var i = 0; i <= 120; i++) {
     var S = lo + (hi - lo) * i / 120;
-    var pnl = (bsCall(S, K, Tgap, sigBack) - Math.max(S - K, 0) - debit) * 100;
+    var pnl;
+    if (dc) {
+      pnl = (bsCall(S, dc.strike_up, Tgap, sigBack) + bsPut(S, dc.strike_dn, Tgap, sigBack) -
+             Math.max(S - dc.strike_up, 0) - Math.max(dc.strike_dn - S, 0) - dc.debit_est) * 100;
+    } else {
+      pnl = (bsCall(S, K, Tgap, sigBack) - Math.max(S - K, 0) - debit) * 100;
+    }
     pts.push({ x: S, y: pnl });
     if (prev !== null && ((prev.y <= 0 && pnl > 0) || (prev.y > 0 && pnl <= 0))) {
       var w = Math.abs(prev.y) / (Math.abs(prev.y) + Math.abs(pnl));
@@ -1101,11 +1118,21 @@ function renderTicket(ev) {
   var html = '';
   if (ev.front_exp && ev.back_exp) {
     var fr = ev.suggested_frac;
+    var dc = ev.double_calendar;
+    var theDebit = dc ? dc.debit_est : ev.calendar_debit_est;
     var allocTxt = fr ? ('<b>' + (fr * 100).toFixed(1) + '%</b> of account ≈ <b>$' + fmtInt(Math.round(acct() * fr)) + '</b>') : 'not RECOMMENDED — no size';
-    var n = (fr && ev.calendar_debit_est) ? Math.floor((acct() * fr) / (ev.calendar_debit_est * 100)) : null;
-    html += '<b style="color:var(--yellow)">CALENDAR</b> · sell ' + ev.front_exp + ' / buy ' + ev.back_exp +
-      ' @ ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1) +
-      (ev.calendar_debit_est ? ' · debit <b>$' + fmt(ev.calendar_debit_est) + '</b>' : '') + '<br>' +
+    var n = (fr && theDebit) ? Math.floor((acct() * fr) / (theDebit * 100)) : null;
+    if (dc) {
+      html += '<b style="color:var(--yellow)">DOUBLE CALENDAR</b> <span class="dimtxt" style="font-size:0.7rem">(EM ≫ strike width — wider profit zone)</span> · ' +
+        'sell/buy ' + ev.front_exp + '/' + ev.back_exp + ' calls @ ' + fmt(dc.strike_up, dc.strike_up >= 100 ? 0 : 1) +
+        ' + puts @ ' + fmt(dc.strike_dn, dc.strike_dn >= 100 ? 0 : 1) +
+        ' · debit <b>$' + fmt(dc.debit_est) + '</b><br>';
+    } else {
+      html += '<b style="color:var(--yellow)">CALENDAR</b> · sell ' + ev.front_exp + ' / buy ' + ev.back_exp +
+        ' @ ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1) +
+        (ev.calendar_debit_est ? ' · debit <b>$' + fmt(ev.calendar_debit_est) + '</b>' : '') + '<br>';
+    }
+    html +=
       '<span class="live-lbl">Sizing (odds-scaled)</span> ' + allocTxt +
       (n !== null ? ' · ' + n + ' contract' + (n === 1 ? '' : 's') : '') + '<br>' +
       '<span class="dimtxt" style="font-size:0.7rem">Payoff assumes back-month IV ' + (ev.back_iv ? (ev.back_iv * 100).toFixed(0) + '%' : '—') +

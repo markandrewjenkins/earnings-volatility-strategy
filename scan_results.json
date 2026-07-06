@@ -1,6 +1,6 @@
 {
- "generated_utc": "2026-07-06T00:51:51+00:00",
- "generated_et": "2026-07-05T20:49:36-04:00",
+ "generated_utc": "2026-07-06T01:13:08+00:00",
+ "generated_et": "2026-07-05T21:11:48-04:00",
  "scan_date": "2026-07-05",
  "next_trading_day": "2026-07-06",
  "horizon_days": 30,
@@ -59,6 +59,12 @@
    "atm_strike": 60.0,
    "straddle_mid": 16.1,
    "calendar_debit_est": 4.5,
+   "double_calendar": {
+    "strike_up": 80.0,
+    "strike_dn": 45.0,
+    "debit_est": 6.28
+   },
+   "structure_rec": "double calendar",
    "expected_move_pct": 26.19,
    "ts_slope_0_45": -0.0113,
    "iv30": 1.6326,
@@ -750,19 +756,15 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 77.9,
-   "odds": 0.682,
+   "odds": 0.637,
    "odds_factors": [
     {
-     "f": "steep backwardation (\u22652\u00d7 threshold)",
-     "d": 0.15
+     "f": "base: CONSIDER (56%)",
+     "d": 0.0
     },
     {
-     "f": "IV/RV below threshold",
-     "d": -0.15
-    },
-    {
-     "f": "volume filter passes",
-     "d": 0.05
+     "f": "backwardation depth (2.8\u00d7 threshold)",
+     "d": 0.27
     },
     {
      "f": "premium \u22651.5\u00d7 hist. moves",
@@ -794,6 +796,8 @@
    "atm_strike": 35.0,
    "straddle_mid": 6.58,
    "calendar_debit_est": 0.8,
+   "double_calendar": null,
+   "structure_rec": "calendar",
    "expected_move_pct": 18.86,
    "ts_slope_0_45": 0.00812,
    "iv30": 0.6847,
@@ -1485,15 +1489,15 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 48.1,
-   "odds": 0.66,
+   "odds": 0.525,
    "odds_factors": [
     {
-     "f": "IV very rich vs RV",
-     "d": 0.1
+     "f": "base: AVOID (48%)",
+     "d": 0.0
     },
     {
-     "f": "volume filter fails",
-     "d": -0.1
+     "f": "IV richness vs RV (2.16)",
+     "d": 0.18
     },
     {
      "f": "premium \u22651.5\u00d7 hist. moves",
@@ -1525,6 +1529,12 @@
    "atm_strike": 24.0,
    "straddle_mid": 2.35,
    "calendar_debit_est": 0.3,
+   "double_calendar": {
+    "strike_up": 27.0,
+    "strike_dn": 22.0,
+    "debit_est": 0.37
+   },
+   "structure_rec": "double calendar",
    "expected_move_pct": 9.63,
    "ts_slope_0_45": -0.00545,
    "iv30": 0.567,
@@ -2216,14 +2226,18 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 57.5,
-   "odds": 0.649,
+   "odds": 0.637,
    "odds_factors": [
     {
-     "f": "IV very rich vs RV",
-     "d": 0.1
+     "f": "base: RECOMMENDED (66%)",
+     "d": 0.0
     },
     {
-     "f": "volume filter passes",
+     "f": "backwardation depth (1.3\u00d7 threshold)",
+     "d": 0.05
+    },
+    {
+     "f": "IV richness vs RV (1.51)",
      "d": 0.05
     },
     {
@@ -2239,7 +2253,7 @@
      "d": -0.1
     }
    ],
-   "suggested_frac": 0.0558,
+   "suggested_frac": 0.0515,
    "error": null
   },
   {
@@ -2260,6 +2274,8 @@
    "atm_strike": 200.0,
    "straddle_mid": 12.35,
    "calendar_debit_est": 3.1,
+   "double_calendar": null,
+   "structure_rec": "calendar",
    "expected_move_pct": 6.24,
    "ts_slope_0_45": -0.00414,
    "iv30": 0.477,
@@ -2951,11 +2967,15 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 44.1,
-   "odds": 0.614,
+   "odds": 0.543,
    "odds_factors": [
     {
-     "f": "volume filter fails",
-     "d": -0.1
+     "f": "base: CONSIDER (56%)",
+     "d": 0.0
+    },
+    {
+     "f": "IV richness vs RV (1.39)",
+     "d": 0.03
     },
     {
      "f": "premium \u22651.15\u00d7 hist. moves",
@@ -2987,6 +3007,12 @@
    "atm_strike": 150.0,
    "straddle_mid": 12.65,
    "calendar_debit_est": 3.6,
+   "double_calendar": {
+    "strike_up": 165.0,
+    "strike_dn": 140.0,
+    "debit_est": 3.02
+   },
+   "structure_rec": "double calendar",
    "expected_move_pct": 8.43,
    "ts_slope_0_45": -0.00214,
    "iv30": 0.5446,
@@ -3678,19 +3704,11 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 40.1,
-   "odds": 0.516,
+   "odds": 0.48,
    "odds_factors": [
     {
-     "f": "slope fails",
-     "d": -0.35
-    },
-    {
-     "f": "IV/RV below threshold",
-     "d": -0.15
-    },
-    {
-     "f": "volume filter fails",
-     "d": -0.1
+     "f": "base: AVOID (48%)",
+     "d": 0.0
     },
     {
      "f": "premium \u22651.5\u00d7 hist. moves",
@@ -3722,6 +3740,8 @@
    "atm_strike": 24.0,
    "straddle_mid": 5.22,
    "calendar_debit_est": 1.05,
+   "double_calendar": null,
+   "structure_rec": "calendar",
    "expected_move_pct": 21.8,
    "ts_slope_0_45": -0.01278,
    "iv30": 1.2807,
@@ -4413,15 +4433,19 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 76.3,
-   "odds": 0.66,
+   "odds": 0.689,
    "odds_factors": [
     {
-     "f": "steep backwardation (\u22652\u00d7 threshold)",
-     "d": 0.15
+     "f": "base: RECOMMENDED (66%)",
+     "d": 0.0
     },
     {
-     "f": "volume filter passes",
-     "d": 0.05
+     "f": "backwardation depth (3.1\u00d7 threshold)",
+     "d": 0.3
+    },
+    {
+     "f": "IV richness vs RV (1.41)",
+     "d": 0.03
     },
     {
      "f": "premium \u22651.5\u00d7 hist. moves",
@@ -4436,7 +4460,7 @@
      "d": -0.2
     }
    ],
-   "suggested_frac": 0.06,
+   "suggested_frac": 0.0707,
    "error": null
   },
   {
@@ -4457,6 +4481,8 @@
    "atm_strike": 144.0,
    "straddle_mid": 6.53,
    "calendar_debit_est": 1.8,
+   "double_calendar": null,
+   "structure_rec": "calendar",
    "expected_move_pct": 4.53,
    "ts_slope_0_45": -0.00572,
    "iv30": 0.3335,
@@ -5173,14 +5199,22 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 61.4,
-   "odds": 0.671,
+   "odds": 0.684,
    "odds_factors": [
     {
-     "f": "volume filter passes",
+     "f": "base: RECOMMENDED (66%)",
+     "d": 0.0
+    },
+    {
+     "f": "backwardation depth (1.4\u00d7 threshold)",
+     "d": 0.06
+    },
+    {
+     "f": "very deep liquidity",
      "d": 0.05
     }
    ],
-   "suggested_frac": 0.0642,
+   "suggested_frac": 0.0691,
    "error": null
   },
   {
@@ -5201,6 +5235,8 @@
    "atm_strike": 250.0,
    "straddle_mid": 11.03,
    "calendar_debit_est": 2.85,
+   "double_calendar": null,
+   "structure_rec": "calendar",
    "expected_move_pct": 4.48,
    "ts_slope_0_45": -0.01152,
    "iv30": 0.4101,
@@ -5892,19 +5928,15 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 58.9,
-   "odds": 0.578,
+   "odds": 0.487,
    "odds_factors": [
     {
-     "f": "steep backwardation (\u22652\u00d7 threshold)",
-     "d": 0.15
+     "f": "base: AVOID (48%)",
+     "d": 0.0
     },
     {
-     "f": "IV/RV below threshold",
-     "d": -0.15
-    },
-    {
-     "f": "volume filter fails",
-     "d": -0.1
+     "f": "backwardation depth (2.8\u00d7 threshold)",
+     "d": 0.28
     },
     {
      "f": "premium below hist. moves",
@@ -5940,6 +5972,8 @@
    "atm_strike": 12.5,
    "straddle_mid": 2.35,
    "calendar_debit_est": 0.38,
+   "double_calendar": null,
+   "structure_rec": "calendar",
    "expected_move_pct": 17.12,
    "ts_slope_0_45": -0.01137,
    "iv30": 0.9145,
@@ -6631,19 +6665,19 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 71.5,
-   "odds": 0.724,
+   "odds": 0.749,
    "odds_factors": [
     {
-     "f": "steep backwardation (\u22652\u00d7 threshold)",
-     "d": 0.15
+     "f": "base: RECOMMENDED (66%)",
+     "d": 0.0
     },
     {
-     "f": "IV very rich vs RV",
-     "d": 0.1
+     "f": "backwardation depth (2.8\u00d7 threshold)",
+     "d": 0.27
     },
     {
-     "f": "volume filter passes",
-     "d": 0.05
+     "f": "IV richness vs RV (2.05)",
+     "d": 0.16
     },
     {
      "f": "premium \u22651.5\u00d7 hist. moves",
@@ -6654,7 +6688,7 @@
      "d": -0.15
     }
    ],
-   "suggested_frac": 0.0839,
+   "suggested_frac": 0.0934,
    "error": null
   },
   {
@@ -6675,6 +6709,12 @@
    "atm_strike": 93.0,
    "straddle_mid": 6.57,
    "calendar_debit_est": 2.1,
+   "double_calendar": {
+    "strike_up": 99.0,
+    "strike_dn": 86.0,
+    "debit_est": 2.6
+   },
+   "structure_rec": "double calendar",
    "expected_move_pct": 7.08,
    "ts_slope_0_45": -0.00717,
    "iv30": 0.5315,
@@ -7391,10 +7431,18 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 63.3,
-   "odds": 0.626,
+   "odds": 0.651,
    "odds_factors": [
     {
-     "f": "volume filter passes",
+     "f": "base: RECOMMENDED (66%)",
+     "d": 0.0
+    },
+    {
+     "f": "backwardation depth (1.8\u00d7 threshold)",
+     "d": 0.11
+    },
+    {
+     "f": "very deep liquidity",
      "d": 0.05
     },
     {
@@ -7402,7 +7450,7 @@
      "d": -0.2
     }
    ],
-   "suggested_frac": 0.0471,
+   "suggested_frac": 0.0566,
    "error": null
   }
  ],

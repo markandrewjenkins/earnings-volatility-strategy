@@ -442,6 +442,35 @@ def analyze_ticker(symbol, earnings_date):
             except Exception:
                 cal_debit = None
 
+    # Improvement G — double calendar: when the expected move is much wider
+    # than the strike spacing, split the calendar across ±EM strikes to widen
+    # the profit zone (trades peak return for win rate).
+    dc = None
+    if front_exp and back_exp and straddle and strike_width and \
+            straddle >= 1.5 * strike_width:
+        try:
+            f_ch, b_ch = chains[front_exp], (chains.get(back_exp) or
+                                             stock.option_chain(back_exp))
+            def leg(chain_f, chain_b, target, col):
+                cf, cb = getattr(chain_f, col), getattr(chain_b, col)
+                fi = (cf["strike"].astype(float) - target).abs().idxmin()
+                k = float(cf.loc[fi, "strike"])
+                bi = (cb["strike"].astype(float) - k).abs().idxmin()
+                if abs(float(cb.loc[bi, "strike"]) - k) > 1e-6:
+                    return None, None
+                fm = mid(cf.loc[fi, "bid"], cf.loc[fi, "ask"])
+                bm = mid(cb.loc[bi, "bid"], cb.loc[bi, "ask"])
+                if fm and bm and bm > fm:
+                    return k, bm - fm
+                return None, None
+            k_up, d_up = leg(f_ch, b_ch, price + straddle, "calls")
+            k_dn, d_dn = leg(f_ch, b_ch, price - straddle, "puts")
+            if k_up and k_dn and k_up > k_dn:
+                dc = {"strike_up": k_up, "strike_dn": k_dn,
+                      "debit_est": round(d_up + d_dn, 2)}
+        except Exception:
+            dc = None
+
     hist = historical_earnings_moves(stock, history, earnings_date)
     y_date, mismatch = yahoo_earnings_date(stock, earnings_date)
 
@@ -488,6 +517,8 @@ def analyze_ticker(symbol, earnings_date):
         "atm_strike": atm_strike,
         "straddle_mid": round(straddle, 2) if straddle else None,
         "calendar_debit_est": round(cal_debit, 2) if cal_debit else None,
+        "double_calendar": dc,
+        "structure_rec": "double calendar" if dc else "calendar",
         "expected_move_pct": round(exp_move_pct, 2) if exp_move_pct else None,
         "ts_slope_0_45": round(float(ts_slope), 5),
         "iv30": round(float(iv30), 4),
@@ -685,7 +716,21 @@ def rank_and_odds(m, ev, market):
     score += 5 * (0.0 if ev.get("fomc_window") else 1.0)
 
     factors = []
-    lo_odds = math.log(0.66 / 0.34)
+    # Base odds anchor to the RATING, since the research's 66% win rate is a
+    # property of the fully-filtered (RECOMMENDED) subset only. Tier 1 gets a
+    # premium (execution filters remove slippage-losers); unfiltered events
+    # break even in the research -> ~50% less costs.
+    if m.get("tier1"):
+        base = 0.70
+    elif m.get("tier") == "RECOMMENDED":
+        base = 0.66
+    elif m.get("tier") == "CONSIDER":
+        base = 0.56
+    else:
+        base = 0.48
+    factors.append({"f": f"base: {m.get('tier1') and 'TIER 1' or m.get('tier')} "
+                         f"({base*100:.0f}%)", "d": 0.0})
+    lo_odds = math.log(base / (1 - base))
 
     def nudge(cond, delta, label):
         nonlocal lo_odds
@@ -693,12 +738,14 @@ def rank_and_odds(m, ev, market):
             lo_odds += delta
             factors.append({"f": label, "d": delta})
 
-    nudge(slope_mult >= 2, +0.15, "steep backwardation (≥2× threshold)")
-    nudge(0 < slope_mult < 1, -0.35, "slope fails")
-    nudge(ivrv >= 1.5, +0.10, "IV very rich vs RV")
-    nudge(0 < ivrv < IVRV_THRESHOLD, -0.15, "IV/RV below threshold")
-    nudge(volm >= 1, +0.05, "volume filter passes")
-    nudge(volm < 1, -0.10, "volume filter fails")
+    # continuous margin nudges — how far past the threshold, not just pass/fail
+    if slope_mult > 1:
+        d = clamp(0.15 * (slope_mult - 1), 0, 0.30)
+        nudge(d > 0.02, round(d, 2), f"backwardation depth ({slope_mult:.1f}× threshold)")
+    if ivrv > IVRV_THRESHOLD:
+        d = clamp(0.25 * (ivrv / IVRV_THRESHOLD - 1), 0, 0.25)
+        nudge(d > 0.02, round(d, 2), f"IV richness vs RV ({ivrv:.2f})")
+    nudge(volm >= 3, +0.05, "very deep liquidity")
     nudge(bool(rich and rich >= 1.5), +0.15, "premium ≥1.5× hist. moves")
     nudge(bool(rich and 1.15 <= rich < 1.5), +0.05, "premium ≥1.15× hist. moves")
     nudge(bool(rich and rich < 1.0), -0.20, "premium below hist. moves")
@@ -718,8 +765,9 @@ def rank_and_odds(m, ev, market):
 
     frac = None
     if m.get("tier") == "RECOMMENDED":
-        base = 0.10 if m.get("tier1") else 0.06
-        frac = clamp(base * (p - 0.5) / (0.66 - 0.5), 0.02, 0.12)
+        pol = 0.10 if m.get("tier1") else 0.06
+        anchor = 0.70 if m.get("tier1") else 0.66   # frac == policy base at base odds
+        frac = clamp(pol * (p - 0.5) / (anchor - 0.5), 0.02, 0.12)
     return round(score, 1), round(p, 3), factors, \
         (round(frac, 4) if frac is not None else None)
 
