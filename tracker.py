@@ -185,11 +185,14 @@ def account_drawdown(log):
     return 1.0 - log["account"]["equity"] / peak if peak > 0 else 0.0
 
 
-def sized_frac(tier1, log):
-    f = SIZING_FRAC_T1 if tier1 else SIZING_FRAC_REC
+def sized_frac(ev, log):
+    """Per-ticker odds-scaled size from the scanner (clamped 2-12% there),
+    falling back to the flat policy tiers; circuit breaker applies on top."""
+    f = ev.get("suggested_frac") or \
+        (SIZING_FRAC_T1 if ev.get("tier1") else SIZING_FRAC_REC)
     if account_drawdown(log) >= CB_HALVE_DD:
         f *= 0.5
-    return f
+    return round(f, 4)
 
 
 def try_entries(log, scan, et, force=False):
@@ -206,9 +209,9 @@ def try_entries(log, scan, et, force=False):
         print(f"circuit breaker: account {dd*100:.1f}% below peak — sizing halved")
     known = {t["id"] for t in log["open"]} | {t["id"] for t in log["closed"]}
     opened = 0
-    # Tier 1 candidates first — if the concurrency cap binds, keep the best
+    # Best-ranked candidates first — if the concurrency cap binds, keep the best
     cands = sorted(scan.get("events", []),
-                   key=lambda e: (not e.get("tier1"), e.get("ts_slope_0_45") or 0))
+                   key=lambda e: -(e.get("rank_score") or 0))
     for ev in cands:
         if len(log["open"]) >= MAX_CONCURRENT:
             print(f"  concurrency cap ({MAX_CONCURRENT}) reached — no more entries")
@@ -238,7 +241,9 @@ def try_entries(log, scan, et, force=False):
             "when": ev["when"],
             "tier": ev["tier"],
             "tier1": bool(ev.get("tier1")),
-            "frac": sized_frac(bool(ev.get("tier1")), log),
+            "frac": sized_frac(ev, log),
+            "odds": ev.get("odds"),
+            "rank_score": ev.get("rank_score"),
             "structure": "call calendar",
             "strike": float(ev["atm_strike"]),
             "front_exp": ev["front_exp"],

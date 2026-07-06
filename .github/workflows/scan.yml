@@ -49,7 +49,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add scan_results.json calendar_cache.json trades_log.json
+          git add scan_results.json calendar_cache.json trades_log.json sector_cache.json reaction_log.json
           if ! git diff --cached --quiet; then
             git pull --rebase --autostash || true
             git commit -m "chore: refresh scan results [skip ci]"

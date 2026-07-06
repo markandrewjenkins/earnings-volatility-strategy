@@ -51,6 +51,15 @@ import yfinance as yf
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(HERE, "scan_results.json")
 CAL_CACHE_PATH = os.path.join(HERE, "calendar_cache.json")
+SECTOR_CACHE_PATH = os.path.join(HERE, "sector_cache.json")
+REACTION_LOG_PATH = os.path.join(HERE, "reaction_log.json")
+
+# Conditioner-study sector tiers (blowthrough = P(move_z > 2) by sector):
+# Tech/Comm/ConsDisc 58-73%, Energy/Fins/Mater/REIT/Util 29-44%.
+SECTOR_TIER_HIGH = {"Technology", "Communication Services", "Consumer Cyclical"}
+SECTOR_TIER_LOW = {"Energy", "Financial Services", "Basic Materials",
+                   "Real Estate", "Utilities"}
+BINARY_INDUSTRY_KEYS = ("Biotech", "Drug Manufacturers - Specialty")
 
 # ── Strategy constants (from the research) ──────────────────────────────
 SLOPE_THRESHOLD = -0.00406
@@ -436,6 +445,13 @@ def analyze_ticker(symbol, earnings_date):
     hist = historical_earnings_moves(stock, history, earnings_date)
     y_date, mismatch = yahoo_earnings_date(stock, earnings_date)
 
+    # daily candles for the dashboard chart (last ~90 sessions)
+    tail = history.tail(90)
+    ohlc = [{"t": d.date().isoformat(), "o": round(float(r["Open"]), 2),
+             "h": round(float(r["High"]), 2), "l": round(float(r["Low"]), 2),
+             "c": round(float(r["Close"]), 2)}
+            for d, r in tail.iterrows()]
+
     pass_slope = ts_slope <= SLOPE_THRESHOLD
     pass_ivrv = bool(ivrv and ivrv >= IVRV_THRESHOLD)
     pass_vol = avg_vol >= VOLUME_THRESHOLD
@@ -482,6 +498,8 @@ def analyze_ticker(symbol, earnings_date):
         "atm_oi": atm_oi,
         "strike_width": strike_width,
         "term_structure": term_points,
+        "back_iv": round(atm_iv[back_exp], 4) if back_exp in atm_iv else round(float(term(30)), 4),
+        "ohlc": ohlc,
         "hist_moves": hist,
         "richness": round(float(richness), 2) if richness else None,
         "pass_slope": bool(pass_slope),
@@ -539,6 +557,171 @@ def fomc_flag(ev_date: str, when: str):
         return False
     except Exception:
         return None
+
+
+# ── Sectors, recent-reporter reaction log, cohort heat ──────────────────
+
+def load_json(path, default):
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return default
+
+
+def get_sector(sym, cache):
+    """Sector/industry via yfinance info, cached forever (sectors don't move)."""
+    if sym in cache:
+        return cache[sym]
+    try:
+        info = yf.Ticker(sym).info or {}
+        rec = {"sector": info.get("sector"), "industry": info.get("industry")}
+    except Exception:
+        rec = {"sector": None, "industry": None}
+    cache[sym] = rec
+    time.sleep(0.2)
+    return rec
+
+
+def update_reaction_log(events, sector_cache, today):
+    """Log realized reaction sizes (move_z) for reporters from the last few
+    sessions — the raw material for the sector-cohort heat filter (the
+    strongest effect in the conditioner study: quiet same-sector cohorts
+    precede small reactions; hot ones precede blowthroughs)."""
+    log = load_json(REACTION_LOG_PATH, {"entries": []})
+    known = {(e["ticker"], e["date"]) for e in log["entries"]}
+    cands = [e for e in events if e.get("bucket") == "past"
+             and (e.get("market_cap") or 0) >= MIN_MARKET_CAP]
+    cands.sort(key=lambda e: e.get("market_cap") or 0, reverse=True)
+    added = 0
+    for ev in cands[:25]:
+        key = (ev["ticker"], ev["date"])
+        if key in known:
+            continue
+        try:
+            d = datetime.strptime(ev["date"], "%Y-%m-%d").date()
+            rd = d if ev["when"] == "BMO" else next_trading_day(d)
+            if rd >= today:  # reaction hasn't printed yet
+                continue
+            hist = yf.Ticker(ev["ticker"]).history(period="3mo", auto_adjust=True)
+            closes = hist["Close"]
+            dates = [x.date() for x in closes.index]
+            if rd not in dates:
+                continue
+            i = dates.index(rd)
+            if i < 24:
+                continue
+            rets = np.log(closes / closes.shift(1))
+            sig = float(rets.rolling(21).std().iloc[i - 3])
+            if not sig or not np.isfinite(sig) or sig <= 0:
+                continue
+            move_z = abs(float(rets.iloc[i])) / sig
+            sec = get_sector(ev["ticker"], sector_cache)
+            log["entries"].append({
+                "ticker": ev["ticker"], "date": ev["date"],
+                "reaction": rd.isoformat(),
+                "sector": sec.get("sector"),
+                "move_z": round(move_z, 3),
+                "abs_move_pct": round(abs(math.expm1(float(rets.iloc[i]))) * 100, 2),
+            })
+            added += 1
+        except Exception:
+            continue
+        time.sleep(0.4)
+    # keep a rolling ~60 days
+    cutoff = (today - timedelta(days=60)).isoformat()
+    log["entries"] = [e for e in log["entries"] if e["reaction"] >= cutoff]
+    write_atomic(log, REACTION_LOG_PATH)
+    if added:
+        print(f"  reaction log: +{added} reporters (total {len(log['entries'])})")
+    return log
+
+
+def cohort_heat(sector, event_date, reaction_log):
+    """Mean move_z of same-sector reporters over the prior 21 days."""
+    if not sector:
+        return None, 0
+    d = datetime.strptime(event_date, "%Y-%m-%d").date()
+    lo, hi = (d - timedelta(days=21)).isoformat(), (d - timedelta(days=1)).isoformat()
+    peers = [e["move_z"] for e in reaction_log.get("entries", [])
+             if e.get("sector") == sector and lo <= e["reaction"] <= hi]
+    if len(peers) < 3:
+        return None, len(peers)
+    return round(float(np.mean(peers)), 2), len(peers)
+
+
+# ── Rank score, odds of profit, per-ticker sizing ───────────────────────
+
+def clamp(x, lo, hi):
+    return max(lo, min(hi, x))
+
+
+def rank_and_odds(m, ev, market):
+    """Transparent scoring on top of the research + conditioner study.
+    rank_score: 0-100 composite of how far each signal clears its threshold.
+    odds: heuristic P(win) — base 66% (research filtered win rate) shifted in
+    log-odds by documented nudges sized loosely from the decile/conditioner
+    effect sizes. Clamped to [40%, 80%] — this is a ranking device, not a
+    calibrated probability. suggested_frac: policy size scaled by edge vs
+    base odds, clamped [2%, 12%]; only for RECOMMENDED."""
+    slope_mult = (m["ts_slope_0_45"] / SLOPE_THRESHOLD) if m["ts_slope_0_45"] else 0
+    ivrv = m.get("iv30_rv30") or 0
+    volm = (m.get("avg_volume30") or 0) / VOLUME_THRESHOLD
+    rich = m.get("richness")
+
+    score = 0.0
+    score += 30 * clamp(slope_mult, 0, 3) / 3
+    score += 20 * clamp(ivrv / IVRV_THRESHOLD, 0, 2) / 2
+    score += 10 * clamp(volm, 0, 4) / 4
+    score += 15 * (clamp(rich, 0, 2.5) / 2.5 if rich else 0.5 * 15 / 15)
+    enh = m.get("enhanced", {})
+    score += 5 * bool(enh.get("tight_spread")) + 5 * bool(enh.get("oi_ok")) + \
+        5 * bool(enh.get("price_ok"))
+    ch = m.get("cohort_heat")
+    score += 10 * (1.0 if (ch is not None and ch < 1.0)
+                   else (0.0 if (ch is not None and ch >= 1.5) else 0.5))
+    score += 5 * (0.0 if ev.get("fomc_window") else 1.0)
+
+    factors = []
+    lo_odds = math.log(0.66 / 0.34)
+
+    def nudge(cond, delta, label):
+        nonlocal lo_odds
+        if cond:
+            lo_odds += delta
+            factors.append({"f": label, "d": delta})
+
+    nudge(slope_mult >= 2, +0.15, "steep backwardation (≥2× threshold)")
+    nudge(0 < slope_mult < 1, -0.35, "slope fails")
+    nudge(ivrv >= 1.5, +0.10, "IV very rich vs RV")
+    nudge(0 < ivrv < IVRV_THRESHOLD, -0.15, "IV/RV below threshold")
+    nudge(volm >= 1, +0.05, "volume filter passes")
+    nudge(volm < 1, -0.10, "volume filter fails")
+    nudge(bool(rich and rich >= 1.5), +0.15, "premium ≥1.5× hist. moves")
+    nudge(bool(rich and 1.15 <= rich < 1.5), +0.05, "premium ≥1.15× hist. moves")
+    nudge(bool(rich and rich < 1.0), -0.20, "premium below hist. moves")
+    nudge(not enh.get("tight_spread"), -0.15, "wide ATM spread (slippage)")
+    nudge(bool(ev.get("fomc_window")), -0.15, "FOMC in trade window")
+    nudge(ch is not None and ch < 1.0, +0.30, "quiet sector cohort")
+    nudge(ch is not None and ch >= 1.5, -0.15, "hot sector cohort")
+    sec_tier = m.get("sector_tier")
+    nudge(sec_tier == "low", +0.10, "calm-reaction sector")
+    nudge(sec_tier == "high", -0.10, "high-blowthrough sector")
+    nudge(bool(m.get("binary_risk")), -0.20, "binary-catalyst industry")
+    vix = (market or {}).get("vix")
+    nudge(bool(vix and vix < 15 and not (rich and rich >= RICHNESS_MIN)),
+          -0.10, "calm VIX without confirmed richness")
+
+    p = clamp(1 / (1 + math.exp(-lo_odds)), 0.40, 0.80)
+
+    frac = None
+    if m.get("tier") == "RECOMMENDED":
+        base = 0.10 if m.get("tier1") else 0.06
+        frac = clamp(base * (p - 0.5) / (0.66 - 0.5), 0.02, 0.12)
+    return round(score, 1), round(p, 3), factors, \
+        (round(frac, 4) if frac is not None else None)
 
 
 # ── Watchlist (light) analysis — no option chains ───────────────────────
@@ -612,6 +795,10 @@ def run_scan(max_analyze=45, tickers_override=None):
     for ev in events:
         ev["fomc_window"] = fomc_flag(ev["date"], ev["when"])
 
+    sector_cache = load_json(SECTOR_CACHE_PATH, {})
+    reaction_log = update_reaction_log(events, sector_cache, today) \
+        if not tickers_override else {"entries": []}
+
     def cap(ev):
         return ev["market_cap"] or 0
 
@@ -635,6 +822,22 @@ def run_scan(max_analyze=45, tickers_override=None):
             metrics["enhanced"]["no_fomc"] = not bool(ev.get("fomc_window"))
             if ev.get("fomc_window"):
                 metrics["tier1"] = False
+            sec = get_sector(sym, sector_cache)
+            metrics["sector"] = sec.get("sector")
+            metrics["industry"] = sec.get("industry")
+            metrics["sector_tier"] = ("high" if sec.get("sector") in SECTOR_TIER_HIGH
+                                      else "low" if sec.get("sector") in SECTOR_TIER_LOW
+                                      else "mid") if sec.get("sector") else None
+            metrics["binary_risk"] = bool(sec.get("industry") and any(
+                k in sec["industry"] for k in BINARY_INDUSTRY_KEYS))
+            ch, ch_n = cohort_heat(sec.get("sector"), ev["date"], reaction_log)
+            metrics["cohort_heat"] = ch
+            metrics["cohort_n"] = ch_n
+            score, odds, factors, frac = rank_and_odds(metrics, ev, market)
+            metrics["rank_score"] = score
+            metrics["odds"] = odds
+            metrics["odds_factors"] = factors
+            metrics["suggested_frac"] = frac
             analyzed.append({**ev, **metrics, "error": None})
             print(f"  {sym:6s} [{ev['bucket']:5s}] {metrics['tier']:12s} "
                   f"slope={metrics['ts_slope_0_45']} ivrv={metrics['iv30_rv30']} "
@@ -657,6 +860,8 @@ def run_scan(max_analyze=45, tickers_override=None):
             errors.append({"ticker": sym, "error": str(e)})
             print(f"  {sym:6s} [watch] ERROR: {e}")
         time.sleep(0.4)
+
+    write_atomic(sector_cache, SECTOR_CACHE_PATH)
 
     analyzed_syms = {a["ticker"] for a in analyzed} | {w["ticker"] for w in watchlist}
     skipped = [e for e in events

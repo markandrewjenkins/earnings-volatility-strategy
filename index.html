@@ -7,6 +7,7 @@
 <title>Earnings Volatility Strategy</title>
 <link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 :root {
   /* Deus Ex: HR — near-black cards, vivid aug colors (shared with VIX dashboard) */
@@ -262,7 +263,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </div>
 
     <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Trade candidates — enter before today's close</span>
+      <div class="ph"><span class="t">Analyzed events — today's trade window first, then this week</span>
         <span style="display:inline-flex;align-items:center;gap:7px;text-transform:none">
           <span class="live-lbl">Account $</span>
           <input class="acct-input" id="acct" type="number" min="1000" step="1000" value="10000" onchange="acctChanged()">
@@ -271,9 +272,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="pb" style="overflow-x:auto">
         <table id="cand-table">
           <thead><tr>
-            <th>Ticker</th><th>When</th><th>Rating</th><th>Price</th><th>Exp. move</th>
-            <th>TS slope</th><th>IV30/RV30</th><th>Avg vol 30d</th><th>ATM spread</th>
-            <th>Rich.</th><th>Calendar (sell front / buy back)</th><th>Debit</th><th>Size @6%</th>
+            <th>Ticker</th><th>Window</th><th>Rating</th><th>Rank</th><th>Odds</th>
+            <th>Price</th><th>Exp. move</th><th>TS slope</th><th>IV30/RV30</th><th>Vol 30d</th>
+            <th>Calendar legs</th><th>Debit</th><th>Sugg. size</th>
           </tr></thead>
           <tbody id="cand-tbody"></tbody>
         </table>
@@ -282,9 +283,31 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </div>
 
     <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Mini monitor — all analyzed events at a glance</span>
-        <span class="dimtxt" style="text-transform:none">each square = one check, in the order of the signal monitor below (3 base + 6 Tier 1). Click a card to inspect.</span></div>
+      <div class="ph"><span class="t">Mini monitor — all analyzed events</span>
+        <span class="dimtxt" style="text-transform:none">each square = one check (3 base + 6 Tier 1, signal-monitor order). Click a card to load it below.</span></div>
       <div class="pb"><div class="mini-grid" id="mini-grid"></div></div>
+    </div>
+
+    <div class="row" style="margin-top:12px">
+      <div class="panel" style="flex:1.5 1 520px">
+        <div class="ph"><span class="t" id="cdl-title">Live chart</span><span class="dimtxt" id="cdl-sub" style="text-transform:none"></span></div>
+        <div class="pb" style="position:relative">
+          <div id="cdl-chart" style="width:100%;height:400px"></div>
+          <div id="cdl-minimon" style="position:absolute;top:22px;right:14px;z-index:5;background:rgba(12,10,7,0.92);border:1px solid var(--border2);border-radius:6px;padding:9px 12px;font-size:0.72rem;min-width:190px;pointer-events:none"></div>
+        </div>
+      </div>
+      <div class="panel" style="flex:1 1 380px">
+        <div class="ph"><span class="t" id="payoff-title">Calendar payoff at front expiry</span>
+          <span style="display:inline-flex;gap:4px">
+            <button class="tab active" id="rp-payoff" style="padding:3px 10px;font-size:0.68rem" onclick="setRightPanel('payoff')">Payoff</button>
+            <button class="tab" id="rp-term" style="padding:3px 10px;font-size:0.68rem" onclick="setRightPanel('term')">IV term</button>
+          </span></div>
+        <div class="pb">
+          <div id="rp-payoff-wrap" style="position:relative;height:300px"><canvas id="payoffChart"></canvas></div>
+          <div id="rp-term-wrap" style="position:relative;height:300px;display:none"><canvas id="tsChart"></canvas></div>
+          <div id="ticket-line" style="font-size:0.8rem;line-height:1.8;margin-top:8px"></div>
+        </div>
+      </div>
     </div>
 
     <div class="panel" style="margin-top:12px">
@@ -296,30 +319,6 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="pb" style="overflow-x:auto"><table class="sig-mon" id="sigmon-table"></table></div>
     </div>
 
-    <div class="row" style="margin-top:12px" id="detail-row" >
-      <div class="panel" style="flex:1.2 1 420px">
-        <div class="ph"><span class="t" id="ts-title">IV term structure</span><span class="dimtxt" id="ts-sub" style="text-transform:none"></span></div>
-        <div class="pb" style="position:relative;height:280px"><canvas id="tsChart"></canvas></div>
-      </div>
-      <div class="panel" style="flex:1 1 380px">
-        <div class="ph"><span class="t">Filter check &amp; trade ticket</span></div>
-        <div class="pb" id="detail-body"><div class="dimtxt" style="font-size:0.85rem">Select a row in the candidates table.</div></div>
-      </div>
-    </div>
-
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">This week (full metrics preview — slope &amp; IV firm up in the final days)</span></div>
-      <div class="pb" style="overflow-x:auto">
-        <table>
-          <thead><tr>
-            <th>Ticker</th><th>Date</th><th>When</th><th>Rating</th><th>Price</th><th>Exp. move</th>
-            <th>TS slope</th><th>IV30/RV30</th><th>Avg vol 30d</th>
-          </tr></thead>
-          <tbody id="up-tbody"></tbody>
-        </table>
-        <div id="up-empty" class="dimtxt" style="display:none;padding:14px 4px;font-size:0.85rem"></div>
-      </div>
-    </div>
 
     <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">Watchlist — next 30 days</span>
@@ -644,20 +643,20 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Backtest queue — most promising next</span></div>
       <div class="pb mc-grid">
-        <div class="mc"><h4>D0 · Sector-cohort heat filter <span style="color:var(--teal)">(validated — strongest effect in the study)</span></h4>
-          <p>When same-sector peers reported quietly over the prior three weeks, reactions collapse (median z 0.79,
-          blowthrough 17% vs 52% baseline); after hot cohorts they run large. Needs live tracking of recent reporters'
-          reactions by sector — next scanner feature. Corollary from the same study: prefer Energy/Financials/Materials
-          setups over Tech/Communications at equal premium richness, and treat serial EPS beaters (≥75% beat rate) as
-          higher-risk, not lower.</p></div>
-        <div class="mc"><h4>D · Rank, don't just gate</h4>
-          <p>The decile study shows returns rise <em>monotonically</em> as slope gets more negative and IV/RV gets higher.
-          When multiple candidates qualify on the same day, allocate to the top-ranked 1–3 by combined decile score
-          instead of equally to all. Same capital, higher average edge per dollar.</p></div>
-        <div class="mc"><h4>E · Skip binary-catalyst names</h4>
-          <p>Exclude sectors where the "earnings" event often carries FDA/regulatory-style tail risk (small biotech,
-          crypto-levered names). These populate the catastrophic left tail of the straddle distribution — cutting them
-          trims tail losses at minimal cost to frequency.</p></div>
+        <div class="mc"><h4>D0 · Sector-cohort heat filter <span style="color:var(--teal)">(NOW LIVE)</span></h4>
+          <p>The study's strongest effect: quiet same-sector cohorts → median z 0.79 / 17% blowthrough vs 52% baseline;
+          hot cohorts → the reverse. The scanner now keeps a rolling <code>reaction_log.json</code> of recent reporters'
+          normalized reactions by sector and computes each candidate's cohort heat (shown in the chart's mini monitor);
+          quiet cohorts add +0.30 log-odds, hot ones −0.15. The log fills as earnings season progresses.</p></div>
+        <div class="mc"><h4>D · Rank, don't just gate <span style="color:var(--teal)">(NOW LIVE)</span></h4>
+          <p>Every analyzed event gets a transparent <b>0–100 rank score</b> (how far each signal clears its threshold)
+          and a heuristic <b>odds-of-profit</b> (research base 66% shifted by documented nudges from the decile and
+          conditioner studies, clamped 40–80%). Suggested size scales with the odds; the paper tracker fills
+          best-ranked-first when the 3-position cap binds.</p></div>
+        <div class="mc"><h4>E · Skip binary-catalyst names <span style="color:var(--teal)">(NOW LIVE as down-weight)</span></h4>
+          <p>Biotech/specialty-pharma industries carry FDA-style tail risk unrelated to the earnings print. The scanner
+          flags them (<code>binary_risk</code>) and cuts their odds by −0.20 log-odds rather than hard-excluding —
+          the study's Health-sector result wasn't significant enough to justify a full ban.</p></div>
         <div class="mc"><h4>F · Earnings-day VIX regime filter <span style="color:var(--amber)">(revised by the study)</span></h4>
           <p>The conditioner study <em>refutes</em> half of this idea: relative to their own recent vol, stocks react
           <em>less</em> in stressed regimes (median z 1.67 vs 2.66 in calm ones) — and calm regimes are where the IV/RV
@@ -704,7 +703,7 @@ function fmtCap(v) {
 function acct() { var v = parseFloat($('acct').value); return (v > 0) ? v : 10000; }
 function acctChanged() {
   try { localStorage.setItem('evs_acct', String(acct())); } catch (e) {}
-  renderCandidates(); renderDetail();
+  renderCandidates(); renderHero();
 }
 
 function showTab(name) {
@@ -775,57 +774,53 @@ function renderKpis() {
   }).join('');
 }
 
-function candRow(ev, withDate) {
-  var slopeOk = ev.pass_slope, ivrvOk = ev.pass_ivrv, volOk = ev.pass_volume;
-  var contracts = calContracts(ev);
+function oddsTxt(ev) {
+  if (!ev.odds) return '<span class="dimtxt">—</span>';
+  var c = ev.odds >= 0.66 ? 'pos' : (ev.odds >= 0.55 ? '' : 'neg');
+  return '<span class="' + c + '"><b>' + Math.round(ev.odds * 100) + '%</b></span>';
+}
+function suggSize(ev) {
+  if (!ev.suggested_frac) return '<span class="dimtxt">—</span>';
+  return '<b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> <span class="dimtxt">$' +
+    fmtInt(Math.round(acct() * ev.suggested_frac)) + '</span>';
+}
+function candRow(ev) {
   var legs = (ev.front_exp && ev.back_exp)
     ? ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) + ' @ ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1)
     : '—';
-  var cells = [
-    '<td><b>' + ev.ticker + '</b>' + mismatchFlag(ev) + ' <span class="dimtxt" style="font-size:0.72rem">' + fmtCap(ev.market_cap) + '</span></td>'
-  ];
-  if (withDate) cells.push('<td>' + ev.date + '</td>');
-  cells.push(
-    '<td>' + whenPill(ev.when) + '</td>',
+  var windowCell = ev.bucket === 'now'
+    ? '<span class="pill pill-t1">NOW</span> ' + whenPill(ev.when)
+    : '<span class="dimtxt">' + ev.date.slice(5) + '</span> ' + whenPill(ev.when);
+  return [
+    '<td><b>' + ev.ticker + '</b>' + mismatchFlag(ev) + ' <span class="dimtxt" style="font-size:0.72rem">' + (ev.sector || fmtCap(ev.market_cap)) + '</span></td>',
+    '<td>' + windowCell + '</td>',
     '<td>' + tierPill(ev) + '</td>',
+    '<td><b>' + (ev.rank_score !== undefined && ev.rank_score !== null ? ev.rank_score : '—') + '</b></td>',
+    '<td>' + oddsTxt(ev) + '</td>',
     '<td>' + fmt(ev.price) + '</td>',
     '<td>' + (ev.expected_move_pct ? '±' + fmt(ev.expected_move_pct, 1) + '%' : '—') + '</td>',
-    '<td>' + passTxt(slopeOk, fmt(ev.ts_slope_0_45, 5)) + '</td>',
-    '<td>' + passTxt(ivrvOk, fmt(ev.iv30_rv30)) + '</td>',
-    '<td>' + passTxt(volOk, fmtInt(ev.avg_volume30)) + '</td>'
-  );
-  if (!withDate) cells.push(
-    '<td>' + (ev.atm_spread_pct === null ? '—' : passTxt(ev.atm_spread_pct <= DATA.thresholds.max_atm_spread_pct, fmt(ev.atm_spread_pct * 100, 1) + '%')) + '</td>',
-    '<td>' + (ev.richness ? passTxt(ev.richness >= DATA.thresholds.richness_min, fmt(ev.richness) + 'x') : '<span class="dimtxt">—</span>') + '</td>',
+    '<td>' + passTxt(ev.pass_slope, fmt(ev.ts_slope_0_45, 5)) + '</td>',
+    '<td>' + passTxt(ev.pass_ivrv, fmt(ev.iv30_rv30)) + '</td>',
+    '<td>' + passTxt(ev.pass_volume, fmtInt(ev.avg_volume30)) + '</td>',
     '<td style="font-size:0.78rem">' + legs + '</td>',
     '<td>' + (ev.calendar_debit_est ? '$' + fmt(ev.calendar_debit_est) : '—') + '</td>',
-    '<td>' + (contracts !== null ? contracts + 'x' : '—') + '</td>'
-  );
-  return cells.join('');
+    '<td>' + suggSize(ev) + '</td>'
+  ].join('');
 }
 
 function renderCandidates() {
-  var today = DATA.events.filter(function (e) { return e.bucket === 'now'; });
-  today.sort(function (a, b) {
-    var rank = { 'RECOMMENDED': 0, 'CONSIDER': 1, 'AVOID': 2 };
-    if (rank[a.tier] !== rank[b.tier]) return rank[a.tier] - rank[b.tier];
-    return (a.ts_slope_0_45 || 0) - (b.ts_slope_0_45 || 0);
+  var evs = DATA.events.slice();
+  evs.sort(function (a, b) {
+    if ((a.bucket === 'now') !== (b.bucket === 'now')) return a.bucket === 'now' ? -1 : 1;
+    return (b.rank_score || 0) - (a.rank_score || 0);
   });
   var tb = $('cand-tbody');
-  tb.innerHTML = today.map(function (ev) {
+  tb.innerHTML = evs.map(function (ev) {
     var cls = 'clickable' + (ev.ticker === selectedTicker ? ' selected' : '');
-    return '<tr class="' + cls + '" onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev, false) + '</tr>';
+    return '<tr class="' + cls + '" onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev) + '</tr>';
   }).join('');
-  $('cand-empty').style.display = today.length ? 'none' : '';
-  $('cand-empty').textContent = 'No qualifying earnings events in today’s trade window. Quiet weeks are normal between earnings seasons — the strategy only trades ~10–12% of events even in peak season. Check the This-week and Watchlist tables below for what’s coming.';
-
-  var up = DATA.events.filter(function (e) { return e.bucket === 'week'; });
-  up.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.market_cap || 0) - (a.market_cap || 0); });
-  $('up-tbody').innerHTML = up.map(function (ev) {
-    return '<tr class="clickable" onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev, true) + '</tr>';
-  }).join('');
-  $('up-empty').style.display = up.length ? 'none' : '';
-  $('up-empty').textContent = 'No further scanned events on this week’s calendar.';
+  $('cand-empty').style.display = evs.length ? 'none' : '';
+  $('cand-empty').textContent = 'No analyzed events this week. Quiet weeks are normal between earnings seasons — the strategy only trades ~10–12% of events even in peak season. See the Watchlist below for what’s coming.';
 
   var watch = (DATA.watchlist || []).slice();
   watch.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (b.market_cap || 0) - (a.market_cap || 0); });
@@ -860,7 +855,7 @@ function renderCandidates() {
 function selectTicker(t) {
   selectedTicker = t;
   renderCandidates();
-  renderDetail();
+  renderHero();
   renderSigMon();
   renderMiniGrid();
 }
@@ -964,83 +959,168 @@ function renderMiniGrid() {
   }).join('') || '<span class="dimtxt" style="font-size:0.82rem">No analyzed events in this scan.</span>';
 }
 
-function renderDetail() {
-  var ev = null;
-  for (var i = 0; i < DATA.events.length; i++) if (DATA.events[i].ticker === selectedTicker) { ev = DATA.events[i]; break; }
-  if (!ev) {
-    var first = DATA.events.filter(function (e) { return e.bucket === 'now'; })[0] || DATA.events[0];
-    if (!first) return;
-    ev = first; selectedTicker = ev.ticker;
-  }
-  var th = DATA.thresholds;
+/* ── Hero: candles chart + mini-mon overlay + payoff diagram ────────── */
+var lwChart = null, lwSeries = null;
+var payoffChart = null;
+var rightPanel = 'payoff';
 
-  // ── term structure chart ──
-  $('ts-title').textContent = 'IV term structure — ' + ev.ticker;
-  $('ts-sub').textContent = ev.name + ' · earnings ' + ev.date + ' ' + ev.when +
-    (ev.date_mismatch ? ' · ⚠ Yahoo says ' + ev.yahoo_date : '');
+function setRightPanel(name) {
+  rightPanel = name;
+  $('rp-payoff-wrap').style.display = name === 'payoff' ? '' : 'none';
+  $('rp-term-wrap').style.display = name === 'term' ? '' : 'none';
+  $('rp-payoff').className = 'tab' + (name === 'payoff' ? ' active' : '');
+  $('rp-term').className = 'tab' + (name === 'term' ? ' active' : '');
+  $('payoff-title').textContent = name === 'payoff' ? 'Calendar payoff at front expiry' : 'IV term structure';
+}
+
+function normCdf(x) {
+  var t = 1 / (1 + 0.2316419 * Math.abs(x));
+  var d = 0.3989423 * Math.exp(-x * x / 2);
+  var p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+  return x > 0 ? 1 - p : p;
+}
+function bsCall(S, K, T, sig) {
+  if (T <= 0 || sig <= 0) return Math.max(S - K, 0);
+  var v = sig * Math.sqrt(T);
+  var d1 = (Math.log(S / K) + (sig * sig / 2) * T) / v;
+  return S * normCdf(d1) - K * normCdf(d1 - v);
+}
+
+function dteOf(exp) {
+  return Math.max(0, Math.round((new Date(exp) - new Date(DATA.scan_date)) / 8.64e7));
+}
+
+function renderHero() {
+  var ev = currentEvent();
+  if (!ev) return;
+
+  $('cdl-title').textContent = ev.ticker + ' — daily';
+  $('cdl-sub').textContent = (ev.name || '') + ' · earnings ' + ev.date + ' ' + ev.when +
+    (ev.sector ? ' · ' + ev.sector : '') + (ev.date_mismatch ? ' · ⚠ Yahoo says ' + ev.yahoo_date : '');
+  var el = $('cdl-chart');
+  el.innerHTML = '';
+  if (window.LightweightCharts && ev.ohlc && ev.ohlc.length) {
+    lwChart = LightweightCharts.createChart(el, {
+      layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#b39a52', fontFamily: 'Saira' },
+      grid: { vertLines: { color: 'rgba(106,85,31,0.18)' }, horzLines: { color: 'rgba(106,85,31,0.18)' } },
+      timeScale: { borderColor: '#443714' }, rightPriceScale: { borderColor: '#443714' },
+      height: 400, autoSize: true
+    });
+    lwSeries = lwChart.addCandlestickSeries({ upColor: '#52e6bd', downColor: '#f2563a',
+      borderVisible: false, wickUpColor: '#52e6bd', wickDownColor: '#f2563a' });
+    lwSeries.setData(ev.ohlc.map(function (b) { return { time: b.t, open: b.o, high: b.h, low: b.l, close: b.c }; }));
+    if (ev.atm_strike) lwSeries.createPriceLine({ price: ev.atm_strike, color: '#e8b94f', lineWidth: 1, lineStyle: 2, title: 'ATM ' + ev.atm_strike });
+    if (ev.expected_move_pct && ev.price) {
+      var em = ev.price * ev.expected_move_pct / 100;
+      lwSeries.createPriceLine({ price: ev.price + em, color: '#54d2ef', lineWidth: 1, lineStyle: 3, title: '+EM' });
+      lwSeries.createPriceLine({ price: ev.price - em, color: '#54d2ef', lineWidth: 1, lineStyle: 3, title: '-EM' });
+    }
+    lwSeries.setMarkers([{ time: ev.ohlc[ev.ohlc.length - 1].t, position: 'aboveBar',
+      shape: 'arrowDown', color: '#e8b94f', text: 'ER ' + ev.date.slice(5) }]);
+    lwChart.timeScale().fitContent();
+  }
+
+  var defs = sigDefs().filter(function (d) { return d.gate !== 'DIAG'; });
+  var dots = defs.map(function (d) {
+    var p = d.pass(ev);
+    return '<span class="mini-dot ' + (p === null ? 'na' : (p ? 'on' : 'off')) + '" title="' + d.n + '"></span>';
+  }).join('');
+  $('cdl-minimon').innerHTML =
+    '<div style="display:flex;align-items:baseline;gap:8px"><b style="font-size:0.95rem">' + ev.ticker + '</b>' + tierPill(ev) + '</div>' +
+    '<div class="mini-dots" style="margin-top:6px">' + dots + '</div>' +
+    '<div style="margin-top:7px;line-height:1.7">' +
+    '<span class="live-lbl">Rank</span> <b>' + (ev.rank_score !== undefined && ev.rank_score !== null ? ev.rank_score + '/100' : '—') + '</b><br>' +
+    '<span class="live-lbl">Odds of profit</span> ' + oddsTxt(ev) + '<br>' +
+    '<span class="live-lbl">Suggested size</span> ' + suggSize(ev) +
+    (ev.cohort_heat !== null && ev.cohort_heat !== undefined
+      ? '<br><span class="live-lbl">Sector cohort</span> <b>' + fmt(ev.cohort_heat, 2) + 'z</b> <span class="dimtxt">(' + ev.cohort_n + ' peers)</span>' : '') +
+    '</div>';
+
+  renderTermChart(ev);
+  renderPayoff(ev);
+  renderTicket(ev);
+}
+
+function renderTermChart(ev) {
   var pts = (ev.term_structure || []).map(function (p) { return { x: p.dte, y: p.iv * 100 }; });
   if (tsChart) tsChart.destroy();
   tsChart = new Chart($('tsChart'), {
     type: 'line',
-    data: { datasets: [{
-      label: 'ATM IV %', data: pts, borderColor: '#e8b94f', backgroundColor: 'rgba(232,185,79,0.12)',
-      pointBackgroundColor: '#e8b94f', tension: 0.25, fill: true, pointRadius: 4
-    }]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { type: 'linear', title: { display: true, text: 'days to expiry', color: '#b39a52' },
-             grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } },
-        y: { title: { display: true, text: 'ATM IV %', color: '#b39a52' },
-             grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } }
-      },
-      plugins: { legend: { display: false }, tooltip: { callbacks: {
-        label: function (c) { return c.parsed.y.toFixed(1) + '% IV @ ' + c.parsed.x + 'd'; } } } }
-    }
+    data: { datasets: [{ label: 'ATM IV %', data: pts, borderColor: '#e8b94f',
+      backgroundColor: 'rgba(232,185,79,0.12)', pointBackgroundColor: '#e8b94f',
+      tension: 0.25, fill: true, pointRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, animation: false,
+      scales: { x: { type: 'linear', title: { display: true, text: 'days to expiry', color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } },
+                y: { title: { display: true, text: 'ATM IV %', color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } } },
+      plugins: { legend: { display: false } } }
   });
+}
 
-  // ── condition bars + ticket ──
-  function bar(label, val, ok, pct, txt) {
-    return '<div class="cbar"><div class="cbar-label">' + label + '</div>' +
-      '<div class="cbar-track"><div class="cbar-fill" style="width:' + Math.max(3, Math.min(100, pct)) + '%;background:' +
-      (ok ? 'var(--teal)' : 'var(--coral)') + '"></div></div>' +
-      '<div class="cbar-val">' + txt + '</div></div>';
+function renderPayoff(ev) {
+  if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
+  if (!(ev.atm_strike && ev.calendar_debit_est && ev.back_iv && ev.front_exp && ev.back_exp && ev.price)) {
+    return;
   }
-  var slopePct = ev.ts_slope_0_45 === null ? 0 : Math.min(100, Math.max(0, (-ev.ts_slope_0_45 / (2 * -th.ts_slope_0_45)) * 100));
-  var ivrvPct = ev.iv30_rv30 ? Math.min(100, (ev.iv30_rv30 / (2 * th.iv30_rv30)) * 100) : 0;
-  var volPct = Math.min(100, (ev.avg_volume30 / (4 * th.avg_volume30)) * 100);
+  var K = ev.atm_strike, debit = ev.calendar_debit_est;
+  var Tgap = Math.max(1, dteOf(ev.back_exp) - dteOf(ev.front_exp)) / 365;
+  var sigBack = ev.back_iv * 0.95;
+  var em = ev.expected_move_pct ? ev.price * ev.expected_move_pct / 100 : ev.price * 0.05;
+  var lo = ev.price - 3 * em, hi = ev.price + 3 * em;
+  var pts = [], breakevens = [];
+  var prev = null;
+  for (var i = 0; i <= 120; i++) {
+    var S = lo + (hi - lo) * i / 120;
+    var pnl = (bsCall(S, K, Tgap, sigBack) - Math.max(S - K, 0) - debit) * 100;
+    pts.push({ x: S, y: pnl });
+    if (prev !== null && ((prev.y <= 0 && pnl > 0) || (prev.y > 0 && pnl <= 0))) {
+      var w = Math.abs(prev.y) / (Math.abs(prev.y) + Math.abs(pnl));
+      breakevens.push(prev.x + (S - prev.x) * w);
+    }
+    prev = { x: S, y: pnl };
+  }
+  var beTxt = breakevens.map(function (b) { return fmt(b, 2); }).join(' / ');
+  payoffChart = new Chart($('payoffChart'), {
+    type: 'line',
+    data: { datasets: [
+      { label: 'P&L / contract', data: pts, pointRadius: 0, borderWidth: 2,
+        borderColor: '#e8b94f', tension: 0.15,
+        fill: { target: 'origin', above: 'rgba(82,230,189,0.22)', below: 'rgba(242,86,58,0.16)' } },
+      { label: 'now / ±EM', type: 'scatter', pointRadius: 5, pointStyle: 'triangle',
+        pointBackgroundColor: '#54d2ef',
+        data: [{ x: ev.price, y: 0 }, { x: ev.price - em, y: 0 }, { x: ev.price + em, y: 0 }] }
+    ]},
+    options: { responsive: true, maintainAspectRatio: false, animation: false,
+      scales: { x: { type: 'linear', title: { display: true, text: ev.ticker + ' at front expiry' + (breakevens.length ? ' · breakevens ' + beTxt : ''), color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } },
+                y: { title: { display: true, text: 'P&L per contract $', color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' }, ticks: { color: '#b39a52' } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) {
+        return '$' + c.parsed.y.toFixed(0) + ' at ' + c.parsed.x.toFixed(2); } } } } }
+  });
+}
+
+function renderTicket(ev) {
   var html = '';
-  html += bar('TS slope ≤ ' + th.ts_slope_0_45, ev.ts_slope_0_45, ev.pass_slope, slopePct, fmt(ev.ts_slope_0_45, 5));
-  html += bar('IV30/RV30 ≥ ' + th.iv30_rv30, ev.iv30_rv30, ev.pass_ivrv, ivrvPct, fmt(ev.iv30_rv30));
-  html += bar('Avg vol ≥ 1.5M', ev.avg_volume30, ev.pass_volume, volPct, (ev.avg_volume30 / 1e6).toFixed(1) + 'M');
-  if (ev.atm_spread_pct !== null) {
-    html += bar('ATM spread ≤ 10%', ev.atm_spread_pct, ev.atm_spread_pct <= th.max_atm_spread_pct,
-      Math.min(100, ev.atm_spread_pct / 0.2 * 100), fmt(ev.atm_spread_pct * 100, 1) + '%');
-  }
-  if (ev.richness) {
-    html += bar('Richness ≥ ' + th.richness_min + 'x', ev.richness, ev.richness >= th.richness_min,
-      Math.min(100, ev.richness / 2.5 * 100), fmt(ev.richness) + 'x');
-  }
-  html += '<div style="height:1px;background:var(--border2);margin:12px 0"></div>';
-  html += '<div style="font-size:0.82rem;line-height:1.9">';
-  html += '<div>Rating: ' + tierPill(ev) + '</div>';
-  if (ev.expected_move_pct) {
-    html += '<div>Options-implied move: <b>±' + fmt(ev.expected_move_pct, 1) + '%</b>' +
-      (ev.hist_moves ? ' · avg realized last ' + ev.hist_moves.n + ' earnings: <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b>' : '') + '</div>';
-  }
   if (ev.front_exp && ev.back_exp) {
-    var n = calContracts(ev);
-    html += '<div style="margin-top:6px;padding:9px 12px;background:#1f1a0e;border:1px solid var(--border2);border-radius:5px">' +
-      '<b style="color:var(--yellow)">CALENDAR ·</b> sell ' + ev.front_exp + ' / buy ' + ev.back_exp +
-      ' @ strike ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1) +
-      (ev.calendar_debit_est ? ' · est. debit <b>$' + fmt(ev.calendar_debit_est) + '</b>' : '') +
-      (n !== null ? ' · <b>' + n + ' contract' + (n === 1 ? '' : 's') + '</b> ≈ ' + (DATA.sizing.calendar_frac * 100) + '% of $' + fmtInt(acct()) : '') +
-      '</div>';
-    html += '<div class="dimtxt" style="font-size:0.72rem;margin-top:6px">Calendars only — a short straddle is naked short options: broker margin runs several times the equivalent calendar debit and the loss is unbounded, vs the calendar’s defined-risk debit.</div>';
-    html += '<div class="dimtxt" style="font-size:0.72rem;margin-top:6px">Enter final ~15 min before the close preceding the announcement · exit ~15 min after the next open. Quotes are delayed — reprice at your broker.</div>';
+    var fr = ev.suggested_frac;
+    var allocTxt = fr ? ('<b>' + (fr * 100).toFixed(1) + '%</b> of account ≈ <b>$' + fmtInt(Math.round(acct() * fr)) + '</b>') : 'not RECOMMENDED — no size';
+    var n = (fr && ev.calendar_debit_est) ? Math.floor((acct() * fr) / (ev.calendar_debit_est * 100)) : null;
+    html += '<b style="color:var(--yellow)">CALENDAR</b> · sell ' + ev.front_exp + ' / buy ' + ev.back_exp +
+      ' @ ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1) +
+      (ev.calendar_debit_est ? ' · debit <b>$' + fmt(ev.calendar_debit_est) + '</b>' : '') + '<br>' +
+      '<span class="live-lbl">Sizing (odds-scaled)</span> ' + allocTxt +
+      (n !== null ? ' · ' + n + ' contract' + (n === 1 ? '' : 's') : '') + '<br>' +
+      '<span class="dimtxt" style="font-size:0.7rem">Payoff assumes back-month IV ' + (ev.back_iv ? (ev.back_iv * 100).toFixed(0) + '%' : '—') +
+      ' × 0.95 after the event. Odds are a heuristic ranking (research base 66% ± documented nudges), not a calibrated probability. Quotes delayed — reprice at your broker.</span>';
+    if (ev.odds_factors && ev.odds_factors.length) {
+      html += '<div style="margin-top:6px">' + ev.odds_factors.map(function (f) {
+        var up = f.d > 0;
+        return '<span class="pill ' + (up ? 'pill-rec' : 'pill-avoid') + '" style="font-size:0.62rem;margin:2px 3px 0 0">' +
+          (up ? '▲' : '▼') + ' ' + f.f + '</span>';
+      }).join('') + '</div>';
+    }
+  } else {
+    html = '<span class="dimtxt">No calendar legs available for this event.</span>';
   }
-  html += '</div>';
-  $('detail-body').innerHTML = html;
+  $('ticket-line').innerHTML = html;
 }
 
 function renderStrip() {
@@ -1072,7 +1152,7 @@ function render() {
   renderStrip();
   renderKpis();
   renderCandidates();
-  renderDetail();
+  renderHero();
   renderSigMon();
   renderMiniGrid();
   // thresholds into strategy tab
