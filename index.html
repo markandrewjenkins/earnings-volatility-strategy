@@ -141,10 +141,12 @@ tr.clickable { cursor: pointer }
 tr.selected td { background: #241d0e }
 .pill { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.03em; }
 /* Action-scale rating ramp: EXECUTE (gold) > QUALIFIED (teal) > WATCH (amber) > STAND ASIDE (muted) */
-.pill-rec   { background: #0c211c; color: var(--teal);   border: 1px solid var(--teal) }
-.pill-con   { background: #2a2008; color: var(--amber);  border: 1px solid var(--amber) }
-.pill-avoid { background: #17150f; color: #8f8f8f;       border: 1px solid #55503c }
-.pill-t1    { background: #2a2210; color: var(--yellow); border: 1px solid var(--yellow); text-shadow: 0 0 8px rgba(232,185,79,0.4) }
+.pill-t1    { background: #0c2418; color: #5cf0c2; border: 1px solid #5cf0c2; text-shadow: 0 0 9px rgba(92,240,194,0.5) }
+.pill-rec   { background: #0d1d16; color: #2e9b78; border: 1px solid #2e9b78 }
+.pill-con   { background: #211210; color: #c96a55; border: 1px solid #c96a55 }
+.pill-avoid { background: #171010; color: #84544a; border: 1px solid #5e3c34 }
+.g-chip.gc-tbc { border-style: dashed; opacity: 0.8;
+  background: repeating-linear-gradient(45deg, rgba(12,10,7,0.7) 0 5px, rgba(106,85,31,0.18) 5px 8px) }
 
 /* ── Earnings timeline (Gantt) ─────────────────────────────────────── */
 .gantt-wrap { display: flex; gap: 12px; align-items: stretch }
@@ -164,15 +166,15 @@ tr.selected td { background: #241d0e }
   overflow: hidden; text-overflow: ellipsis; background: rgba(12,10,7,0.7); transition: transform .08s }
 .g-chip:hover { transform: scale(1.08) }
 .g-chip.sel { box-shadow: 0 0 7px currentColor }
-.gc-exec  { color: var(--yellow); border-color: var(--yellow) }
-.gc-qual  { color: var(--teal);   border-color: var(--teal) }
-.gc-watch { color: var(--amber);  border-color: var(--amber) }
-.gc-aside { color: #8f8f8f;       border-color: #55503c }
+.gc-exec  { color: #5cf0c2; border-color: #5cf0c2 }
+.gc-qual  { color: #2e9b78; border-color: #2e9b78 }
+.gc-watch { color: #c96a55; border-color: #c96a55 }
+.gc-aside { color: #84544a; border-color: #5e3c34 }
 .gc-wl    { color: var(--cyan);   border-color: rgba(84,210,239,0.45); opacity: 0.75 }
 .gc-wl-lo { color: var(--gray);   border-color: var(--border2); opacity: 0.6 }
 #g-mon { flex: 0 0 320px; background: var(--panel2); border: 1px solid var(--border2);
   border-radius: 6px; padding: 11px 13px; font-size: 0.74rem; line-height: 1.75; overflow-y: auto; max-height: 500px }
-#g-mon .gm-hd { display: flex; align-items: baseline; gap: 9px; margin-bottom: 4px }
+#g-mon .gm-hd { display: flex; align-items: baseline; gap: 16px; margin-bottom: 7px }
 #g-mon .gm-hd b { font-size: 1.05rem }
 @media (max-width: 900px) { .gantt-wrap { flex-direction: column } #g-mon { flex: 1 1 auto } }
 
@@ -184,14 +186,17 @@ tr.selected td { background: #241d0e }
 .g-lane { display: flex; border-top: 1px solid rgba(106,85,31,0.3) }
 .g-lanelbl { position: sticky; left: 0; z-index: 3; flex: 0 0 108px; background: var(--panel);
   display: flex; align-items: center; padding: 4px 6px; border-right: 1px solid var(--border2) }
-.g-cell { flex: 0 0 64px; min-width: 64px; border-left: 1px solid rgba(106,85,31,0.22);
+.g-cell { flex: 0 0 var(--gcw,64px); min-width: var(--gcw,64px); border-left: 1px solid rgba(106,85,31,0.22);
   padding: 3px 2px; display: flex; flex-direction: column; gap: 3px; min-height: 30px }
 .g-cell.today { background: rgba(232,185,79,0.06) }
 .g-cell.fcst { background: repeating-linear-gradient(45deg, transparent 0 7px, rgba(106,85,31,0.07) 7px 9px) }
-.g-hcell { flex: 0 0 64px; min-width: 64px; font-size: 0.58rem; color: var(--dim); text-align: center;
+.g-hcell { position: relative; flex: 0 0 var(--gcw,64px); min-width: var(--gcw,64px); font-size: 0.58rem; color: var(--dim); text-align: center;
   text-transform: uppercase; letter-spacing: 0.04em; padding: 3px 2px; border-left: 1px solid rgba(106,85,31,0.22); white-space: nowrap }
 .g-hcell.today { color: var(--yellow); font-weight: 700 }
 .g-zone { font-size: 0.54rem; letter-spacing: 0.1em; color: var(--cyan); text-align: left; padding-left: 5px }
+.g-hcell .g-zone { position: absolute; top: -14px; left: 2px; white-space: nowrap; pointer-events: none }
+#gantt-grid { display: flex; flex-direction: column; min-height: 520px; padding-top: 14px }
+.g-lane { flex: 1 }
 #g-mon2 { display: flex; gap: 18px; margin-top: 10px; background: var(--panel2); border: 1px solid var(--border2);
   border-radius: 6px; padding: 11px 14px; font-size: 0.74rem; line-height: 1.7; flex-wrap: wrap }
 #gm-left { flex: 1.2 1 340px; min-width: 300px }
@@ -278,7 +283,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 <div class="hdr">
   <div>
     <div class="hdr-title">Earnings Volatility Strategy</div>
-    <div class="hdr-meta">Selling overpriced earnings IV via calendar spreads &amp; straddles ·
+    <div class="hdr-meta"><span id="hdr-sub">Loading…</span> ·
       <a href="https://markandrewjenkins.github.io/portfolio/" target="_blank" rel="noopener">portfolio</a> ·
       <a href="https://markandrewjenkins.github.io/vix-swing-strategy/" target="_blank" rel="noopener">VIX swing strategy</a>
     </div>
@@ -315,7 +320,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <div id="tab-scanner">
     <div class="panel">
       <div class="ph"><span class="t">Trade calendar — entry days, next 30 days</span>
-        <span class="dimtxt" style="text-transform:none">x-axis = the day you BUY (always 15:20–16:00 ET; pre-open reporters map to the prior session) · lanes = rating · drag to pan · hover for the read-out, click to load below. Hatched zone = forecast (full options analysis begins 7 days out).</span></div>
+        <span class="dimtxt" style="text-transform:none">x-axis = the day you BUY (always 15:20–16:00 ET; pre-open reporters map to the prior session) · lanes = rating · drag to pan · hover for the read-out, click to load below. Hatched cells/chips = DEVELOPING (tentative grade from volume/price; full options analysis begins 7 days out — "?" grades can change).</span></div>
       <div class="pb">
         <div class="gantt-scroll" id="gantt-scroll"><div id="gantt-grid"></div></div>
         <div id="g-mon2">
@@ -764,11 +769,10 @@ function showTab(name) {
 }
 
 function tierPill(ev) {
-  // Action scale: EXECUTE (gold) > QUALIFIED (teal) > WATCH (amber) > STAND ASIDE (muted)
-  if (ev.tier1) return '<span class="pill pill-t1">EXECUTE ★</span>';
-  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">QUALIFIED</span>';
-  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">WATCH</span>';
-  return '<span class="pill pill-avoid">STAND ASIDE</span>';
+  if (ev.tier1) return '<span class="pill pill-t1">PRIORITY ★</span>';
+  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">STRONG</span>';
+  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">WEAK</span>';
+  return '<span class="pill pill-avoid">IGNORE</span>';
 }
 function whenPill(w) {
   if (w === 'AMC') return '<span class="pill pill-amc">AMC</span>';
@@ -776,9 +780,9 @@ function whenPill(w) {
   return '<span class="pill pill-tns" title="Announcement time not supplied">TBD</span>';
 }
 function likePill(l) {
-  if (l === 'HIGH') return '<span class="pill pill-rec">LIKELY</span>';
-  if (l === 'MEDIUM') return '<span class="pill pill-con">POSSIBLE</span>';
-  return '<span class="pill pill-avoid">UNLIKELY</span>';
+  if (l === 'HIGH') return '<span class="pill pill-rec" style="border-style:dashed">STRONG?</span>';
+  if (l === 'MEDIUM') return '<span class="pill pill-con" style="border-style:dashed">WEAK?</span>';
+  return '<span class="pill pill-avoid" style="border-style:dashed">IGNORE?</span>';
 }
 function mismatchFlag(ev) {
   var s = '';
@@ -898,14 +902,13 @@ function reportTxt(ev) {
          ev.when === 'AMC' ? 'reports after the close' : 'report time unconfirmed';
 }
 var LANES = [
-  { id: 'exec',  lbl: '<span class="pill pill-t1">EXECUTE ★</span>',  cls: 'gc-exec' },
-  { id: 'qual',  lbl: '<span class="pill pill-rec">QUALIFIED</span>', cls: 'gc-qual' },
-  { id: 'watch', lbl: '<span class="pill pill-con">WATCH</span>',     cls: 'gc-watch' },
-  { id: 'aside', lbl: '<span class="pill pill-avoid">STAND ASIDE</span>', cls: 'gc-aside' },
-  { id: 'wl',    lbl: '<span class="pill" style="color:var(--cyan);border:1px solid rgba(84,210,239,0.45)">FORECAST</span>', cls: 'gc-wl' }
+  { id: 'exec',  lbl: '<span class="pill pill-t1">PRIORITY ★</span>',  cls: 'gc-exec' },
+  { id: 'qual',  lbl: '<span class="pill pill-rec">STRONG</span>', cls: 'gc-qual' },
+  { id: 'watch', lbl: '<span class="pill pill-con">WEAK</span>',   cls: 'gc-watch' },
+  { id: 'aside', lbl: '<span class="pill pill-avoid">IGNORE</span>', cls: 'gc-aside' }
 ];
 function laneOf(ev, isW) {
-  if (isW) return 'wl';
+  if (isW) return ev.likelihood === 'HIGH' ? 'qual' : ev.likelihood === 'MEDIUM' ? 'watch' : 'aside';
   if (ev.tier1) return 'exec';
   if (ev.tier === 'RECOMMENDED') return 'qual';
   if (ev.tier === 'CONSIDER') return 'watch';
@@ -923,23 +926,27 @@ function renderGantt() {
 
   var days = [];
   var d = new Date(DATA.scan_date + 'T12:00:00');
-  while (days.length < 22) {
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);  // weekend -> next Monday
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));   // Monday of the current trading week
+  while (days.length < 40) {
     if (d.getDay() !== 0 && d.getDay() !== 6) days.push(d.toISOString().slice(0, 10));
     d.setDate(d.getDate() + 1);
   }
-  var fcstIdx = 5; // ~7 calendar days ≈ 5 business days: analysis boundary
+  var horizon = new Date(DATA.scan_date + 'T12:00:00');
+  horizon.setDate(horizon.getDate() + 7);
+  var fcstDate = horizon.toISOString().slice(0, 10);   // 7-day analysis boundary
   var hdr = '<div class="g-hdr"><div class="g-lanelbl g-zone">BUY DAY →</div>' + days.map(function (ds, i) {
     var dd = new Date(ds + 'T12:00:00');
     var lbl = dd.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
     return '<div class="g-hcell' + (ds === DATA.scan_date ? ' today' : '') + '">' +
-      (i === fcstIdx ? '<span class="g-zone">FORECAST →</span>' : '') + lbl + '</div>';
+      (ds === fcstDate ? '<span class="g-zone">DEVELOPING →</span>' : '') + lbl + '</div>';
   }).join('') + '</div>';
   var lanes = LANES.map(function (ln) {
     return '<div class="g-lane"><div class="g-lanelbl">' + ln.lbl + '</div>' + days.map(function (ds, i) {
       var items = byKey[ds + '|' + ln.id] || [];
-      return '<div class="g-cell' + (ds === DATA.scan_date ? ' today' : '') + (i >= fcstIdx ? ' fcst' : '') + '">' +
+      return '<div class="g-cell' + (ds === DATA.scan_date ? ' today' : '') + (ds >= fcstDate ? ' fcst' : '') + '">' +
         items.map(function (x) {
-          var cls = x.w ? (x.ev.likelihood === 'HIGH' ? 'gc-wl' : 'gc-wl-lo') : ln.cls;
+          var cls = ln.cls + (x.w ? ' gc-tbc' : '');
           return '<span class="g-chip ' + cls + (x.ev.ticker === selectedTicker ? ' sel' : '') +
             '" onmouseover="ganttMon(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ')"' +
             ' onclick="ganttPick(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ')">' + x.ev.ticker +
@@ -948,6 +955,9 @@ function renderGantt() {
     }).join('') + '</div>';
   }).join('');
   $('gantt-grid').innerHTML = hdr + lanes;
+  var sc = $('gantt-scroll');
+  if (!window._gcw) window._gcw = Math.max(48, Math.floor((sc.clientWidth - 112) / 20));
+  $('gantt-grid').style.setProperty('--gcw', window._gcw + 'px');
 }
 function ganttPick(t, isW) { if (!isW) selectTicker(t); ganttMon(t, isW); }
 
@@ -970,8 +980,12 @@ function ganttMon(t, isW) {
   if (isW) {
     left += '<div style="margin-top:5px">Price <b>' + fmt(ev.price) + '</b>' +
       (ev.hist_moves ? ' · avg move (8q) <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b>' : '') + '</div>' +
-      gmBar('Volume 30d', (ev.avg_volume30 || 0) / (4 * th.avg_volume30) * 100, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M') +
-      gmBar('Price ≥ $20', Math.min(100, (ev.price || 0) / 80 * 100), (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0));
+      gmBar('Vol ≥ 1.5M', (ev.avg_volume30 || 0) / (4 * th.avg_volume30) * 100, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M') +
+      gmBar('Price ≥ $20', Math.min(100, (ev.price || 0) / 80 * 100), (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0)) +
+      ['Slope ≤ −.0041', 'IV/RV ≥ 1.25', 'Rich ≥ 1.15×', 'Spread ≤ 10%', 'OI ≥ 500'].map(function (l2) {
+        return '<div class="gm-bar"><span class="l">' + l2 + '</span><span class="t"></span>' +
+          '<span class="v" style="color:var(--gray);font-weight:400">forms ≤5d out</span></div>';
+      }).join('');
     $('gm-right').innerHTML = '<div class="dimtxt" style="font-size:0.72rem;padding-top:8px">Forecast only — the slope and IV/RV signals form in the final days. Full options analysis, odds and a trade ticket appear once this name is inside the 7-day window.</div>';
     if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
   } else {
@@ -981,12 +995,16 @@ function ganttMon(t, isW) {
       (evp !== null ? ' · <span class="live-lbl">est. EV</span> <b class="' + (evp >= 0 ? 'pos' : 'neg') + '">' +
         (evp >= 0 ? '+' : '') + evp.toFixed(1) + '%</b>' : '') + '</div>';
     var sm = ev.ts_slope_0_45 === null ? 0 : (ev.ts_slope_0_45 / th.ts_slope_0_45);
-    left += gmBar('TS slope', sm / 3 * 100, ev.pass_slope, fmt(ev.ts_slope_0_45, 4));
-    left += gmBar('IV30/RV30', (ev.iv30_rv30 || 0) / (2 * th.iv30_rv30) * 100, ev.pass_ivrv, fmt(ev.iv30_rv30, 2));
-    left += gmBar('Volume 30d', (ev.avg_volume30 || 0) / (4 * th.avg_volume30) * 100, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M');
-    left += gmBar('ATM spread', 100 - Math.min(100, (ev.atm_spread_pct || 0.2) / 0.2 * 100), ev.enhanced && ev.enhanced.tight_spread, ev.atm_spread_pct !== null ? fmt(ev.atm_spread_pct * 100, 1) + '%' : '—');
-    left += gmBar('Richness', (ev.richness || 0) / 2.5 * 100, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'n/a');
-    left += gmBar('ATM OI', Math.min(100, (ev.atm_oi || 0) / 2000 * 100), ev.enhanced && ev.enhanced.oi_ok, ev.atm_oi !== null && ev.atm_oi !== undefined ? fmtInt(ev.atm_oi) : '—');
+    left += gmBar('Slope ≤ −.0041', sm / 3 * 100, ev.pass_slope, fmt(ev.ts_slope_0_45, 4));
+    left += gmBar('IV/RV ≥ 1.25', (ev.iv30_rv30 || 0) / (2 * th.iv30_rv30) * 100, ev.pass_ivrv, fmt(ev.iv30_rv30, 2));
+    left += gmBar('Vol ≥ 1.5M', (ev.avg_volume30 || 0) / (4 * th.avg_volume30) * 100, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M');
+    left += gmBar('Price ≥ $20', Math.min(100, (ev.price || 0) / 80 * 100), (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0));
+    left += gmBar('Spread ≤ 10%', 100 - Math.min(100, (ev.atm_spread_pct || 0.2) / 0.2 * 100), ev.enhanced && ev.enhanced.tight_spread, ev.atm_spread_pct !== null ? fmt(ev.atm_spread_pct * 100, 1) + '%' : '—');
+    left += gmBar('Rich ≥ 1.15×', (ev.richness || 0) / 2.5 * 100, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'n/a');
+    left += gmBar('OI ≥ 500', Math.min(100, (ev.atm_oi || 0) / 2000 * 100), ev.enhanced && ev.enhanced.oi_ok, ev.atm_oi !== null && ev.atm_oi !== undefined ? fmtInt(ev.atm_oi) : '—');
+    left += '<div style="font-size:0.66rem;color:var(--dim);margin-top:3px">' +
+      (ev.fomc_window ? '<span class="neg">⚡ FOMC in window</span>' : 'no FOMC in window') + ' · ' +
+      (ev.date_mismatch ? '<span class="neg">⚠ date unconfirmed</span>' : 'date confirmed') + '</div>';
     var right = '';
     if (ev.front_exp && ev.back_exp) {
       var dc = ev.double_calendar;
@@ -1291,8 +1309,17 @@ function renderStrip() {
   $('lv-updated').textContent = d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
   var strip = $('live-strip');
   var ageH = (Date.now() - d.getTime()) / 3.6e6;
+  var nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  var mins = nowET.getHours() * 60 + nowET.getMinutes();
+  var open = nowET.getDay() >= 1 && nowET.getDay() <= 5 && mins >= 570 && mins < 960;
   if (DATA.stale || ageH > 24) { strip.className = 'stale'; $('lv-feed').textContent = 'STALE'; }
-  else { strip.className = ''; $('lv-feed').textContent = 'SCAN'; }
+  else if (open) { strip.className = ''; $('lv-feed').textContent = 'LIVE'; }
+  else { strip.className = 'stale'; $('lv-feed').textContent = 'CLOSED'; }
+  $('lv-feed').title = open ? 'Market open — scanning every ~15 min' : 'Market closed — next scan at the open';
+  var end = new Date(DATA.scan_date + 'T12:00:00'); end.setDate(end.getDate() + (DATA.horizon_days || 30));
+  var sub = $('hdr-sub');
+  if (sub) sub.textContent = DATA.scan_date + ' — ' + end.toISOString().slice(0, 10) + ' · ' +
+    fmtInt(DATA.counts.calendar_events) + ' earnings events · ' + DATA.counts.analyzed + ' analyzed';
 }
 
 function render() {
@@ -1633,6 +1660,11 @@ try { var saved = localStorage.getItem('evs_acct'); if (saved) $('acct').value =
 (function () {
   var sc = $('gantt-scroll');
   if (!sc) return;
+  sc.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    window._gcw = Math.max(40, Math.min(130, (window._gcw || 64) + (e.deltaY < 0 ? 7 : -7)));
+    $('gantt-grid').style.setProperty('--gcw', window._gcw + 'px');
+  }, { passive: false });
   var down = false, sx = 0, sl = 0;
   sc.addEventListener('mousedown', function (e) { down = true; sx = e.pageX; sl = sc.scrollLeft; sc.classList.add('dragging'); });
   window.addEventListener('mouseup', function () { down = false; sc.classList.remove('dragging'); });
