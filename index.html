@@ -142,9 +142,9 @@ tr.selected td { background: #241d0e }
 .pill { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.03em; }
 /* Action-scale rating ramp: EXECUTE (gold) > QUALIFIED (teal) > WATCH (amber) > STAND ASIDE (muted) */
 .pill-t1    { background: #0c2418; color: #5cf0c2; border: 1px solid #5cf0c2; text-shadow: 0 0 9px rgba(92,240,194,0.5) }
-.pill-rec   { background: #0d1d16; color: #2e9b78; border: 1px solid #2e9b78 }
-.pill-con   { background: #211210; color: #c96a55; border: 1px solid #c96a55 }
-.pill-avoid { background: #171010; color: #84544a; border: 1px solid #5e3c34 }
+.pill-rec   { background: #241d08; color: var(--yellow); border: 1px solid var(--yellow) }
+.pill-con   { background: #2a120c; color: var(--coral); border: 1px solid var(--coral) }
+.pill-avoid { background: #1b1b1b; color: #b5b5b5; border: 1px solid #6e6e6e }
 .g-chip.gc-tbc { border-style: dashed; opacity: 0.8;
   background: repeating-linear-gradient(45deg, rgba(12,10,7,0.7) 0 5px, rgba(106,85,31,0.18) 5px 8px) }
 
@@ -167,14 +167,14 @@ tr.selected td { background: #241d0e }
 .g-chip:hover { transform: scale(1.08) }
 .g-chip.sel { box-shadow: 0 0 7px currentColor }
 .gc-exec  { color: #5cf0c2; border-color: #5cf0c2 }
-.gc-qual  { color: #2e9b78; border-color: #2e9b78 }
-.gc-watch { color: #c96a55; border-color: #c96a55 }
-.gc-aside { color: #84544a; border-color: #5e3c34 }
+.gc-qual  { color: var(--yellow); border-color: var(--yellow) }
+.gc-watch { color: var(--coral); border-color: var(--coral) }
+.gc-aside { color: #b5b5b5; border-color: #6e6e6e }
 .gc-wl    { color: var(--cyan);   border-color: rgba(84,210,239,0.45); opacity: 0.75 }
 .gc-wl-lo { color: var(--gray);   border-color: var(--border2); opacity: 0.6 }
 #g-mon { flex: 0 0 320px; background: var(--panel2); border: 1px solid var(--border2);
   border-radius: 6px; padding: 11px 13px; font-size: 0.74rem; line-height: 1.75; overflow-y: auto; max-height: 500px }
-#g-mon .gm-hd { display: flex; align-items: baseline; gap: 16px; margin-bottom: 7px }
+#g-mon .gm-hd { display: flex; align-items: baseline; gap: 26px; margin-bottom: 7px }
 #g-mon .gm-hd b { font-size: 1.05rem }
 @media (max-width: 900px) { .gantt-wrap { flex-direction: column } #g-mon { flex: 1 1 auto } }
 
@@ -195,8 +195,8 @@ tr.selected td { background: #241d0e }
 .g-hcell.today { color: var(--yellow); font-weight: 700 }
 .g-zone { font-size: 0.54rem; letter-spacing: 0.1em; color: var(--cyan); text-align: left; padding-left: 5px }
 .g-hcell .g-zone { position: absolute; top: -14px; left: 2px; white-space: nowrap; pointer-events: none }
-#gantt-grid { display: flex; flex-direction: column; min-height: 520px; padding-top: 14px }
-.g-lane { flex: 1 }
+#gantt-grid { display: flex; flex-direction: column; padding-top: 14px }
+.g-cell { min-height: 26px }
 #g-mon2 { display: flex; gap: 18px; margin-top: 10px; background: var(--panel2); border: 1px solid var(--border2);
   border-radius: 6px; padding: 11px 14px; font-size: 0.74rem; line-height: 1.7; flex-wrap: wrap }
 #gm-left { flex: 1.2 1 340px; min-width: 300px }
@@ -283,9 +283,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 <div class="hdr">
   <div>
     <div class="hdr-title">Earnings Volatility Strategy</div>
-    <div class="hdr-meta"><span id="hdr-sub">Loading…</span> ·
+    <div class="hdr-meta"><span id="hdr-sub">Loading…</span><span style="display:none"> ·
       <a href="https://markandrewjenkins.github.io/portfolio/" target="_blank" rel="noopener">portfolio</a> ·
-      <a href="https://markandrewjenkins.github.io/vix-swing-strategy/" target="_blank" rel="noopener">VIX swing strategy</a>
+      <a href="https://markandrewjenkins.github.io/vix-swing-strategy/" target="_blank" rel="noopener">VIX swing strategy</a></span>
     </div>
   </div>
   <div class="tabs">
@@ -770,9 +770,9 @@ function showTab(name) {
 
 function tierPill(ev) {
   if (ev.tier1) return '<span class="pill pill-t1">PRIORITY ★</span>';
-  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">STRONG</span>';
-  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">WEAK</span>';
-  return '<span class="pill pill-avoid">IGNORE</span>';
+  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">POTENTIAL</span>';
+  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">MARGINAL</span>';
+  return '<span class="pill pill-avoid">DISQUALIFIED</span>';
 }
 function whenPill(w) {
   if (w === 'AMC') return '<span class="pill pill-amc">AMC</span>';
@@ -780,9 +780,9 @@ function whenPill(w) {
   return '<span class="pill pill-tns" title="Announcement time not supplied">TBD</span>';
 }
 function likePill(l) {
-  if (l === 'HIGH') return '<span class="pill pill-rec" style="border-style:dashed">STRONG?</span>';
-  if (l === 'MEDIUM') return '<span class="pill pill-con" style="border-style:dashed">WEAK?</span>';
-  return '<span class="pill pill-avoid" style="border-style:dashed">IGNORE?</span>';
+  if (l === 'HIGH') return '<span class="pill pill-rec" style="border-style:dashed">POTENTIAL?</span>';
+  if (l === 'MEDIUM') return '<span class="pill pill-con" style="border-style:dashed">MARGINAL?</span>';
+  return '<span class="pill pill-avoid" style="border-style:dashed">DISQUALIFIED?</span>';
 }
 function mismatchFlag(ev) {
   var s = '';
@@ -903,9 +903,9 @@ function reportTxt(ev) {
 }
 var LANES = [
   { id: 'exec',  lbl: '<span class="pill pill-t1">PRIORITY ★</span>',  cls: 'gc-exec' },
-  { id: 'qual',  lbl: '<span class="pill pill-rec">STRONG</span>', cls: 'gc-qual' },
-  { id: 'watch', lbl: '<span class="pill pill-con">WEAK</span>',   cls: 'gc-watch' },
-  { id: 'aside', lbl: '<span class="pill pill-avoid">IGNORE</span>', cls: 'gc-aside' }
+  { id: 'qual',  lbl: '<span class="pill pill-rec">POTENTIAL</span>', cls: 'gc-qual' },
+  { id: 'watch', lbl: '<span class="pill pill-con">MARGINAL</span>',   cls: 'gc-watch' },
+  { id: 'aside', lbl: '<span class="pill pill-avoid">DISQUALIFIED</span>', cls: 'gc-aside' }
 ];
 function laneOf(ev, isW) {
   if (isW) return ev.likelihood === 'HIGH' ? 'qual' : ev.likelihood === 'MEDIUM' ? 'watch' : 'aside';
@@ -928,18 +928,18 @@ function renderGantt() {
   var d = new Date(DATA.scan_date + 'T12:00:00');
   while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);  // weekend -> next Monday
   d.setDate(d.getDate() - ((d.getDay() + 6) % 7));   // Monday of the current trading week
-  while (days.length < 40) {
+  while (days.length < 60) {
     if (d.getDay() !== 0 && d.getDay() !== 6) days.push(d.toISOString().slice(0, 10));
     d.setDate(d.getDate() + 1);
   }
   var horizon = new Date(DATA.scan_date + 'T12:00:00');
   horizon.setDate(horizon.getDate() + 7);
   var fcstDate = horizon.toISOString().slice(0, 10);   // 7-day analysis boundary
-  var hdr = '<div class="g-hdr"><div class="g-lanelbl g-zone">BUY DAY →</div>' + days.map(function (ds, i) {
+  var next_td_g = (DATA.next_trading_day || ''); var hdr = '<div class="g-hdr"><div class="g-lanelbl g-zone"><span style="color:#fff">BUY DAY →</span></div>' + days.map(function (ds, i) {
     var dd = new Date(ds + 'T12:00:00');
     var lbl = dd.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
     return '<div class="g-hcell' + (ds === DATA.scan_date ? ' today' : '') + '">' +
-      (ds === fcstDate ? '<span class="g-zone">DEVELOPING →</span>' : '') + lbl + '</div>';
+      (ds === fcstDate ? '<span class="g-zone">DEVELOPING →</span>' : (ds === DATA.scan_date ? '<span class="g-zone" style="color:#fff">' + ((new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}))).getHours()*60+(new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}))).getMinutes()<930?'FINALIZING':'FINAL') + '</span>' : (ds === next_td_g ? '<span class="g-zone">FIRMING UP →</span>' : ''))) + lbl + '</div>';
   }).join('') + '</div>';
   var lanes = LANES.map(function (ln) {
     return '<div class="g-lane"><div class="g-lanelbl">' + ln.lbl + '</div>' + days.map(function (ds, i) {
@@ -956,7 +956,7 @@ function renderGantt() {
   }).join('');
   $('gantt-grid').innerHTML = hdr + lanes;
   var sc = $('gantt-scroll');
-  if (!window._gcw) window._gcw = Math.max(48, Math.floor((sc.clientWidth - 112) / 20));
+  if (!window._gcw) window._gcw = Math.max(76, Math.floor((sc.clientWidth - 112) / 20));
   $('gantt-grid').style.setProperty('--gcw', window._gcw + 'px');
 }
 function ganttPick(t, isW) { if (!isW) selectTicker(t); ganttMon(t, isW); }
