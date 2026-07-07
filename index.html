@@ -145,7 +145,7 @@ tr.selected td { background: #241d0e }
 .pill-rec   { background: #241d08; color: var(--yellow); border: 1px solid var(--yellow) }
 .pill-con   { background: #2a120c; color: var(--coral); border: 1px solid var(--coral) }
 .pill-avoid { background: #1b1b1b; color: #b5b5b5; border: 1px solid #6e6e6e }
-.g-chip.gc-tbc { border-style: dashed; opacity: 0.8;
+.g-chip.gc-tbc { border-style: dashed; opacity: 0.8; filter: saturate(0.4) brightness(0.68);
   background: repeating-linear-gradient(45deg, rgba(12,10,7,0.7) 0 5px, rgba(106,85,31,0.18) 5px 8px) }
 
 /* ── Earnings timeline (Gantt) ─────────────────────────────────────── */
@@ -197,6 +197,7 @@ tr.selected td { background: #241d0e }
 .g-hcell .g-zone { position: absolute; top: -14px; left: 2px; white-space: nowrap; pointer-events: none }
 #gantt-grid { display: flex; flex-direction: column; padding-top: 14px }
 .g-cell { min-height: 26px }
+#g-mon2 .gm-hd, #gm-left .gm-hd { display: flex; align-items: baseline; gap: 28px; margin-bottom: 8px }
 #g-mon2 { display: flex; gap: 18px; margin-top: 10px; background: var(--panel2); border: 1px solid var(--border2);
   border-radius: 6px; padding: 11px 14px; font-size: 0.74rem; line-height: 1.7; flex-wrap: wrap }
 #gm-left { flex: 1.2 1 340px; min-width: 300px }
@@ -298,7 +299,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 </div>
 
 <div id="live-strip" title="Scanner output refreshes on a schedule (~every 15 min during US market hours). Entries are placed in the final 15 minutes before the close; exits ~15 minutes after the next open.">
-  <span class="live-badge"><span class="live-dot"></span><span id="lv-feed">SCAN</span></span>
+  <span class="live-badge" style="order:98;margin-left:auto"><span class="live-dot"></span><span id="lv-feed">SCAN</span></span><span class="live-lbl" id="lv-feednote" style="order:99"></span>
   <span class="live-item"><span class="live-lbl">Scan date</span><span class="live-val" id="lv-date">—</span></span>
   <span class="live-item"><span class="live-lbl">Tradeable today</span><span class="live-val" id="lv-today">—</span></span>
   <span class="live-item"><span class="live-lbl">Qualified</span><span class="live-val pos" id="lv-rec">—</span></span>
@@ -308,7 +309,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <span class="live-item"><span class="live-lbl">Watch high</span><span class="live-val neu" id="lv-watch">—</span></span>
   <span class="live-item"><span class="live-lbl">VIX</span><span class="live-val" id="lv-vix">—</span></span>
   <span class="live-item"><span class="live-lbl">Regime</span><span class="live-val" id="lv-regime">—</span></span>
-  <span class="live-updated">Data as of: <span class="live-val" id="lv-updated">—</span></span>
+  <span class="live-updated" style="order:100;margin-left:14px">DATA AS OF: <span class="live-val" id="lv-updated">—</span></span>
 </div>
 </div>
 
@@ -939,7 +940,7 @@ function renderGantt() {
     var dd = new Date(ds + 'T12:00:00');
     var lbl = dd.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
     return '<div class="g-hcell' + (ds === DATA.scan_date ? ' today' : '') + '">' +
-      (ds === fcstDate ? '<span class="g-zone">DEVELOPING →</span>' : (ds === DATA.scan_date ? '<span class="g-zone" style="color:#fff">' + ((new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}))).getHours()*60+(new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}))).getMinutes()<930?'FINALIZING':'FINAL') + '</span>' : (ds === next_td_g ? '<span class="g-zone">FIRMING UP →</span>' : ''))) + lbl + '</div>';
+      (ds === fcstDate ? '<span class="g-zone">DEVELOPING →</span>' : (ds === DATA.scan_date ? '<span class="g-zone" style="font-weight:700">' + ((new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}))).getHours()*60+(new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}))).getMinutes()<930?'FINALIZING':'FINAL') + '</span>' : (ds === next_td_g ? '<span class="g-zone">FIRMING UP →</span>' : ''))) + lbl + '</div>';
   }).join('') + '</div>';
   var lanes = LANES.map(function (ln) {
     return '<div class="g-lane"><div class="g-lanelbl">' + ln.lbl + '</div>' + days.map(function (ds, i) {
@@ -1306,15 +1307,16 @@ function renderStrip() {
     rg.title = 'VIX ' + m.vix + ' · VIX/VIX3M ' + m.vix_ratio + ' · SPY ' + (m.spy_bull ? 'above' : 'below') + ' 200dma';
   }
   var d = new Date(DATA.generated_utc);
-  $('lv-updated').textContent = d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+  var ageH0 = (Date.now() - d.getTime()) / 3.6e6;
+  $('lv-updated').textContent = d.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' }) + ' ET' + (ageH0 > 20 ? ' (' + d.toLocaleString('en-US', { month: 'short', day: 'numeric' }) + ')' : '');
   var strip = $('live-strip');
   var ageH = (Date.now() - d.getTime()) / 3.6e6;
   var nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
   var mins = nowET.getHours() * 60 + nowET.getMinutes();
   var open = nowET.getDay() >= 1 && nowET.getDay() <= 5 && mins >= 570 && mins < 960;
-  if (DATA.stale || ageH > 24) { strip.className = 'stale'; $('lv-feed').textContent = 'STALE'; }
-  else if (open) { strip.className = ''; $('lv-feed').textContent = 'LIVE'; }
-  else { strip.className = 'stale'; $('lv-feed').textContent = 'CLOSED'; }
+  if (DATA.stale || ageH > 24) { strip.className = 'stale'; $('lv-feed').textContent = 'STALE'; $('lv-feednote').textContent = 'SCAN OLDER THAN 24H'; }
+  else if (open) { strip.className = ''; $('lv-feed').textContent = 'LIVE'; $('lv-feednote').textContent = 'SCANNING EVERY ~15 MIN'; }
+  else { strip.className = 'stale'; $('lv-feed').textContent = 'OFFLINE'; $('lv-feednote').textContent = 'MARKET CLOSED - SHOWING LAST SCAN'; }
   $('lv-feed').title = open ? 'Market open — scanning every ~15 min' : 'Market closed — next scan at the open';
   var end = new Date(DATA.scan_date + 'T12:00:00'); end.setDate(end.getDate() + (DATA.horizon_days || 30));
   var sub = $('hdr-sub');

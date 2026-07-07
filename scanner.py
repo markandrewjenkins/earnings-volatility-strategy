@@ -92,7 +92,7 @@ FOMC_DECISIONS_2026 = [
     "2026-07-29", "2026-09-16", "2026-10-28", "2026-12-09",
 ]
 
-CAL_HORIZON_DAYS = 30           # how far ahead we watch the earnings calendar
+CAL_HORIZON_DAYS = 45           # how far ahead we watch the earnings calendar
 NEAR_WINDOW_DAYS = 7            # full options analysis inside this window
 WATCH_MAX = 40                  # watchlist names given light (history-only) analysis
 CACHE_PATH = None               # set below (depends on HERE)
