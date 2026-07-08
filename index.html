@@ -188,7 +188,8 @@ tr.selected td { background: #241d0e }
   display: flex; align-items: center; padding: 4px 6px; border-right: 1px solid var(--border2) }
 .g-cell { flex: 0 0 var(--gcw,64px); min-width: var(--gcw,64px); border-left: 1px solid rgba(106,85,31,0.22);
   padding: 3px 2px; display: flex; flex-direction: column; gap: 3px; min-height: 30px }
-.g-cell.today { background: rgba(232,185,79,0.06) }
+.g-cell.today { background: rgba(232,185,79,0.11) }
+.g-hcell.today { border-bottom: 2px solid var(--yellow) }
 .g-cell.fcst { background: repeating-linear-gradient(45deg, transparent 0 7px, rgba(106,85,31,0.07) 7px 9px) }
 .g-hcell { position: relative; flex: 0 0 var(--gcw,64px); min-width: var(--gcw,64px); font-size: 0.58rem; color: var(--dim); text-align: center;
   text-transform: uppercase; letter-spacing: 0.04em; padding: 3px 2px; border-left: 1px solid rgba(106,85,31,0.22); white-space: nowrap }
@@ -199,7 +200,6 @@ tr.selected td { background: #241d0e }
 .g-cell { min-height: 26px }
 #g-mon2 .gm-hd, #gm-left .gm-hd { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px }
 #gm-left .gm-hd b { font-size: 1.15rem }
-.g-hcell.today, .g-cell.today { flex: 0 0 max(var(--gcw,64px), 96px); min-width: 96px }
 #g-mon2 { display: flex; gap: 18px; margin-top: 10px; background: var(--panel2); border: 1px solid var(--border2);
   border-radius: 6px; padding: 11px 14px; font-size: 0.74rem; line-height: 1.7; flex-wrap: wrap }
 #gm-left { flex: 1.2 1 340px; min-width: 300px }
@@ -300,17 +300,13 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   </div>
 </div>
 
-<div id="live-strip" title="Scanner output refreshes on a schedule (~every 15 min during US market hours). Entries are placed in the final 15 minutes before the close; exits ~15 minutes after the next open.">
-  <span class="live-badge" style="order:98;margin-left:auto"><span class="live-dot"></span><span id="lv-feed">SCAN</span></span><span class="live-lbl" id="lv-feednote" style="order:99"></span>
-  <span class="live-item"><span class="live-lbl">Scan date</span><span class="live-val" id="lv-date">—</span></span>
-  <span class="live-item"><span class="live-lbl">Tradeable today</span><span class="live-val" id="lv-today">—</span></span>
-  <span class="live-item"><span class="live-lbl">Qualified</span><span class="live-val pos" id="lv-rec">—</span></span>
-  <span class="live-item"><span class="live-lbl">Watch</span><span class="live-val" id="lv-con" style="color:var(--amber)">—</span></span>
-  <span class="live-item"><span class="live-lbl">Execute ★</span><span class="live-val" id="lv-t1" style="color:var(--yellow)">—</span></span>
-  <span class="live-item"><span class="live-lbl">Analyzed</span><span class="live-val" id="lv-analyzed">—</span></span>
-  <span class="live-item"><span class="live-lbl">Watch high</span><span class="live-val neu" id="lv-watch">—</span></span>
-  <span class="live-item"><span class="live-lbl">VIX</span><span class="live-val" id="lv-vix">—</span></span>
-  <span class="live-item"><span class="live-lbl">Regime</span><span class="live-val" id="lv-regime">—</span></span>
+<div id="live-strip" title="Scanner output refreshes on a schedule (~every 15 min during US market hours). Entries go on 15:20-16:00 ET; exits ~15 min after the next open.">
+  <div style="display:flex;flex-direction:column;gap:4px;justify-content:center">
+    <span style="display:inline-flex;gap:13px;align-items:baseline"><span class="live-lbl">TRADEABLE TODAY</span><span class="live-val" id="lv-now-total">—</span><span style="color:var(--border2)">▸</span><span id="lv-now-brk" style="display:inline-flex;gap:13px"></span></span>
+    <span style="display:inline-flex;gap:13px;align-items:baseline"><span class="live-lbl">THIS WEEK</span><span class="live-val" id="lv-wk-total">—</span><span style="color:var(--border2)">▸</span><span id="lv-wk-brk" style="display:inline-flex;gap:13px"></span></span>
+  </div>
+  <span class="live-badge" style="order:98;margin-left:auto"><span class="live-dot"></span><span id="lv-feed">—</span></span>
+  <span class="live-lbl" id="lv-feednote" style="order:99"></span>
   <span class="live-updated" style="order:100;margin-left:14px">DATA AS OF: <span class="live-val" id="lv-updated">—</span></span>
 </div>
 </div>
@@ -783,9 +779,9 @@ function whenPill(w) {
   return '<span class="pill pill-tns" title="Announcement time not supplied">TBD</span>';
 }
 function likePill(l) {
-  if (l === 'HIGH') return '<span class="pill pill-rec" style="border-style:dashed">POTENTIAL?</span>';
-  if (l === 'MEDIUM') return '<span class="pill pill-con" style="border-style:dashed">MARGINAL?</span>';
-  return '<span class="pill pill-avoid" style="border-style:dashed">DISQUALIFIED?</span>';
+  if (l === 'HIGH') return '<span class="pill pill-rec" style="border-style:dashed">POTENTIAL</span>';
+  if (l === 'MEDIUM') return '<span class="pill pill-con" style="border-style:dashed">MARGINAL</span>';
+  return '<span class="pill pill-avoid" style="border-style:dashed">DISQUALIFIED</span>';
 }
 function mismatchFlag(ev) {
   var s = '';
@@ -926,31 +922,31 @@ function renderGantt() {
   }
   DATA.events.forEach(function (e) { if (e.bucket !== 'past') push(e, false); });
   (DATA.watchlist || []).forEach(function (e) { push(e, true); });
-
   var days = [];
   var d = new Date(DATA.scan_date + 'T12:00:00');
-  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);  // weekend -> next Monday
-  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));   // Monday of the current trading week
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
   while (days.length < 60) {
     if (d.getDay() !== 0 && d.getDay() !== 6) days.push(d.toISOString().slice(0, 10));
     d.setDate(d.getDate() + 1);
   }
   var horizon = new Date(DATA.scan_date + 'T12:00:00');
   horizon.setDate(horizon.getDate() + 7);
-  var fcstDate = horizon.toISOString().slice(0, 10);   // 7-day analysis boundary
-  var next_td_g = (DATA.next_trading_day || ''); var hdr = '<div class="g-hdr"><div class="g-lanelbl g-zone"><span style="color:#fff">BUY DAY →</span></div>' + days.map(function (ds, i) {
+  var fcstDate = horizon.toISOString().slice(0, 10);
+  var next_td_g = (DATA.next_trading_day || '');
+  var hdr = '<div class="g-hdr"><div class="g-lanelbl g-zone"><span style="color:#fff">BUY DAY →</span></div>' + days.map(function (ds) {
     var dd = new Date(ds + 'T12:00:00');
     var lbl = dd.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
-    return '<div class="g-hcell' + (ds === DATA.scan_date ? ' today' : '') + '">' +
-      (ds === fcstDate ? '<span class="g-zone">DEVELOPING →</span>' : (ds === DATA.scan_date ? '<span class="g-zone" style="font-weight:700;left:0;right:0;text-align:center;padding-left:0">' + ((new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}))).getHours()*60+(new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}))).getMinutes()<930?'FINALIZING':'FINAL') + '</span>' : (ds === next_td_g ? '<span class="g-zone">FIRMING UP →</span>' : ''))) + lbl + '</div>';
+    return '<div class="g-hcell' + (ds === days[0] ? ' today' : '') + '">' +
+      (ds === fcstDate ? '<span class="g-zone">DEVELOPING →</span>' :
+        (ds === next_td_g && ds !== days[0] ? '<span class="g-zone">FIRMING UP →</span>' : '')) + lbl + '</div>';
   }).join('') + '</div>';
   var lanes = LANES.map(function (ln) {
-    return '<div class="g-lane"><div class="g-lanelbl">' + ln.lbl + '</div>' + days.map(function (ds, i) {
+    return '<div class="g-lane"><div class="g-lanelbl">' + ln.lbl + '</div>' + days.map(function (ds) {
       var items = byKey[ds + '|' + ln.id] || [];
-      return '<div class="g-cell' + (ds === DATA.scan_date ? ' today' : '') + (ds >= fcstDate ? ' fcst' : '') + '">' +
+      return '<div class="g-cell' + (ds === days[0] ? ' today' : '') + (ds >= fcstDate ? ' fcst' : '') + '">' +
         items.map(function (x) {
-          var cls = ln.cls + (x.w ? ' gc-tbc' : '');
-          return '<span class="g-chip ' + cls + (x.ev.ticker === selectedTicker ? ' sel' : '') +
+          var tbc = x.w || ds >= fcstDate;
+          return '<span class="g-chip ' + ln.cls + (tbc ? ' gc-tbc' : '') + (x.ev.ticker === selectedTicker ? ' sel' : '') +
             '" onmouseover="ganttMon(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ',1)"' +
             ' onclick="ganttPick(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ')">' + x.ev.ticker +
             (x.ev.tier1 ? '★' : '') + '</span>';
@@ -959,7 +955,7 @@ function renderGantt() {
   }).join('');
   $('gantt-grid').innerHTML = hdr + lanes;
   var sc = $('gantt-scroll');
-  if (!window._gcw) window._gcw = Math.max(76, Math.floor((sc.clientWidth - 112) / 20));
+  if (!window._gcw) window._gcw = Math.max(84, Math.floor((sc.clientWidth - 112) / 18));
   $('gantt-grid').style.setProperty('--gcw', window._gcw + 'px');
 }
 function ganttPick(t, isW) {
@@ -969,13 +965,15 @@ function ganttPick(t, isW) {
 }
 
 var gmLock = null;
-function gmBar(lbl, val, lo, hi, thr, passRight, ok, txt) {
+function gmBar(lbl, val, lo, hi, thr, passRight, ok, txt, desc) {
   var span = hi - lo;
   var tp = Math.max(0, Math.min(100, (thr - lo) / span * 100));
   var vp = (val === null || val === undefined || isNaN(val)) ? null
     : Math.max(1, Math.min(99, (val - lo) / span * 100));
   var zone = passRight ? 'left:' + tp + '%;right:0' : 'left:0;width:' + tp + '%';
-  return '<div class="gm-bar"><span class="l">' + lbl + '</span>' +
+  var tip = ((desc || '') + '\nCurrent: ' + txt + ' — ' + (ok ? 'PASS' : 'FAIL') +
+    '\nThreshold: ' + thr + ' (pass ' + (passRight ? 'above' : 'below') + ')\nGauge scale: ' + lo + ' to ' + hi).replace(/"/g, '&quot;');
+  return '<div class="gm-bar" title="' + tip + '"><span class="l">' + lbl + '</span>' +
     '<span class="t" style="position:relative;overflow:visible">' +
     '<span style="position:absolute;top:0;bottom:0;' + zone + ';background:rgba(82,230,189,0.16)"></span>' +
     '<span style="position:absolute;top:-2px;bottom:-2px;left:calc(' + tp + '% - 1px);width:2px;background:var(--dim)"></span>' +
@@ -997,8 +995,8 @@ function ganttMon(t, isW, hov) {
     reportTxt(ev) + ' · <span class="live-lbl">sell</span> next open +15m</div>';
   if (isW) {
     left += (ev.hist_moves ? '<div style="margin-top:4px">avg move (8q) <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b></div>' : '') +
-      gmBar('Vol ≥ 1.5M', Math.min((ev.avg_volume30 || 0) / 1e6, 6), 0, 6, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M') +
-      gmBar('Price ≥ $20', Math.min(ev.price || 0, 100), 0, 100, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0)) +
+      gmBar('Vol ≥ 1.5M', Math.min((ev.avg_volume30 || 0) / 1e6, 6), 0, 6, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', "30-day average share volume. 1.5M+ shares = enough price-insensitive hedging flow to keep premium rich.") +
+      gmBar('Price ≥ $20', Math.min(ev.price || 0, 100), 0, 100, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), "Share price floor. Below $20, strikes are coarse and spreads wide relative to premium — fills go off-model.") +
       ['Slope ≤ −.0041', 'IV/RV ≥ 1.25', 'Rich ≥ 1.15×', 'Spread ≤ 10%', 'OI ≥ 500'].map(function (l2) {
         return '<div class="gm-bar"><span class="l">' + l2 + '</span><span class="t"></span>' +
           '<span class="v" style="color:var(--gray);font-weight:400">forms ≤5d out</span></div>';
@@ -1011,17 +1009,18 @@ function ganttMon(t, isW, hov) {
       '<span class="live-lbl">Odds</span> ' + oddsTxt(ev) +
       (evp !== null ? ' · <span class="live-lbl">est. EV</span> <b class="' + (evp >= 0 ? 'pos' : 'neg') + '">' +
         (evp >= 0 ? '+' : '') + evp.toFixed(1) + '%</b>' : '') + '</div>';
-    left += gmBar('Slope ≤ −.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4));
-    left += gmBar('IV/RV ≥ 1.25', ev.iv30_rv30 === null ? null : Math.min(ev.iv30_rv30, 2.5), 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2));
-    left += gmBar('Vol ≥ 1.5M', Math.min((ev.avg_volume30 || 0) / 1e6, 6), 0, 6, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M');
-    left += gmBar('Price ≥ $20', Math.min(ev.price || 0, 100), 0, 100, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0));
+    left += gmBar('Slope ≤ −.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), "IV term-structure slope, front expiry to the 45-day point. Negative (backwardation) = near-term options priced richest — the core edge signal from the research.");
+    left += gmBar('IV/RV ≥ 1.25', ev.iv30_rv30 === null ? null : Math.min(ev.iv30_rv30, 2.5), 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), "30-day implied volatility vs Yang-Zhang realized volatility. Above 1.25 = options already rich vs how the stock actually moves.");
+    left += gmBar('Vol ≥ 1.5M', Math.min((ev.avg_volume30 || 0) / 1e6, 6), 0, 6, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', "30-day average share volume. 1.5M+ shares = enough price-insensitive hedging flow to keep premium rich.");
+    left += gmBar('Price ≥ $20', Math.min(ev.price || 0, 100), 0, 100, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), "Share price floor. Below $20, strikes are coarse and spreads wide relative to premium — fills go off-model.");
     var spv = (ev.atm_spread_pct === null || ev.atm_spread_pct === undefined) ? null : Math.min(ev.atm_spread_pct, 0.25);
-    left += gmBar('Spread ≤ 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? '—' : fmt(ev.atm_spread_pct * 100, 1) + '%');
-    left += gmBar('Rich ≥ 1.15×', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'n/a');
-    left += gmBar('OI ≥ 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : Math.min(ev.atm_oi, 2500), 0, 2500, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? '—' : fmtInt(ev.atm_oi));
+    left += gmBar('Spread ≤ 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? '—' : fmt(ev.atm_spread_pct * 100, 1) + '%', "ATM bid/ask spread as a % of mid. You cross it at entry AND exit — wide spreads eat the whole edge.");
+    left += gmBar('Rich ≥ 1.15×', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'n/a', "Options-implied move vs this stock's own average realized earnings move (last up-to-8 quarters). Above 1.15x = premium genuinely rich for THIS name.");
+    left += gmBar('OI ≥ 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : Math.min(ev.atm_oi, 2500), 0, 2500, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? '—' : fmtInt(ev.atm_oi), "Open interest on the thinner side of the ATM pair. Thin OI = negotiating with one market maker at both ends.");
     left += '<div style="font-size:0.66rem;color:var(--dim);margin-top:3px">' +
       (ev.fomc_window ? '<span class="neg">⚡ FOMC in window</span>' : 'no FOMC in window') + ' · ' +
-      (ev.date_mismatch ? '<span class="neg">⚠ date unconfirmed</span>' : 'date confirmed') + '</div>';
+      (ev.date_mismatch ? '<span class="neg">⚠ date unconfirmed</span>' : 'date confirmed') +
+      (DATA.market ? ' · VIX ' + fmt(DATA.market.vix, 1) + ' / ' + fmt(DATA.market.vix_ratio, 2) + 'r · ' + DATA.market.regime + ' regime' : '') + '</div>';
     var right = '';
     if (ev.front_exp && ev.back_exp) {
       var dc = ev.double_calendar;
@@ -1037,7 +1036,7 @@ function ganttMon(t, isW, hov) {
       }
       right += '</div>';
     }
-    right += '<div id="gm-payoff-wrap" style="position:relative;height:180px;margin-top:4px"><canvas id="payoffChart"></canvas></div>';
+    right += '<div id="gm-payoff-wrap" style="position:relative;height:280px;margin-top:4px"><canvas id="payoffChart"></canvas></div>';
     $('gm-right').innerHTML = right;
     renderPayoff(ev);
   }
@@ -1306,38 +1305,49 @@ function renderTicket(ev) {
 }
 
 function renderStrip() {
-  var c = DATA.counts;
-  $('lv-date').textContent = DATA.scan_date;
-  $('lv-today').textContent = String(DATA.events.filter(function (e) { return e.bucket === 'now'; }).length);
-  $('lv-rec').textContent = String(c.recommended);
-  $('lv-con').textContent = String(c.consider);
-  $('lv-t1').textContent = String(c.tier1);
-  $('lv-analyzed').textContent = String(c.analyzed);
-  $('lv-watch').textContent = String(c.watch_high || 0);
-  var m = DATA.market;
-  if (m) {
-    $('lv-vix').textContent = fmt(m.vix, 1) + ' / ' + fmt(m.vix_ratio, 2) + 'r';
-    var rg = $('lv-regime');
-    rg.textContent = m.regime;
-    rg.style.color = m.regime === 'CALM' ? 'var(--teal)' : (m.regime === 'ELEVATED' ? 'var(--amber)' : 'var(--coral)');
-    rg.title = 'VIX ' + m.vix + ' · VIX/VIX3M ' + m.vix_ratio + ' · SPY ' + (m.spy_bull ? 'above' : 'below') + ' 200dma';
+  function catOf(e) { return e.tier1 ? 'pri' : e.tier === 'RECOMMENDED' ? 'pot' : e.tier === 'CONSIDER' ? 'mar' : 'dis'; }
+  function brk(list) {
+    var c = { pri: 0, pot: 0, mar: 0, dis: 0 };
+    list.forEach(function (e) { c[catOf(e)]++; });
+    return '<span class="live-item"><span class="live-lbl" style="color:#5cf0c2">PRIORITY</span><span class="live-val">' + c.pri + '</span></span>' +
+      '<span class="live-item"><span class="live-lbl" style="color:var(--yellow)">POTENTIAL</span><span class="live-val">' + c.pot + '</span></span>' +
+      '<span class="live-item"><span class="live-lbl" style="color:var(--coral)">MARGINAL</span><span class="live-val">' + c.mar + '</span></span>' +
+      '<span class="live-item"><span class="live-lbl" style="color:#b5b5b5">DISQUALIFIED</span><span class="live-val">' + c.dis + '</span></span>';
   }
+  var nowE = DATA.events.filter(function (e) { return e.bucket === 'now'; });
+  var wkE = DATA.events.filter(function (e) { return e.bucket === 'now' || e.bucket === 'week'; });
+  $('lv-now-total').textContent = String(nowE.length);
+  $('lv-now-brk').innerHTML = brk(nowE);
+  $('lv-wk-total').textContent = String(wkE.length);
+  $('lv-wk-brk').innerHTML = brk(wkE);
   var d = new Date(DATA.generated_utc);
-  var ageH0 = (Date.now() - d.getTime()) / 3.6e6;
-  $('lv-updated').textContent = d.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' }) + ' ET' + (ageH0 > 20 ? ' (' + d.toLocaleString('en-US', { month: 'short', day: 'numeric' }) + ')' : '');
-  var strip = $('live-strip');
   var ageH = (Date.now() - d.getTime()) / 3.6e6;
+  $('lv-updated').textContent = d.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' }) + ' ET' +
+    (ageH > 20 ? ' (' + d.toLocaleString('en-US', { month: 'short', day: 'numeric' }) + ')' : '');
   var nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
   var mins = nowET.getHours() * 60 + nowET.getMinutes();
-  var open = nowET.getDay() >= 1 && nowET.getDay() <= 5 && mins >= 570 && mins < 960;
-  if (DATA.stale || ageH > 24) { strip.className = 'stale'; $('lv-feed').textContent = 'STALE'; $('lv-feednote').textContent = 'SCAN OLDER THAN 24H'; }
-  else if (open) { strip.className = ''; $('lv-feed').textContent = 'LIVE'; $('lv-feednote').textContent = 'SCANNING EVERY ~15 MIN'; }
-  else { strip.className = 'stale'; $('lv-feed').textContent = 'OFFLINE'; $('lv-feednote').textContent = 'MARKET CLOSED - SHOWING LAST SCAN'; }
-  $('lv-feed').title = open ? 'Market open — scanning every ~15 min' : 'Market closed — next scan at the open';
-  var end = new Date(DATA.scan_date + 'T12:00:00'); end.setDate(end.getDate() + (DATA.horizon_days || 30));
+  var wd = nowET.getDay() >= 1 && nowET.getDay() <= 5;
+  var badge, note, col, pulse = false;
+  if (wd && mins >= 570 && mins < 960) {
+    if (ageH < 0.75 && !DATA.stale) { badge = 'LIVE'; note = 'SCANS REFRESH EVERY ~15 MINS'; col = 'var(--teal)'; pulse = true; }
+    else { badge = 'DELAYED'; note = 'SCAN DELAY - SHOWING LAST SCAN'; col = 'var(--amber)'; }
+  } else if (wd && mins >= 240 && mins < 570) { badge = 'PRE-MARKET'; note = 'SCANS RESUME AT THE OPEN'; col = 'var(--amber)'; }
+  else if (wd && mins >= 960 && mins < 1215) { badge = 'AFTER HOURS'; note = 'ENTRIES CLOSED - SHOWING FINAL SCAN OF THE DAY'; col = 'var(--cyan)'; }
+  else { badge = 'OFFLINE'; note = 'MARKET CLOSED - SHOWING LAST SCAN'; col = '#9a9a9a'; }
+  var strip = $('live-strip');
+  strip.className = pulse ? '' : 'stale';
+  $('lv-feed').textContent = badge;
+  $('lv-feed').style.color = col;
+  $('lv-feednote').textContent = note;
+  var dot = strip.querySelector('.live-dot');
+  if (dot) { dot.style.background = col; dot.style.boxShadow = pulse ? '0 0 6px ' + col : 'none'; }
   var sub = $('hdr-sub');
-  if (sub) sub.textContent = DATA.scan_date + ' — ' + end.toISOString().slice(0, 10) + ' · ' +
-    fmtInt(DATA.counts.calendar_events) + ' earnings events · ' + DATA.counts.analyzed + ' analyzed';
+  if (sub) {
+    var end = new Date(DATA.scan_date + 'T12:00:00');
+    end.setDate(end.getDate() + (DATA.horizon_days || 30));
+    sub.textContent = DATA.scan_date + ' — ' + end.toISOString().slice(0, 10) + ' · ' +
+      fmtInt(DATA.counts.calendar_events) + ' earnings events · ' + DATA.counts.analyzed + ' analyzed';
+  }
 }
 
 function render() {
