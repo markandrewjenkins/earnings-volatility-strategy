@@ -813,7 +813,7 @@ def analyze_watch_ticker(symbol, earnings_date):
 
 # ── Main scan ────────────────────────────────────────────────────────────
 
-def run_scan(max_analyze=45, tickers_override=None):
+def run_scan(max_analyze=45, tickers_override=None, fast=False):
     et = now_et()
     today = et.date()
     next_td = next_trading_day(today)
@@ -859,8 +859,10 @@ def run_scan(max_analyze=45, tickers_override=None):
     errors = []
     analyzed = []
 
-    # Full options analysis: everything tradeable now, then this week, within budget
-    for ev in (now_evs + week_evs)[:max_analyze]:
+    # Full options analysis: everything tradeable now, then this week, within budget.
+    # Fast mode (intraday refresh): only today's trade window — keeps runs ~2-3 min
+    # so the throttled scheduler still hits the entry window.
+    for ev in (now_evs if fast else (now_evs + week_evs))[:max_analyze]:
         sym = ev["ticker"]
         try:
             metrics = analyze_ticker(sym, ev["date"])
@@ -897,7 +899,7 @@ def run_scan(max_analyze=45, tickers_override=None):
 
     # Light analysis for the 30-day watchlist (largest caps first)
     watchlist = []
-    for ev in watch_evs[:WATCH_MAX]:
+    for ev in ([] if fast else watch_evs[:WATCH_MAX]):
         sym = ev["ticker"]
         try:
             metrics = analyze_watch_ticker(sym, ev["date"])
@@ -980,13 +982,31 @@ def write_atomic(obj, path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--max", type=int, default=45, help="max tickers to analyze")
+    ap.add_argument("--fast", action="store_true",
+                    help="intraday refresh: analyze only today's trade window; "
+                         "week/watchlist carried over from the previous scan")
     ap.add_argument("--tickers", type=str, default=None,
                     help="comma-separated override (debug), e.g. AAPL,MSFT")
     args = ap.parse_args()
 
     override = [t.strip().upper() for t in args.tickers.split(",")] if args.tickers else None
     try:
-        result = run_scan(max_analyze=args.max, tickers_override=override)
+        result = run_scan(max_analyze=args.max, tickers_override=override,
+                          fast=args.fast)
+        if args.fast and os.path.exists(OUT_PATH):
+            with open(OUT_PATH, encoding="utf-8") as f:
+                prev = json.load(f)
+            have = {e["ticker"] for e in result["events"]}
+            result["events"] += [e for e in prev.get("events", [])
+                                 if e.get("bucket") == "week" and e["ticker"] not in have]
+            result["watchlist"] = prev.get("watchlist", [])
+            c = result["counts"]
+            c["analyzed"] = len(result["events"])
+            c["watchlist"] = len(result["watchlist"])
+            for k, t in (("recommended", "RECOMMENDED"), ("consider", "CONSIDER"), ("avoid", "AVOID")):
+                c[k] = sum(1 for e in result["events"] if e["tier"] == t)
+            c["tier1"] = sum(1 for e in result["events"] if e.get("tier1"))
+            c["watch_high"] = sum(1 for w in result["watchlist"] if w.get("likelihood") == "HIGH")
     except Exception:
         traceback.print_exc()
         # keep previous scan_results.json intact; mark it stale if it exists

@@ -64,7 +64,7 @@ SIZING_FRAC_T1 = 0.10
 MAX_CONCURRENT = 3
 CB_HALVE_DD = 0.25      # halve sizing below this drawdown from peak equity
 CB_PAUSE_DD = 0.40      # stop new entries below this drawdown
-ENTRY_START = (15, 20)      # ET
+ENTRY_START = (15, 0)       # ET (wide: GitHub cron throttling; research spec is ~15:45)
 ENTRY_END = (16, 0)
 EXIT_AFTER = (9, 40)        # ET, on/after the reaction day
 

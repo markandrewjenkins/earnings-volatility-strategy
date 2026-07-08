@@ -11,6 +11,16 @@ on:
     # 9:00am–5:00pm ET in EDT; in EST everything shifts one hour later,
     # still inside the window).
     - cron: "*/15 13-21 * * 1-5"
+    # Dedicated entry-window shots (15:00-16:00 ET): GitHub throttles the
+    # */15 pattern to ~90-min gaps, which missed the entry window two days
+    # running. Discrete odd-minute crons fire far more reliably.
+    - cron: "7,26,44 19 * * 1-5"
+    - cron: "7,26,44 20 * * 1-5"
+    # Exit passes just after 9:40 ET (EDT/EST)
+    - cron: "47 13 * * 1-5"
+    - cron: "47 14 * * 1-5"
+    # Pre-open full scan
+    - cron: "50 12 * * 1-5"
     # One late-evening run so the dashboard rolls to the next trade date
     # after AMC reporters are done.
     - cron: "5 23 * * 1-5"
@@ -18,7 +28,7 @@ on:
 
 concurrency:
   group: earnings-scan
-  cancel-in-progress: true
+  cancel-in-progress: false   # queue, don't kill 12-min full scans
 
 permissions:
   contents: write
@@ -40,7 +50,16 @@ jobs:
         run: pip install --quiet -r requirements.txt
 
       - name: Run scanner
-        run: python scanner.py --max 45
+        # Full scan (12-15 min) pre-open, midday and evening; fast scan
+        # (2-3 min, today's window only) otherwise so throttled schedules
+        # still land inside the entry window.
+        run: |
+          H=$(date -u +%H); M=$(date -u +%M)
+          if [ "$H" = "12" ] || [ "$H" = "23" ] || { [ "$H" = "16" ] && [ "$M" -lt 20 ]; }; then
+            python scanner.py --max 45
+          else
+            python scanner.py --fast --max 20
+          fi
 
       - name: Update paper-trade tracker
         run: python tracker.py
