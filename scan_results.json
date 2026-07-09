@@ -1,15 +1,15 @@
 {
- "generated_utc": "2026-07-09T19:51:01+00:00",
- "generated_et": "2026-07-09T15:50:36-04:00",
+ "generated_utc": "2026-07-09T19:55:54+00:00",
+ "generated_et": "2026-07-09T15:55:35-04:00",
  "scan_date": "2026-07-09",
  "next_trading_day": "2026-07-10",
  "horizon_days": 45,
  "date_source": "Nasdaq earnings calendar API, cross-checked per ticker against Yahoo Finance (date_mismatch flags a >1 day gap)",
  "market": {
-  "vix": 15.87,
-  "vix3m": 19.0,
+  "vix": 15.84,
+  "vix3m": 18.98,
   "vix_ratio": 0.835,
-  "spy": 751.12,
+  "spy": 751.23,
   "spy_200dma": 690.62,
   "spy_bull": true,
   "regime": "CALM"
@@ -30,7 +30,7 @@
   "straddle_frac": 0.02
  },
  "counts": {
-  "calendar_events": 4254,
+  "calendar_events": 4255,
   "analyzed": 34,
   "watchlist": 40,
   "recommended": 2,
@@ -51,72 +51,72 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 88.74,
+   "price": 88.63,
    "yahoo_date": "2026-07-10",
    "date_mismatch": false,
    "front_exp": "2026-07-10",
    "back_exp": "2026-08-07",
    "atm_strike": 89.0,
-   "straddle_mid": 4.55,
-   "calendar_debit_est": 2.42,
+   "straddle_mid": 4.47,
+   "calendar_debit_est": 2.5,
    "double_calendar": {
     "strike_up": 93.0,
     "strike_dn": 84.0,
-    "debit_est": 3.99
+    "debit_est": 3.93
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 5.13,
-   "ts_slope_0_45": -0.00902,
-   "iv30": 0.4765,
-   "rv30": 0.4037,
-   "iv30_rv30": 1.18,
-   "avg_volume30": 7950760,
-   "atm_spread_pct": 0.0389,
+   "expected_move_pct": 5.04,
+   "ts_slope_0_45": -0.0086,
+   "iv30": 0.4746,
+   "rv30": 0.4039,
+   "iv30_rv30": 1.175,
+   "avg_volume30": 7961564,
+   "atm_spread_pct": 0.0333,
    "atm_oi": 200,
    "strike_width": 1.0,
    "term_structure": [
     {
      "exp": "2026-07-10",
      "dte": 1,
-     "iv": 0.8662
+     "iv": 0.8503
     },
     {
      "exp": "2026-07-17",
      "dte": 8,
-     "iv": 0.568
+     "iv": 0.5573
     },
     {
      "exp": "2026-07-24",
      "dte": 15,
-     "iv": 0.5305
+     "iv": 0.5188
     },
     {
      "exp": "2026-07-31",
      "dte": 22,
-     "iv": 0.4973
+     "iv": 0.4948
     },
     {
      "exp": "2026-08-07",
      "dte": 29,
-     "iv": 0.4774
+     "iv": 0.4752
     },
     {
      "exp": "2026-08-14",
      "dte": 36,
-     "iv": 0.4708
+     "iv": 0.4712
     },
     {
      "exp": "2026-08-21",
      "dte": 43,
-     "iv": 0.4719
+     "iv": 0.4747
     },
     {
      "exp": "2026-09-18",
      "dte": 71,
-     "iv": 0.4334
+     "iv": 0.4373
     }
    ],
-   "back_iv": 0.4774,
+   "back_iv": 0.4752,
    "ohlc": [
     {
      "t": "2026-03-02",
@@ -746,7 +746,7 @@
      "o": 87.99,
      "h": 89.59,
      "l": 87.72,
-     "c": 88.74
+     "c": 88.63
     }
    ],
    "hist_moves": null,
@@ -772,16 +772,16 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 69.2,
-   "odds": 0.616,
+   "rank_score": 68.1,
+   "odds": 0.613,
    "odds_factors": [
     {
      "f": "base: CONSIDER (56%)",
      "d": 0.0
     },
     {
-     "f": "backwardation depth (2.2\u00d7 threshold)",
-     "d": 0.18
+     "f": "backwardation depth (2.1\u00d7 threshold)",
+     "d": 0.17
     },
     {
      "f": "very deep liquidity",
@@ -801,47 +801,47 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 242.37,
+   "price": 240.41,
    "yahoo_date": "2026-07-09",
    "date_mismatch": false,
    "front_exp": "2026-07-17",
    "back_exp": "2026-08-21",
    "atm_strike": 240.0,
-   "straddle_mid": 21.8,
-   "calendar_debit_est": 2.6,
+   "straddle_mid": 21.0,
+   "calendar_debit_est": 3.15,
    "double_calendar": {
     "strike_up": 260.0,
     "strike_dn": 220.0,
-    "debit_est": 5.2
+    "debit_est": 5.02
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 8.99,
-   "ts_slope_0_45": -0.00718,
-   "iv30": 0.5528,
-   "rv30": 0.3371,
-   "iv30_rv30": 1.64,
-   "avg_volume30": 162999,
-   "atm_spread_pct": 0.1037,
+   "expected_move_pct": 8.74,
+   "ts_slope_0_45": -0.00654,
+   "iv30": 0.5467,
+   "rv30": 0.3368,
+   "iv30_rv30": 1.623,
+   "avg_volume30": 163345,
+   "atm_spread_pct": 0.0705,
    "atm_oi": 5,
    "strike_width": 10.0,
    "term_structure": [
     {
      "exp": "2026-07-17",
      "dte": 8,
-     "iv": 0.7191
+     "iv": 0.6981
     },
     {
      "exp": "2026-08-21",
      "dte": 43,
-     "iv": 0.4546
+     "iv": 0.4573
     },
     {
      "exp": "2026-11-20",
      "dte": 134,
-     "iv": 0.3971
+     "iv": 0.3991
     }
    ],
-   "back_iv": 0.4546,
+   "back_iv": 0.4573,
    "ohlc": [
     {
      "t": "2026-03-02",
@@ -1471,7 +1471,7 @@
      "o": 244.45,
      "h": 247.34,
      "l": 239.14,
-     "c": 242.37
+     "c": 240.41
     }
    ],
    "hist_moves": null,
@@ -1482,7 +1482,7 @@
    "tier": "CONSIDER",
    "tier1": false,
    "enhanced": {
-    "tight_spread": false,
+    "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -1497,24 +1497,20 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 53.6,
-   "odds": 0.597,
+   "rank_score": 56.9,
+   "odds": 0.623,
    "odds_factors": [
     {
      "f": "base: CONSIDER (56%)",
      "d": 0.0
     },
     {
-     "f": "backwardation depth (1.8\u00d7 threshold)",
-     "d": 0.12
+     "f": "backwardation depth (1.6\u00d7 threshold)",
+     "d": 0.09
     },
     {
-     "f": "IV richness vs RV (1.64)",
-     "d": 0.08
-    },
-    {
-     "f": "wide ATM spread (slippage)",
-     "d": -0.15
+     "f": "IV richness vs RV (1.62)",
+     "d": 0.07
     },
     {
      "f": "calm-reaction sector",
@@ -25891,6 +25887,14 @@
    "bucket": "now"
   },
   {
+   "ticker": "ARTW",
+   "name": "Art's-Way Manufacturing Co., Inc.",
+   "date": "2026-07-09",
+   "when": "TNS",
+   "market_cap": 12849837.0,
+   "bucket": "now"
+  },
+  {
    "ticker": "NB",
    "name": "NioCorp Developments Ltd.",
    "date": "2026-07-10",
@@ -28264,14 +28268,6 @@
    "date": "2026-07-22",
    "when": "TNS",
    "market_cap": 440036991.0,
-   "bucket": "watch"
-  },
-  {
-   "ticker": "CBAN",
-   "name": "Colony Bankcorp, Inc.",
-   "date": "2026-07-22",
-   "when": "AMC",
-   "market_cap": 418749850.0,
    "bucket": "watch"
   }
  ],
