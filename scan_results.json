@@ -1,15 +1,15 @@
 {
- "generated_utc": "2026-07-09T14:21:01+00:00",
- "generated_et": "2026-07-09T10:20:39-04:00",
+ "generated_utc": "2026-07-09T14:25:54+00:00",
+ "generated_et": "2026-07-09T10:25:34-04:00",
  "scan_date": "2026-07-09",
  "next_trading_day": "2026-07-10",
  "horizon_days": 45,
  "date_source": "Nasdaq earnings calendar API, cross-checked per ticker against Yahoo Finance (date_mismatch flags a >1 day gap)",
  "market": {
-  "vix": 16.48,
-  "vix3m": 19.2,
-  "vix_ratio": 0.858,
-  "spy": 745.87,
+  "vix": 16.68,
+  "vix3m": 19.31,
+  "vix_ratio": 0.864,
+  "spy": 747.0,
   "spy_200dma": 690.6,
   "spy_bull": true,
   "regime": "CALM"
@@ -51,72 +51,72 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 88.5,
+   "price": 89.07,
    "yahoo_date": "2026-07-10",
    "date_mismatch": false,
    "front_exp": "2026-07-10",
    "back_exp": "2026-08-07",
-   "atm_strike": 88.0,
-   "straddle_mid": 5.99,
-   "calendar_debit_est": 1.53,
+   "atm_strike": 89.0,
+   "straddle_mid": 5.27,
+   "calendar_debit_est": 2.62,
    "double_calendar": {
     "strike_up": 94.0,
-    "strike_dn": 83.0,
-    "debit_est": 3.43
+    "strike_dn": 84.0,
+    "debit_est": 4.47
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 6.77,
-   "ts_slope_0_45": -0.01462,
-   "iv30": 0.5157,
-   "rv30": 0.404,
-   "iv30_rv30": 1.276,
-   "avg_volume30": 7780331,
-   "atm_spread_pct": 0.1421,
-   "atm_oi": 317,
+   "expected_move_pct": 5.92,
+   "ts_slope_0_45": -0.01121,
+   "iv30": 0.5397,
+   "rv30": 0.4034,
+   "iv30_rv30": 1.338,
+   "avg_volume30": 7784412,
+   "atm_spread_pct": 0.0909,
+   "atm_oi": 200,
    "strike_width": 1.0,
    "term_structure": [
     {
      "exp": "2026-07-10",
      "dte": 1,
-     "iv": 1.147
+     "iv": 1.0024
     },
     {
      "exp": "2026-07-17",
      "dte": 8,
-     "iv": 0.6056
+     "iv": 0.621
     },
     {
      "exp": "2026-07-24",
      "dte": 15,
-     "iv": 0.5508
+     "iv": 0.5584
     },
     {
      "exp": "2026-07-31",
      "dte": 22,
-     "iv": 0.5601
+     "iv": 0.5402
     },
     {
      "exp": "2026-08-07",
      "dte": 29,
-     "iv": 0.5153
+     "iv": 0.5418
     },
     {
      "exp": "2026-08-14",
      "dte": 36,
-     "iv": 0.5177
+     "iv": 0.5269
     },
     {
      "exp": "2026-08-21",
      "dte": 43,
-     "iv": 0.5062
+     "iv": 0.5138
     },
     {
      "exp": "2026-09-18",
      "dte": 71,
-     "iv": 0.4716
+     "iv": 0.4524
     }
    ],
-   "back_iv": 0.5153,
+   "back_iv": 0.5418,
    "ohlc": [
     {
      "t": "2026-03-02",
@@ -746,7 +746,7 @@
      "o": 87.99,
      "h": 89.59,
      "l": 87.72,
-     "c": 88.5
+     "c": 89.07
     }
    ],
    "hist_moves": null,
@@ -757,7 +757,7 @@
    "tier": "RECOMMENDED",
    "tier1": false,
    "enhanced": {
-    "tight_spread": false,
+    "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -772,27 +772,23 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 72.7,
-   "odds": 0.703,
+   "rank_score": 75.8,
+   "odds": 0.726,
    "odds_factors": [
     {
      "f": "base: RECOMMENDED (66%)",
      "d": 0.0
     },
     {
-     "f": "backwardation depth (3.6\u00d7 threshold)",
-     "d": 0.3
+     "f": "backwardation depth (2.8\u00d7 threshold)",
+     "d": 0.26
     },
     {
      "f": "very deep liquidity",
      "d": 0.05
-    },
-    {
-     "f": "wide ATM spread (slippage)",
-     "d": -0.15
     }
    ],
-   "suggested_frac": 0.0763,
+   "suggested_frac": 0.0847,
    "error": null
   },
   {
@@ -805,47 +801,47 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 244.77,
+   "price": 245.0,
    "yahoo_date": "2026-07-09",
    "date_mismatch": false,
    "front_exp": "2026-07-17",
    "back_exp": "2026-08-21",
    "atm_strike": 240.0,
-   "straddle_mid": 21.55,
-   "calendar_debit_est": 2.45,
+   "straddle_mid": 21.65,
+   "calendar_debit_est": 2.95,
    "double_calendar": {
     "strike_up": 270.0,
     "strike_dn": 220.0,
-    "debit_est": 3.6
+    "debit_est": 3.97
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 8.8,
-   "ts_slope_0_45": -0.00636,
-   "iv30": 0.5516,
+   "expected_move_pct": 8.84,
+   "ts_slope_0_45": -0.00643,
+   "iv30": 0.552,
    "rv30": 0.3313,
-   "iv30_rv30": 1.665,
-   "avg_volume30": 157994,
-   "atm_spread_pct": 0.1696,
+   "iv30_rv30": 1.666,
+   "avg_volume30": 158043,
+   "atm_spread_pct": 0.165,
    "atm_oi": 5,
    "strike_width": 10.0,
    "term_structure": [
     {
      "exp": "2026-07-17",
      "dte": 8,
-     "iv": 0.6987
+     "iv": 0.7006
     },
     {
      "exp": "2026-08-21",
      "dte": 43,
-     "iv": 0.4647
+     "iv": 0.4641
     },
     {
      "exp": "2026-11-20",
      "dte": 134,
-     "iv": 0.4001
+     "iv": 0.3998
     }
    ],
-   "back_iv": 0.4647,
+   "back_iv": 0.4641,
    "ohlc": [
     {
      "t": "2026-03-02",
@@ -1475,7 +1471,7 @@
      "o": 244.45,
      "h": 245.52,
      "l": 243.0,
-     "c": 244.77
+     "c": 245.0
     }
    ],
    "hist_moves": null,
@@ -1501,8 +1497,8 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 51.7,
-   "odds": 0.587,
+   "rank_score": 51.9,
+   "odds": 0.589,
    "odds_factors": [
     {
      "f": "base: CONSIDER (56%)",
@@ -1510,7 +1506,7 @@
     },
     {
      "f": "backwardation depth (1.6\u00d7 threshold)",
-     "d": 0.08
+     "d": 0.09
     },
     {
      "f": "IV richness vs RV (1.67)",
@@ -25955,7 +25951,7 @@
    "name": "FB Financial Corporation",
    "date": "2026-07-13",
    "when": "AMC",
-   "market_cap": 2876039649.0,
+   "market_cap": 2933745926.0,
    "bucket": "week"
   },
   {
@@ -25963,7 +25959,7 @@
    "name": "Grupo Aeromexico, S.A.B. de C.V.",
    "date": "2026-07-13",
    "when": "AMC",
-   "market_cap": 2419078521.0,
+   "market_cap": 2493489260.0,
    "bucket": "week"
   },
   {
@@ -25971,7 +25967,7 @@
    "name": "Simulations Plus, Inc.",
    "date": "2026-07-13",
    "when": "TNS",
-   "market_cap": 369154156.0,
+   "market_cap": 369356211.0,
    "bucket": "week"
   },
   {
@@ -25979,7 +25975,7 @@
    "name": "TRX Gold Corporation",
    "date": "2026-07-13",
    "when": "TNS",
-   "market_cap": 252369431.0,
+   "market_cap": 254620682.0,
    "bucket": "week"
   },
   {
@@ -25987,7 +25983,7 @@
    "name": "GoldMining Inc.",
    "date": "2026-07-13",
    "when": "TNS",
-   "market_cap": 188296012.0,
+   "market_cap": 191276433.0,
    "bucket": "week"
   },
   {
@@ -25995,7 +25991,7 @@
    "name": "Pineapple Financial Inc.",
    "date": "2026-07-13",
    "when": "TNS",
-   "market_cap": 24139829.0,
+   "market_cap": 24966839.0,
    "bucket": "week"
   },
   {
@@ -26003,7 +25999,7 @@
    "name": "Lexaria Bioscience Corp.",
    "date": "2026-07-13",
    "when": "TNS",
-   "market_cap": 14996405.0,
+   "market_cap": 13144783.0,
    "bucket": "week"
   },
   {
@@ -26011,7 +26007,7 @@
    "name": "Jewett-Cameron Trading Company",
    "date": "2026-07-13",
    "when": "TNS",
-   "market_cap": 8729880.0,
+   "market_cap": 8659478.0,
    "bucket": "week"
   },
   {
@@ -26019,7 +26015,7 @@
    "name": "J P Morgan Chase & Co",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 908943863214.0,
+   "market_cap": 885900065019.0,
    "bucket": "week"
   },
   {
@@ -26027,7 +26023,7 @@
    "name": "Bank of America Corporation",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 424801916369.0,
+   "market_cap": 413731234953.0,
    "bucket": "week"
   },
   {
@@ -26035,7 +26031,7 @@
    "name": "Goldman Sachs Group, Inc. (The)",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 307686839955.0,
+   "market_cap": 303751440958.0,
    "bucket": "week"
   },
   {
@@ -26043,7 +26039,7 @@
    "name": "Wells Fargo & Company",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 266787320087.0,
+   "market_cap": 261829813107.0,
    "bucket": "week"
   },
   {
@@ -26051,7 +26047,7 @@
    "name": "Citigroup Inc.",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 240094067955.0,
+   "market_cap": 234329217847.0,
    "bucket": "week"
   },
   {
@@ -26059,7 +26055,7 @@
    "name": "Fastenal Company",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 54083931724.0,
+   "market_cap": 53395110687.0,
    "bucket": "week"
   },
   {
@@ -26067,7 +26063,7 @@
    "name": "Ericsson",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 36478025773.0,
+   "market_cap": 37219723154.0,
    "bucket": "week"
   },
   {
@@ -26083,7 +26079,7 @@
    "name": "Kestra Medical Technologies, Ltd.",
    "date": "2026-07-14",
    "when": "AMC",
-   "market_cap": 1625697881.0,
+   "market_cap": 1564405860.0,
    "bucket": "week"
   },
   {
@@ -26091,7 +26087,7 @@
    "name": "Phoenix Education Partners, Inc.",
    "date": "2026-07-14",
    "when": "AMC",
-   "market_cap": 1253742305.0,
+   "market_cap": 1228316511.0,
    "bucket": "week"
   },
   {
@@ -26099,7 +26095,7 @@
    "name": "Equity Bancshares, Inc.",
    "date": "2026-07-14",
    "when": "AMC",
-   "market_cap": 1005205889.0,
+   "market_cap": 986009965.0,
    "bucket": "week"
   },
   {
@@ -26107,7 +26103,7 @@
    "name": "AngioDynamics, Inc.",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 540038219.0,
+   "market_cap": 529295301.0,
    "bucket": "week"
   },
   {
@@ -26115,7 +26111,7 @@
    "name": "America's Car-Mart, Inc.",
    "date": "2026-07-14",
    "when": "BMO",
-   "market_cap": 26650865.0,
+   "market_cap": 27481110.0,
    "bucket": "week"
   },
   {
