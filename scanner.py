@@ -715,6 +715,13 @@ def rank_and_odds(m, ev, market):
                    else (0.0 if (ch is not None and ch >= 1.5) else 0.5))
     score += 5 * (0.0 if ev.get("fomc_window") else 1.0)
 
+    # Rank must respect the rating hierarchy (a MARGINAL name with huge
+    # margins should never outrank a PRIORITY one): rating sets the band,
+    # margins position within the band.
+    tier_band = (75 if m.get("tier1") else 50 if m.get("tier") == "RECOMMENDED"
+                 else 25 if m.get("tier") == "CONSIDER" else 0)
+    score = tier_band + clamp(score, 0, 100) / 4
+
     factors = []
     # Base odds anchor to the RATING, since the research's 66% win rate is a
     # property of the fully-filtered (RECOMMENDED) subset only. Tier 1 gets a

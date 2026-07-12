@@ -89,7 +89,7 @@ body {
 /* ── Live strip ─────────────────────────────────────────────────────── */
 #live-strip {
   display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
-  padding: 8px 18px; background: var(--panel2);
+  padding: 11px 18px; background: var(--panel2);
   border-bottom: 1px solid var(--border2);
   font-family: 'Saira', sans-serif; font-size: 0.72rem;
 }
@@ -185,11 +185,13 @@ tr.selected td { background: #241d0e }
 .gantt-scroll.dragging { cursor: grabbing; user-select: none }
 .g-hdr { display: flex }
 .g-lane { display: flex; border-top: 1px solid rgba(106,85,31,0.3) }
-.g-lanelbl { position: sticky; left: 0; z-index: 3; flex: 0 0 108px; background: var(--panel);
+.g-lanelbl { position: sticky; left: 0; z-index: 3; flex: 0 0 136px; background: var(--panel);
   display: flex; align-items: center; padding: 4px 6px; border-right: 1px solid var(--border2) }
 .g-cell { flex: 0 0 var(--gcw,64px); min-width: var(--gcw,64px); border-left: 1px solid rgba(106,85,31,0.22);
   padding: 3px 2px; display: flex; flex-direction: column; gap: 3px; min-height: 30px }
 .g-cell.today { background: rgba(232,185,79,0.11) }
+.g-lane.clps .g-cell { display: none }
+.g-lane.clps { min-height: 30px }
 .g-hcell.today { border-bottom: 2px solid var(--yellow) }
 .g-hcell.g-wk, .g-cell.g-wk { border-left: 2px solid rgba(232,185,79,0.35) }
 .g-cell.fcst { background: repeating-linear-gradient(45deg, transparent 0 7px, rgba(106,85,31,0.07) 7px 9px) }
@@ -309,7 +311,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   </div>
   <span class="live-badge" style="order:98;margin-left:auto"><span class="live-dot"></span><span id="lv-feed">—</span></span>
   <span class="live-lbl" id="lv-feednote" style="order:99"></span>
-  <span class="live-updated" style="order:100;margin-left:14px">DATA AS OF: <span class="live-val" id="lv-updated">—</span></span>
+  <span class="live-updated" style="order:100;margin-left:14px"><span class="live-lbl">Data as of:&nbsp;</span><span class="live-val" id="lv-updated">—</span></span>
 </div>
 </div>
 
@@ -321,7 +323,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <div id="tab-scanner">
     <div class="panel">
       <div class="ph"><span class="t">Trade Calendar — Earnings Events by Trade Entry Day</span>
-        <span class="dimtxt" style="text-transform:none">x-axis = the day you BUY (always 15:20–16:00 ET; pre-open reporters map to the prior session) · lanes = rating · drag to pan · hover for the read-out, click to load below. Hatched cells/chips = DEVELOPING (tentative grade from volume/price; full options analysis begins 7 days out — "?" grades can change).</span></div>
+        <span class="dimtxt" style="text-transform:none">x-axis = the day you BUY (always 15:20–16:00 ET; pre-open reporters map to the prior session) · lanes = rating · drag to pan · hover for the read-out, click to load below. Hatched cells/chips = DEVELOPING (tentative grade from volume/price; full options analysis begins 7 days out. ENTRY 15:00–16:00 ET before the report · EXIT ~9:40 ET on the reaction day.</span></div>
       <div class="pb">
         <div class="gantt-scroll" id="gantt-scroll"><div id="gantt-grid"></div></div>
         <div id="g-mon2">
@@ -331,14 +333,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       </div>
     </div>
 
-    <div class="kpi-grid" id="kpi-strip" style="margin-top:12px"></div>
-
-    <div class="note-box" style="margin-top:12px" id="timing-note">
-      <strong>Trade window:</strong> candidates below report earnings <strong>after today's close (AMC)</strong> or
-      <strong>before the next trading day's open (BMO)</strong>. Positions are entered in the final ~15 minutes before
-      today's close and exited ~15 minutes after the next session's open — after the IV crush, before post-earnings drift.
-    </div>
-
+    
     <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">Analyzed events — today's trade window first, then this week</span>
         <span style="display:inline-flex;align-items:center;gap:7px;text-transform:none">
@@ -349,7 +344,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="pb" style="overflow-x:auto">
         <table id="cand-table">
           <thead><tr>
-            <th>Ticker</th><th>Window</th><th>Rating</th><th>Rank</th><th>Odds</th>
+            <th>Ticker</th><th>Entry Date</th><th>Rating</th><th>Rank</th><th>Odds</th>
             <th>Price</th><th>Exp. move</th><th>TS slope</th><th>IV30/RV30</th><th>Vol 30d</th>
             <th>Calendar legs</th><th>Debit</th><th>Sugg. size</th>
           </tr></thead>
@@ -862,7 +857,8 @@ function candRow(ev) {
 function renderCandidates() {
   var evs = DATA.events.slice();
   evs.sort(function (a, b) {
-    if ((a.bucket === 'now') !== (b.bucket === 'now')) return a.bucket === 'now' ? -1 : 1;
+    var ea = entryDateOf(a), eb = entryDateOf(b);
+    if (ea !== eb) return ea < eb ? -1 : 1;
     return (b.rank_score || 0) - (a.rank_score || 0);
   });
   var tb = $('cand-tbody');
@@ -925,10 +921,16 @@ function renderGantt() {
   DATA.events.forEach(function (e) { if (e.bucket !== 'past') push(e, false); });
   (DATA.watchlist || []).forEach(function (e) { push(e, true); });
   var days = [];
-  var d = new Date(DATA.scan_date + 'T12:00:00');
+  var nowET0 = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  var d = new Date(nowET0.getFullYear(), nowET0.getMonth(), nowET0.getDate(), 12);
   while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
-  while (days.length < 60) {
-    if (d.getDay() !== 0 && d.getDay() !== 6) days.push(d.toISOString().slice(0, 10));
+  var endD = new Date(DATA.scan_date + 'T12:00:00');
+  endD.setDate(endD.getDate() + (DATA.horizon_days || 45));
+  var endStr = endD.toISOString().slice(0, 10);
+  while (days.length < 70) {
+    var dsx = d.toISOString().slice(0, 10);
+    if (dsx > endStr) break;
+    if (d.getDay() !== 0 && d.getDay() !== 6) days.push(dsx);
     d.setDate(d.getDate() + 1);
   }
   var horizon = new Date(DATA.scan_date + 'T12:00:00');
@@ -944,22 +946,32 @@ function renderGantt() {
         (ds === next_td_g && ds !== days[0] ? '<span class="g-zone">FIRMING UP →</span>' : '')) + lbl + '</div>';
   }).join('') + '</div>';
   var lanes = LANES.map(function (ln) {
-    return '<div class="g-lane"><div class="g-lanelbl">' + ln.lbl + '</div>' + days.map(function (ds) {
+    var clps = (window._clps || {})[ln.id];
+    return '<div class="g-lane' + (clps ? ' clps' : '') + '"><div class="g-lanelbl" style="cursor:pointer" title="Click to collapse / expand this lane" onclick="toggleLane(\'' + ln.id + '\')"><span class="dimtxt" style="margin-right:5px">' + (clps ? '▸' : '▾') + '</span>' + ln.lbl + '</div>' + days.map(function (ds) {
       var items = byKey[ds + '|' + ln.id] || [];
       return '<div class="g-cell' + (ds === days[0] ? ' today' : '') + (new Date(ds + 'T12:00:00').getDay() === 1 ? ' g-wk' : '') + (ds >= fcstDate ? ' fcst' : '') + '">' +
         items.map(function (x) {
           var tbc = x.w || ds >= fcstDate;
           return '<span class="g-chip ' + ln.cls + (tbc ? ' gc-tbc' : '') + (x.ev.ticker === selectedTicker ? ' sel' : '') +
             '" onmouseover="ganttMon(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ',1)"' +
-            ' onclick="ganttPick(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ')">' + x.ev.ticker +
-            (x.ev.tier1 ? '★' : '') + '</span>';
+            ' onclick="ganttPick(\'' + x.ev.ticker + '\',' + (x.w ? 1 : 0) + ')">' + x.ev.ticker + '</span>';
         }).join('') + '</div>';
     }).join('') + '</div>';
   }).join('');
   $('gantt-grid').innerHTML = hdr + lanes;
   var sc = $('gantt-scroll');
-  if (!window._gcw) window._gcw = Math.max(84, Math.floor((sc.clientWidth - 112) / 18));
+  if (!window._gcw) window._gcw = Math.max(84, Math.floor((sc.clientWidth - 140) / 18));
   $('gantt-grid').style.setProperty('--gcw', window._gcw + 'px');
+}
+function toggleLane(id) {
+  window._clps = window._clps || {};
+  window._clps[id] = !window._clps[id];
+  renderGantt();
+}
+function gmFlag(lbl, ok, txt, desc) {
+  return '<div class="gm-bar" title="' + (desc || '') + '"><span class="l">' + lbl + '</span>' +
+    '<span class="t"><span class="f" style="width:100%;background:rgba(' + (ok ? '82,230,189,0.40' : '242,86,58,0.45') + ')"></span></span>' +
+    '<span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span></div>';
 }
 function ganttPick(t, isW) {
   gmLock = (gmLock === t) ? null : t;
@@ -972,13 +984,13 @@ function gmBar(lbl, val, lo, hi, thr, passRight, ok, txt, desc) {
   var span = hi - lo;
   var tp = Math.max(0, Math.min(100, (thr - lo) / span * 100));
   var vp = (val === null || val === undefined || isNaN(val)) ? null
-    : Math.max(1, Math.min(99, (val - lo) / span * 100));
+    : Math.max(2, Math.min(97, (val - lo) / span * 100));
   var zone = passRight ? 'left:' + tp + '%;right:0' : 'left:0;width:' + tp + '%';
   var tip = ((desc || '') + '\nCurrent: ' + txt + ' — ' + (ok ? 'PASS' : 'FAIL') +
     '\nThreshold: ' + thr + ' (pass ' + (passRight ? 'above' : 'below') + ')\nGauge scale: ' + lo + ' to ' + hi).replace(/"/g, '&quot;');
   return '<div class="gm-bar" title="' + tip + '"><span class="l">' + lbl + '</span>' +
     '<span class="t" style="position:relative;overflow:visible">' +
-    '<span style="position:absolute;top:0;bottom:0;' + zone + ';background:rgba(82,230,189,0.16)"></span>' +
+    '<span style="position:absolute;top:0;bottom:0;' + zone + ';background:rgba(82,230,189,' + (ok ? '0.40' : '0.13') + ')"></span>' +
     '<span style="position:absolute;top:-2px;bottom:-2px;left:calc(' + tp + '% - 1px);width:2px;background:var(--dim)"></span>' +
     (vp !== null ? '<span style="position:absolute;top:-3px;bottom:-3px;left:calc(' + vp + '% - 1px);width:2px;background:#fff;box-shadow:0 0 5px #fff"></span>' : '') +
     '</span><span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span></div>';
@@ -1022,22 +1034,25 @@ function ganttMon(t, isW, hov) {
     left += gmBar('Spread ≤ 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? '—' : fmt(ev.atm_spread_pct * 100, 1) + '%', "ATM bid/ask spread as a % of mid. You cross it at entry AND exit — wide spreads eat the whole edge.");
     left += gmBar('Rich ≥ 1.15×', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'n/a', "Options-implied move vs this stock's own average realized earnings move (last up-to-8 quarters). Above 1.15x = premium genuinely rich for THIS name.");
     left += gmBar('OI ≥ 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : Math.min(ev.atm_oi, 2500), 0, 2500, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? '—' : fmtInt(ev.atm_oi), "Open interest on the thinner side of the ATM pair. Thin OI = negotiating with one market maker at both ends.");
-    left += '<div style="font-size:0.66rem;color:var(--dim);margin-top:3px">' +
-      (ev.fomc_window ? '<span class="neg">⚡ FOMC in window</span>' : 'no FOMC in window') + ' · ' +
-      (ev.date_mismatch ? '<span class="neg">⚠ date unconfirmed</span>' : 'date confirmed') +
-      (DATA.market ? ' · VIX ' + fmt(DATA.market.vix, 1) + ' / ' + fmt(DATA.market.vix_ratio, 2) + 'r · ' + DATA.market.regime + ' regime' : '') + '</div>';
+    left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '⚡ FOMC ±1D' : 'CLEAR',
+      'A Fed decision within ±1 trading day of the trade window adds market-wide volatility the calendar is short. Blocks PRIORITY.');
+    left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '⚠ UNCONFIRMED' : 'CONFIRMED',
+      'Nasdaq and Yahoo must agree on the date within ±1 day — projected dates shift.');
+    if (DATA.market) left += gmBar('VIX REGIME', Math.min(DATA.market.vix, 45), 10, 45, 28, false,
+      DATA.market.regime !== 'STRESSED', fmt(DATA.market.vix, 1) + ' · ' + DATA.market.regime,
+      'Market-level context (advisory): in stressed regimes (VIX ≥ 28 or inverted term structure) the calendar back-month IV can crush too.');
     var right = '';
     if (ev.front_exp && ev.back_exp) {
       var dc = ev.double_calendar;
       var theDebit = dc ? dc.debit_est : ev.calendar_debit_est;
       right += '<div style="font-size:0.76rem;line-height:1.8">';
-      if (dc) right += '<b style="color:var(--yellow)">DOUBLE CAL</b> · calls @ ' + dc.strike_up + ' + puts @ ' + dc.strike_dn;
-      else right += '<b style="color:var(--yellow)">CALENDAR</b> · ATM ' + ev.atm_strike;
+      if (dc) right += '<b style="color:var(--yellow)">DOUBLE CALENDAR</b> <span class="live-lbl">CALLS @</span> <b>' + dc.strike_up + '</b> <span class="live-lbl">+ PUTS @</span> <b>' + dc.strike_dn + '</b>';
+      else right += '<b style="color:var(--yellow)">CALENDAR</b> <span class="live-lbl">ATM</span> <b>' + ev.atm_strike + '</b>';
       right += ' · ' + ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) +
-        (theDebit ? ' · debit <b>$' + fmt(theDebit) + '</b>' : '');
+        (theDebit ? ' <span class="live-lbl">· DEBIT</span> <b>$' + fmt(theDebit) + '</b>' : '');
       if (ev.suggested_frac && theDebit) {
         var n2 = Math.floor(acct() * ev.suggested_frac / (theDebit * 100));
-        right += ' · size <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> ≈ $' + fmtInt(Math.round(acct() * ev.suggested_frac)) + ' (' + n2 + 'x)';
+        right += ' <span class="live-lbl">· SIZE</span> <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> ≈ <b>$' + fmtInt(Math.round(acct() * ev.suggested_frac)) + '</b> (' + n2 + 'x)';
       }
       right += '</div>';
     }
@@ -1327,10 +1342,25 @@ function renderStrip() {
   $('lv-wk-brk').innerHTML = brk(wkE);
   var d = new Date(DATA.generated_utc);
   var ageH = (Date.now() - d.getTime()) / 3.6e6;
-  var d5 = new Date(d.getTime());
-  d5.setMinutes(Math.floor(d5.getMinutes() / 5) * 5, 0, 0);   // query time, floored to 5-min increments
-  $('lv-updated').textContent = d5.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' }) + ' ET' +
-    (ageH > 20 ? ' (' + d5.toLocaleString('en-US', { month: 'short', day: 'numeric' }) + ')' : '');
+  // Option quotes only move 9:30-16:00 ET — clamp the shown time to the
+  // session the quotes actually came from, floored to 5-min increments.
+  var e5 = new Date(d.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  var m5 = e5.getHours() * 60 + e5.getMinutes();
+  var t5;
+  if (e5.getDay() === 0 || e5.getDay() === 6 || m5 >= 960) {
+    while (e5.getDay() === 0 || e5.getDay() === 6) e5.setDate(e5.getDate() - 1);
+    t5 = '4:00 PM';
+  } else if (m5 < 570) {
+    e5.setDate(e5.getDate() - 1);
+    while (e5.getDay() === 0 || e5.getDay() === 6) e5.setDate(e5.getDate() - 1);
+    t5 = '4:00 PM';
+  } else {
+    e5.setMinutes(Math.floor(e5.getMinutes() / 5) * 5, 0, 0);
+    t5 = e5.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+  var nowD5 = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  var sameDay5 = e5.toDateString() === nowD5.toDateString();
+  $('lv-updated').textContent = t5 + ' ET' + (sameDay5 ? '' : ' (' + e5.toLocaleString('en-US', { month: 'short', day: 'numeric' }) + ')');
   var nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
   var mins = nowET.getHours() * 60 + nowET.getMinutes();
   var wd = nowET.getDay() >= 1 && nowET.getDay() <= 5;
@@ -1340,7 +1370,7 @@ function renderStrip() {
     else { badge = 'DELAYED'; note = 'SCAN DELAY - SHOWING LAST SCAN'; col = 'var(--amber)'; }
   } else if (wd && mins >= 240 && mins < 570) { badge = 'PRE-MARKET'; note = 'SCANS RESUME AT THE OPEN'; col = 'var(--amber)'; }
   else if (wd && mins >= 960 && mins < 1215) { badge = 'AFTER HOURS'; note = 'ENTRIES CLOSED - SHOWING FINAL SCAN OF THE DAY'; col = 'var(--cyan)'; }
-  else { badge = 'OFFLINE'; note = 'MARKET CLOSED - SHOWING LAST SCAN'; col = '#9a9a9a'; }
+  else { badge = 'OFFLINE'; note = 'MARKET CLOSED - SHOWING LAST SCAN'; col = 'var(--amber)'; }
   var strip = $('live-strip');
   strip.className = pulse ? '' : 'stale';
   $('lv-feed').textContent = badge;
@@ -1359,7 +1389,6 @@ function renderStrip() {
 
 function render() {
   renderStrip();
-  renderKpis();
   renderCandidates();
   renderHero();
   renderSigMon();
