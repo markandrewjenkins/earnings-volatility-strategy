@@ -100,12 +100,13 @@ body {
 @keyframes livepulse { 0%,100% { opacity: 1 } 50% { opacity: 0.25 } }
 #live-strip.stale .live-dot { background: var(--gray); box-shadow: none; animation: none; }
 .live-item { display: inline-flex; align-items: baseline; gap: 6px; }
+.live-row { display: flex; align-items: baseline; gap: 13px; flex-wrap: wrap; }
 .live-lbl { color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.64rem; }
 .live-val { color: var(--text); font-weight: 700; }
 .live-updated { margin-left: auto; color: var(--dim); font-size: 0.72rem; }
 
 /* ── Layout / panels ────────────────────────────────────────────────── */
-.body { display: flex; flex-direction: column; gap: 12px; padding: 16px; max-width: 1700px; margin: 0 auto }
+.body { display: flex; flex-direction: column; gap: 12px; padding: 16px; max-width: 1900px; margin: 0 auto }
 .row  { display: flex; flex-wrap: wrap; gap: 12px }
 .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
 .panel:hover { border-color: var(--border2) }
@@ -302,9 +303,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 </div>
 
 <div id="live-strip" title="Scanner output refreshes on a schedule (~every 15 min during US market hours). Entries go on 15:20-16:00 ET; exits ~15 min after the next open.">
-  <div style="display:flex;flex-direction:column;gap:4px;justify-content:center">
-    <span style="display:inline-flex;gap:13px;align-items:baseline"><span class="live-lbl">TRADEABLE TODAY</span><span class="live-val" id="lv-now-total">—</span><span style="color:var(--border2)">▸</span><span id="lv-now-brk" style="display:inline-flex;gap:13px"></span></span>
-    <span style="display:inline-flex;gap:13px;align-items:baseline"><span class="live-lbl">THIS WEEK</span><span class="live-val" id="lv-wk-total">—</span><span style="color:var(--border2)">▸</span><span id="lv-wk-brk" style="display:inline-flex;gap:13px"></span></span>
+  <div style="display:flex;flex-direction:column;gap:7px;justify-content:center">
+    <span class="live-row"><span class="live-item"><span class="live-lbl">TRADEABLE TODAY</span><span class="live-val" id="lv-now-total">—</span></span><span style="color:var(--border2)">▸</span><span id="lv-now-brk" class="live-row"></span></span>
+    <span class="live-row"><span class="live-item"><span class="live-lbl">THIS WEEK</span><span class="live-val" id="lv-wk-total">—</span></span><span style="color:var(--border2)">▸</span><span id="lv-wk-brk" class="live-row"></span></span>
   </div>
   <span class="live-badge" style="order:98;margin-left:auto"><span class="live-dot"></span><span id="lv-feed">—</span></span>
   <span class="live-lbl" id="lv-feednote" style="order:99"></span>
@@ -1326,8 +1327,10 @@ function renderStrip() {
   $('lv-wk-brk').innerHTML = brk(wkE);
   var d = new Date(DATA.generated_utc);
   var ageH = (Date.now() - d.getTime()) / 3.6e6;
-  $('lv-updated').textContent = d.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' }) + ' ET' +
-    (ageH > 20 ? ' (' + d.toLocaleString('en-US', { month: 'short', day: 'numeric' }) + ')' : '');
+  var d5 = new Date(d.getTime());
+  d5.setMinutes(Math.floor(d5.getMinutes() / 5) * 5, 0, 0);   // query time, floored to 5-min increments
+  $('lv-updated').textContent = d5.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' }) + ' ET' +
+    (ageH > 20 ? ' (' + d5.toLocaleString('en-US', { month: 'short', day: 'numeric' }) + ')' : '');
   var nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
   var mins = nowET.getHours() * 60 + nowET.getMinutes();
   var wd = nowET.getDay() >= 1 && nowET.getDay() <= 5;
