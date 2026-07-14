@@ -980,19 +980,28 @@ function ganttPick(t, isW) {
 }
 
 var gmLock = null;
+function gmScale(v, lo, hi) {
+  if (v === null || v === undefined || isNaN(v)) return null;
+  if (lo > 0 && hi / lo >= 50) { v = Math.max(v, lo); return Math.log(v / lo) / Math.log(hi / lo); }
+  return (v - lo) / (hi - lo);
+}
 function gmBar(lbl, val, lo, hi, thr, passRight, ok, txt, desc) {
-  var span = hi - lo;
-  var tp = Math.max(0, Math.min(100, (thr - lo) / span * 100));
-  var vp = (val === null || val === undefined || isNaN(val)) ? null
-    : Math.max(2, Math.min(97, (val - lo) / span * 100));
-  var zone = passRight ? 'left:' + tp + '%;right:0' : 'left:0;width:' + tp + '%';
+  var vf = gmScale(val, lo, hi), tf = gmScale(thr, lo, hi);
+  var tp = Math.max(0, Math.min(100, tf * 100));
+  var vp = (vf === null) ? null : Math.max(2, Math.min(98, vf * 100));
+  var inPass = (vf === null) ? null : (passRight ? vf >= tf : vf <= tf);
+  var passStyle = passRight ? 'left:' + tp + '%;right:0' : 'left:0;width:' + tp + '%';
+  var failStyle = passRight ? 'left:0;width:' + tp + '%' : 'left:' + tp + '%;right:0';
+  var passCol = inPass === true ? '#52E6BD' : '#357c6c';
+  var failCol = inPass === false ? '#F2563A' : '#9a463a';
   var tip = ((desc || '') + '\nCurrent: ' + txt + ' — ' + (ok ? 'PASS' : 'FAIL') +
-    '\nThreshold: ' + thr + ' (pass ' + (passRight ? 'above' : 'below') + ')\nGauge scale: ' + lo + ' to ' + hi).replace(/"/g, '&quot;');
+    '\nThreshold: ' + thr + ' (pass ' + (passRight ? 'above' : 'below') + ')').replace(/"/g, '&quot;');
   return '<div class="gm-bar" title="' + tip + '"><span class="l">' + lbl + '</span>' +
     '<span class="t" style="position:relative;overflow:visible">' +
-    '<span style="position:absolute;top:0;bottom:0;' + zone + ';background:rgba(82,230,189,' + (ok ? '0.40' : '0.13') + ')"></span>' +
-    '<span style="position:absolute;top:-2px;bottom:-2px;left:calc(' + tp + '% - 1px);width:2px;background:var(--dim)"></span>' +
-    (vp !== null ? '<span style="position:absolute;top:-3px;bottom:-3px;left:calc(' + vp + '% - 1px);width:2px;background:#fff;box-shadow:0 0 5px #fff"></span>' : '') +
+    '<span style="position:absolute;top:0;bottom:0;' + passStyle + ';background:' + passCol + ';opacity:0.5"></span>' +
+    '<span style="position:absolute;top:0;bottom:0;' + failStyle + ';background:' + failCol + ';opacity:0.45"></span>' +
+    '<span style="position:absolute;top:-1px;bottom:-1px;left:calc(' + tp + '% - 1px);width:2px;background:#d8cfa0;z-index:1"></span>' +
+    (vp !== null ? '<span style="position:absolute;top:-3px;bottom:-3px;left:calc(' + vp + '% - 1.5px);width:3px;background:#fff;box-shadow:0 0 5px #fff;z-index:2"></span>' : '') +
     '</span><span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span></div>';
 }
 function ganttMon(t, isW, hov) {
@@ -1012,8 +1021,8 @@ function ganttMon(t, isW, hov) {
     reportTxt(ev) + ' · <span class="live-lbl">sell</span> next open +15m</div>';
   if (isW) {
     left += (ev.hist_moves ? '<div style="margin-top:4px">avg move (8q) <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b></div>' : '') +
-      gmBar('Vol ≥ 1.5M', Math.min((ev.avg_volume30 || 0) / 1e6, 6), 0, 6, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', "30-day average share volume. 1.5M+ shares = enough price-insensitive hedging flow to keep premium rich.") +
-      gmBar('Price ≥ $20', Math.min(ev.price || 0, 100), 0, 100, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), "Share price floor. Below $20, strikes are coarse and spreads wide relative to premium — fills go off-model.") +
+      gmBar('Vol ≥ 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', "30-day average share volume. 1.5M+ shares = enough price-insensitive hedging flow to keep premium rich.") +
+      gmBar('Price ≥ $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), "Share price floor. Below $20, strikes are coarse and spreads wide relative to premium — fills go off-model.") +
       ['Slope ≤ −.0041', 'IV/RV ≥ 1.25', 'Rich ≥ 1.15×', 'Spread ≤ 10%', 'OI ≥ 500'].map(function (l2) {
         return '<div class="gm-bar"><span class="l">' + l2 + '</span><span class="t"></span>' +
           '<span class="v" style="color:var(--gray);font-weight:400">forms ≤5d out</span></div>';
@@ -1027,13 +1036,13 @@ function ganttMon(t, isW, hov) {
       (evp !== null ? ' · <span class="live-lbl">est. EV</span> <b class="' + (evp >= 0 ? 'pos' : 'neg') + '">' +
         (evp >= 0 ? '+' : '') + evp.toFixed(1) + '%</b>' : '') + '</div>';
     left += gmBar('Slope ≤ −.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), "IV term-structure slope, front expiry to the 45-day point. Negative (backwardation) = near-term options priced richest — the core edge signal from the research.");
-    left += gmBar('IV/RV ≥ 1.25', ev.iv30_rv30 === null ? null : Math.min(ev.iv30_rv30, 2.5), 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), "30-day implied volatility vs Yang-Zhang realized volatility. Above 1.25 = options already rich vs how the stock actually moves.");
-    left += gmBar('Vol ≥ 1.5M', Math.min((ev.avg_volume30 || 0) / 1e6, 6), 0, 6, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', "30-day average share volume. 1.5M+ shares = enough price-insensitive hedging flow to keep premium rich.");
-    left += gmBar('Price ≥ $20', Math.min(ev.price || 0, 100), 0, 100, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), "Share price floor. Below $20, strikes are coarse and spreads wide relative to premium — fills go off-model.");
+    left += gmBar('IV/RV ≥ 1.25', ev.iv30_rv30, 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), "30-day implied volatility vs Yang-Zhang realized volatility. Above 1.25 = options already rich vs how the stock actually moves.");
+    left += gmBar('Vol ≥ 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', "30-day average share volume. 1.5M+ shares = enough price-insensitive hedging flow to keep premium rich.");
+    left += gmBar('Price ≥ $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), "Share price floor. Below $20, strikes are coarse and spreads wide relative to premium — fills go off-model.");
     var spv = (ev.atm_spread_pct === null || ev.atm_spread_pct === undefined) ? null : Math.min(ev.atm_spread_pct, 0.25);
-    left += gmBar('Spread ≤ 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? '—' : fmt(ev.atm_spread_pct * 100, 1) + '%', "ATM bid/ask spread as a % of mid. You cross it at entry AND exit — wide spreads eat the whole edge.");
-    left += gmBar('Rich ≥ 1.15×', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'n/a', "Options-implied move vs this stock's own average realized earnings move (last up-to-8 quarters). Above 1.15x = premium genuinely rich for THIS name.");
-    left += gmBar('OI ≥ 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : Math.min(ev.atm_oi, 2500), 0, 2500, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? '—' : fmtInt(ev.atm_oi), "Open interest on the thinner side of the ATM pair. Thin OI = negotiating with one market maker at both ends.");
+    left += gmBar('Spread ≤ 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? 'N/A' : fmt(ev.atm_spread_pct * 100, 1) + '%', "ATM bid/ask spread as a % of mid. You cross it at entry AND exit — wide spreads eat the whole edge.");
+    left += gmBar('Rich ≥ 1.15×', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'N/A', "Options-implied move vs this stock's own average realized earnings move (last up-to-8 quarters). Above 1.15x = premium genuinely rich for THIS name.");
+    left += gmBar('OI ≥ 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : (ev.atm_oi || 1), 40, 40000, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? 'N/A' : fmtInt(ev.atm_oi), "Open interest on the thinner side of the ATM pair. Thin OI = negotiating with one market maker at both ends.");
     left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '⚡ FOMC ±1D' : 'CLEAR',
       'A Fed decision within ±1 trading day of the trade window adds market-wide volatility the calendar is short. Blocks PRIORITY.');
     left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '⚠ UNCONFIRMED' : 'CONFIRMED',
@@ -1383,7 +1392,7 @@ function renderStrip() {
     var end = new Date(DATA.scan_date + 'T12:00:00');
     end.setDate(end.getDate() + (DATA.horizon_days || 30));
     sub.textContent = DATA.scan_date + ' — ' + end.toISOString().slice(0, 10) + ' · ' +
-      fmtInt(DATA.counts.calendar_events) + ' earnings events · ' + DATA.counts.analyzed + ' analyzed' + (window.TRADES !== undefined ? ' · ' + window.TRADES + ' trades made' : '');
+      fmtInt(DATA.counts.calendar_events) + ' upcoming earnings · ' + DATA.counts.analyzed + ' analyzed in detail' + (window.TRADES !== undefined ? ' · ' + window.TRADES + ' paper trades' : '');
   }
 }
 

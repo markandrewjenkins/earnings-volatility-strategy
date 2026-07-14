@@ -7,22 +7,12 @@ name: Earnings volatility scan
 
 on:
   schedule:
-    # Every 15 min through the US session (13:00–21:00 UTC covers
-    # 9:00am–5:00pm ET in EDT; in EST everything shifts one hour later,
-    # still inside the window).
-    - cron: "*/15 13-21 * * 1-5"
-    # Dedicated entry-window shots (15:00-16:00 ET): GitHub throttles the
-    # */15 pattern to ~90-min gaps, which missed the entry window two days
-    # running. Discrete odd-minute crons fire far more reliably.
-    - cron: "7,26,44 19 * * 1-5"
-    - cron: "7,26,44 20 * * 1-5"
-    # Exit passes just after 9:40 ET (EDT/EST)
-    - cron: "47 13 * * 1-5"
-    - cron: "47 14 * * 1-5"
-    # Pre-open full scan
+    # cron-job.org drives the every-5-min intraday refresh via workflow_dispatch
+    # (reliable, un-throttled). These scheduled runs are only a backup so the
+    # dashboard still updates if that external trigger is ever down.
     - cron: "50 12 * * 1-5"
-    # One late-evening run so the dashboard rolls to the next trade date
-    # after AMC reporters are done.
+    - cron: "0 17,19 * * 1-5"
+    - cron: "45 13,14 * * 1-5"
     - cron: "5 23 * * 1-5"
   workflow_dispatch: {}
 

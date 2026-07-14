@@ -64,9 +64,18 @@ SIZING_FRAC_T1 = 0.10
 MAX_CONCURRENT = 3
 CB_HALVE_DD = 0.25      # halve sizing below this drawdown from peak equity
 CB_PAUSE_DD = 0.40      # stop new entries below this drawdown
-ENTRY_START = (15, 0)       # ET (wide: GitHub cron throttling; research spec is ~15:45)
+ENTRY_START = (15, 40)      # ET — research opens ~15 min before the close
+                            # (max IV to capture); cron-job.org fires every 5 min
+                            # so 15:40/45/50/55 all land inside this window
 ENTRY_END = (16, 0)
 EXIT_AFTER = (9, 40)        # ET, on/after the reaction day
+
+# Real-world execution costs (IBKR-style), applied to the paper P&L:
+#   - commission: $0.65/contract/leg; a calendar is 2 legs, round trip = $2.60
+#   - slippage: mid fills are optimistic — cross ~half the ATM spread each of
+#     the 4 leg-transactions, scaled by the scanned spread (fallback 4%).
+COMMISSION_PER_LEG = 0.65
+SLIPPAGE_FALLBACK = 0.04
 
 
 def now_et():
@@ -257,6 +266,7 @@ def try_entries(log, scan, et, force=False):
                 "back_mid": legs["back"],
                 "debit": debit,
                 "expected_move_pct": ev.get("expected_move_pct"),
+                "spread_pct": ev.get("atm_spread_pct"),
                 "iv30_rv30": ev.get("iv30_rv30"),
                 "ts_slope_0_45": ev.get("ts_slope_0_45"),
             },
@@ -281,7 +291,12 @@ def try_exits(log, et, force=False):
             continue
         value = round(legs["back"] - legs["front"], 3)
         debit = tr["entry"]["debit"]
-        pnl_pct = (value - debit) / debit * 100.0
+        slip = tr["entry"].get("spread_pct") or SLIPPAGE_FALLBACK
+        slip = min(max(slip, 0.0), 0.15) / 2.0
+        entry_cost = debit * (1 + slip) * 100 + 2 * COMMISSION_PER_LEG
+        exit_proceeds = value * (1 - slip) * 100 - 2 * COMMISSION_PER_LEG
+        gross_pct = (value - debit) / debit * 100.0 if debit else 0.0
+        pnl_pct = (exit_proceeds - entry_cost) / entry_cost * 100.0 if entry_cost > 0 else 0.0
         ep = tr["entry"].get("stock_price")
         actual_move = (abs(legs["spot"] / ep - 1.0) * 100.0) if (legs.get("spot") and ep) else None
 
@@ -302,6 +317,8 @@ def try_exits(log, et, force=False):
         }
         tr["result"] = {
             "pnl_pct": round(pnl_pct, 2),
+            "gross_pnl_pct": round(gross_pct, 2),
+            "cost_drag_pct": round(gross_pct - pnl_pct, 2),
             "win": pnl_pct > 0,
             "alloc_usd": round(alloc, 2),
             "pnl_usd": round(pnl_usd, 2),
