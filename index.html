@@ -203,7 +203,8 @@ tr.selected td { background: #241d0e }
 .g-hcell .g-zone { position: absolute; top: -14px; left: 2px; white-space: nowrap; pointer-events: none }
 #gantt-grid { display: flex; flex-direction: column; padding-top: 14px }
 .g-cell { min-height: 26px }
-#g-mon2 .gm-hd, #gm-left .gm-hd { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px }
+#g-mon2 .gm-hd, #gm-left .gm-hd { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap }
+.gm-sub { font-size: 0.58rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.09em; margin: 9px 0 4px; border-top: 1px solid var(--border); padding-top: 6px; }
 #gm-left .gm-hd b { font-size: 1.15rem }
 #g-mon2 { display: flex; gap: 18px; margin-top: 10px; background: var(--panel2); border: 1px solid var(--border2);
   border-radius: 6px; padding: 11px 14px; font-size: 0.74rem; line-height: 1.7; flex-wrap: wrap }
@@ -297,7 +298,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </div>
   </div>
   <div class="tabs">
-    <button class="tab active" id="tabbtn-scanner" onclick="showTab('scanner')">Scanner</button>
+    <button class="tab active" id="tabbtn-scanner" onclick="showTab('scanner')">Live Scanner w/ Signals</button>
     <button class="tab" id="tabbtn-pnl" onclick="showTab('pnl')">P&amp;L Tracker</button>
     <button class="tab" id="tabbtn-sim" onclick="showTab('sim')">Simulation</button>
     <button class="tab" id="tabbtn-strategy" onclick="showTab('strategy')">How It Works</button>
@@ -324,7 +325,14 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <div id="tab-scanner">
     <div class="panel">
       <div class="ph"><span class="t">Trade Calendar — Earnings Events by Trade Entry Day</span>
-        <span class="dimtxt" style="text-transform:none">x-axis = the day you BUY (always 15:20–16:00 ET; pre-open reporters map to the prior session) · lanes = rating · drag to pan · hover for the read-out, click to load below. Hatched cells/chips = DEVELOPING (tentative grade from volume/price; full options analysis begins 7 days out. ENTRY 15:00–16:00 ET before the report · EXIT ~9:40 ET on the reaction day.</span></div>
+        <span class="dimtxt" style="text-transform:none;font-size:0.72rem;line-height:1.6;max-width:1100px;display:block">
+          <b style="color:var(--yellow)">About this strategy —</b> we sell the volatility that options overprice ahead of earnings, via ATM calendar spreads.
+          Tickers are placed under the <b>day you enter the trade</b> (not the earnings date). Each reports either that same day after the close, or the next morning before the open.
+          <b>Priority</b> / <b>Potential</b> names are the trades to take.<br>
+          <b style="color:var(--yellow)">How to use this chart —</b> lanes are the rating; drag or scroll to pan, wheel to zoom, click a lane label to collapse it.
+          <b>Hover</b> a ticker for its full read-out below; <b>click</b> it to lock that read-out (click again to unlock). Hatched chips are <b>developing</b> (graded off volume/price only until full options analysis begins 7 days out).<br>
+          <b style="color:var(--yellow)">When to trade —</b> open Priority/Potential calendars at <b>~3:45 PM ET on the entry day</b>; close them at <b>~9:45 AM ET the next session</b> to capture the post-earnings IV crush.
+        </span></div>
       <div class="pb">
         <div class="gantt-scroll" id="gantt-scroll"><div id="gantt-grid"></div></div>
         <div id="g-mon2">
@@ -336,7 +344,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
     
     <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Analyzed events — today's trade window first, then this week</span>
+      <div class="ph"><span class="t">All Analyzed Earnings Events Detail</span>
         <span style="display:inline-flex;align-items:center;gap:7px;text-transform:none">
           <span class="live-lbl">Account $</span>
           <input class="acct-input" id="acct" type="number" min="1000" step="1000" value="10000" onchange="acctChanged()">
@@ -1023,11 +1031,32 @@ function ganttMon(t, isW, hov) {
   var buy = entryDateOf(ev);
   var pillH = isW ? likePill(ev.likelihood) : tierPill(ev);
   if (isW || entryDateOf(ev) >= (window._fcst || '9999')) pillH = pillH.replace('<span class="pill', '<span style="border-style:dashed" class="pill');
+  var actionable = !isW && (ev.tier1 || ev.tier === 'RECOMMENDED');
+  var actLabel = ev.tier1 ? 'PRIORITY — TRADE THIS' : ev.tier === 'RECOMMENDED' ? 'POTENTIAL — TRADEABLE' :
+                 ev.tier === 'CONSIDER' ? 'MARGINAL — WATCH ONLY' : 'DISQUALIFIED — NO TRADE';
+  var actCol = ev.tier1 ? '#5cf0c2' : ev.tier === 'RECOMMENDED' ? 'var(--yellow)' : ev.tier === 'CONSIDER' ? 'var(--coral)' : '#b5b5b5';
   var left = '<div class="gm-hd"><b>' + ev.ticker + '</b>' + pillH +
-    (gmLock === t ? '<span class="live-lbl" style="font-size:0.58rem;color:var(--yellow)">&#128274; LOCKED — CLICK CHIP TO UNLOCK</span>' : '') + '</div>' +
-    '<div class="dimtxt" style="font-size:0.68rem">' + (ev.name || '') + (ev.sector ? ' · ' + ev.sector : '') + mismatchFlag(ev) + '</div>' +
-    '<div style="font-size:0.7rem;margin:3px 0"><span class="live-lbl">Buy</span> <b>' + buy + '</b> 15:20–16:00 ET · ' +
-    reportTxt(ev) + ' · <span class="live-lbl">sell</span> next open +15m</div>';
+    ' <span class="dimtxt" style="font-size:0.66rem">' + (ev.name || '') + (ev.sector ? ' · ' + ev.sector : '') + '</span>' + mismatchFlag(ev) +
+    (gmLock === t ? '<span class="live-lbl" style="font-size:0.56rem;color:var(--yellow);margin-left:auto">&#128274; LOCKED</span>' : '') + '</div>';
+  if (!isW) {
+    // one compact context line, then a prominent action banner
+    left += '<div class="dimtxt" style="font-size:0.66rem;margin-bottom:5px">' +
+      '<span class="live-lbl">Rating</span> <b>' + (ev.rank_score || '—') + '/100</b> · ' +
+      '<span class="live-lbl">Odds</span> ' + oddsTxt(ev) +
+      (function(){ var e=(ev.odds!==null&&ev.odds!==undefined)?(ev.odds*22-(1-ev.odds)*21.2):null; return e!==null?' · <span class="live-lbl">EV</span> <b class="'+(e>=0?'pos':'neg')+'">'+(e>=0?'+':'')+e.toFixed(1)+'%</b>':''; })() +
+      ' · <span class="live-lbl">VIX</span> ' + (DATA.market ? fmt(DATA.market.vix,1)+' '+DATA.market.regime : '—') + '</div>' +
+      '<div style="border:1px solid ' + actCol + ';border-radius:6px;padding:7px 11px;margin-bottom:7px;background:rgba(232,185,79,0.04)">' +
+      '<div style="font-weight:700;font-size:0.82rem;letter-spacing:0.03em;color:' + actCol + '">' + actLabel + '</div>' +
+      (actionable ?
+        '<div style="font-size:0.72rem;margin-top:3px;line-height:1.55"><b>OPEN</b> the calendar (right) at <b>~3:45 PM ET on ' + buy + '</b> · ' +
+        reportTxt(ev) + ' · <b>CLOSE</b> at <b>~9:45 AM ET</b> the next session (post-earnings IV crush)</div>'
+        : '<div style="font-size:0.7rem;margin-top:3px;color:var(--dim)">' +
+        (ev.tier === 'CONSIDER' ? 'Near-miss — monitor into the close; may firm up.' : 'Fails the edge filters — do not trade this event.') + '</div>') +
+      '</div>';
+  } else {
+    left += '<div style="font-size:0.7rem;margin:3px 0"><span class="live-lbl">Would buy</span> <b>' + buy + '</b> ~3:45 PM ET · ' +
+      reportTxt(ev) + '</div>';
+  }
   if (isW) {
     left += (ev.hist_moves ? '<div style="margin-top:4px">avg move (8q) <b>±' + fmt(ev.hist_moves.avg_abs_move_pct, 1) + '%</b></div>' : '') +
       gmBar('Vol ≥ 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', "30-day average share volume. 1.5M+ shares = enough price-insensitive hedging flow to keep premium rich.") +
@@ -1039,11 +1068,7 @@ function ganttMon(t, isW, hov) {
     $('gm-right').innerHTML = '<div class="dimtxt" style="font-size:0.72rem;padding-top:8px">Forecast only — the slope and IV/RV signals form in the final days. Full options analysis, odds and a trade ticket appear once this name is inside the 7-day window.</div>';
     if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
   } else {
-    var evp = (ev.odds !== null && ev.odds !== undefined) ? (ev.odds * 22 - (1 - ev.odds) * 21.2) : null;
-    left += '<div style="margin:2px 0 4px"><span class="live-lbl">Rank</span> <b>' + (ev.rank_score || '—') + '/100</b> · ' +
-      '<span class="live-lbl">Odds</span> ' + oddsTxt(ev) +
-      (evp !== null ? ' · <span class="live-lbl">est. EV</span> <b class="' + (evp >= 0 ? 'pos' : 'neg') + '">' +
-        (evp >= 0 ? '+' : '') + evp.toFixed(1) + '%</b>' : '') + '</div>';
+    left += '<div class="gm-sub">EDGE &amp; EXECUTION FILTERS</div>';
     left += gmBar('Slope ≤ −.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), "IV term-structure slope, front expiry to the 45-day point. Negative (backwardation) = near-term options priced richest — the core edge signal from the research.");
     left += gmBar('IV/RV ≥ 1.25', ev.iv30_rv30, 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), "30-day implied volatility vs Yang-Zhang realized volatility. Above 1.25 = options already rich vs how the stock actually moves.");
     left += gmBar('Vol ≥ 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', "30-day average share volume. 1.5M+ shares = enough price-insensitive hedging flow to keep premium rich.");
@@ -1052,6 +1077,7 @@ function ganttMon(t, isW, hov) {
     left += gmBar('Spread ≤ 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? 'N/A' : fmt(ev.atm_spread_pct * 100, 1) + '%', "ATM bid/ask spread as a % of mid. You cross it at entry AND exit — wide spreads eat the whole edge.");
     left += gmBar('Rich ≥ 1.15×', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '×' : 'N/A', "Options-implied move vs this stock's own average realized earnings move (last up-to-8 quarters). Above 1.15x = premium genuinely rich for THIS name.");
     left += gmBar('OI ≥ 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : (ev.atm_oi || 1), 40, 40000, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? 'N/A' : fmtInt(ev.atm_oi), "Open interest on the thinner side of the ATM pair. Thin OI = negotiating with one market maker at both ends.");
+    left += '<div class="gm-sub">EVENT &amp; MARKET CONTEXT</div>';
     left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '⚡ FOMC ±1D' : 'CLEAR',
       'A Fed decision within ±1 trading day of the trade window adds market-wide volatility the calendar is short. Blocks PRIORITY.');
     left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '⚠ UNCONFIRMED' : 'CONFIRMED',
@@ -1228,7 +1254,7 @@ function renderHero() {
     (function () {
       var sorted = DATA.events.slice().sort(function (a, b) { return (b.rank_score || 0) - (a.rank_score || 0); });
       var pos = sorted.findIndex(function (x) { return x.ticker === ev.ticker; }) + 1;
-      return '<span class="live-lbl">Rank</span> <b>' + (ev.rank_score !== undefined && ev.rank_score !== null
+      return '<span class="live-lbl">Rating</span> <b>' + (ev.rank_score !== undefined && ev.rank_score !== null
         ? ev.rank_score + '/100 · #' + pos + ' of ' + sorted.length : '—') + '</b><br>';
     })() +
     '<span class="live-lbl">Odds of profit</span> ' + oddsTxt(ev) + '<br>' +
