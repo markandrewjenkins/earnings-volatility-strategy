@@ -898,6 +898,12 @@ def run_scan(max_analyze=45, tickers_override=None, fast=False):
     errors = []
     analyzed = []
 
+    # Previous scan's analyzed events, keyed by ticker — used to carry a name
+    # forward when yfinance transiently fails to return its option chain, so
+    # tickers don't flicker in and out of the dashboard between scans.
+    prev_events = {e["ticker"]: e for e in
+                   load_json(OUT_PATH, {}).get("events", [])}
+
     # Full options analysis: everything tradeable now, then this week, within budget.
     # Fast mode (intraday refresh): only today's trade window — keeps runs ~2-3 min
     # so the throttled scheduler still hits the entry window.
@@ -933,7 +939,20 @@ def run_scan(max_analyze=45, tickers_override=None, fast=False):
                   f"vol={metrics['avg_volume30']:,}")
         except Exception as e:
             errors.append({"ticker": sym, "error": str(e)})
-            print(f"  {sym:6s} [{ev['bucket']:5s}] ERROR: {e}")
+            prev = prev_events.get(sym)
+            if prev and prev.get("front_exp"):
+                # carry the last good analysis forward (marked stale) so the
+                # ticker keeps its place rather than vanishing this scan
+                carried = {**prev}
+                carried.update({"date": ev["date"], "when": ev["when"],
+                                "bucket": ev["bucket"],
+                                "trade_window": ev.get("trade_window"),
+                                "market_cap": ev.get("market_cap"),
+                                "carried": True})
+                analyzed.append(carried)
+                print(f"  {sym:6s} [{ev['bucket']:5s}] fetch failed — carried prior scan")
+            else:
+                print(f"  {sym:6s} [{ev['bucket']:5s}] ERROR: {e}")
         time.sleep(0.6)
 
     # Light analysis for the 30-day watchlist (largest caps first)

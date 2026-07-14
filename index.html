@@ -376,7 +376,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="ph"><span class="t" id="sigmon-title">Signal monitor — thresholds &amp; tolerances</span>
         <span class="dimtxt" style="text-transform:none">
           <span class="gate-base">BASE</span> gates the RECOMMENDED / CONSIDER / AVOID rating ·
-          <span class="gate-t1">TIER 1</span> = QUALIFIED plus all six execution &amp; event checks (earns PRIORITY ★) ·
+          <span class="gate-t1">PRIORITY</span> = QUALIFIED plus all six execution &amp; event checks (earns PRIORITY ★) ·
           <span class="gate-diag">DIAG</span> shown for information only</span></div>
       <div class="pb" style="overflow-x:auto"><table class="sig-mon" id="sigmon-table"></table></div>
     </div>
@@ -393,13 +393,13 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <div id="tab-pnl" style="display:none">
     <div class="note-box"><strong>Paper-trade tracker — live grading of the strategy.</strong>
       Every scheduled scan in the last ~40 min before the close (15:20–16:00 ET) opens a hypothetical
-      ATM call-calendar on each <span class="pill pill-rec">RECOMMENDED</span> candidate in that day's trade
+      ATM call-calendar on each <span class="pill pill-rec">POTENTIAL</span> candidate in that day's trade
       window (TBD-time reporters excluded), priced at delayed Yahoo mid quotes. The first scan at/after
       9:40 ET on the reaction day closes it — the research's "jump" exit. Account model — the <strong>public-account
       policy</strong>: $10,000 start; <strong>6% of current equity per POTENTIAL trade, 10% per PRIORITY ★ (odds-scaled 2-12%); max 3 concurrent
       positions; circuit breaker</strong> (below −25% from peak equity all sizes halve, below −40% new entries pause).
       Sizing is anchored to the published research's own 10%-Kelly figure, not this site's Monte Carlo — the account must
-      survive the edge being weaker than modeled, not just bad luck within the model. Tier 1 status is
+      survive the edge being weaker than modeled, not just bad luck within the model. Priority status is
       recorded per trade so the two rating levels can be compared as the sample grows. Delayed mids grade the
       <em>strategy</em>, not your fills — expect your real executions to differ slightly.</div>
 
@@ -507,11 +507,11 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </div>
 
     <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Two-tier grid — every REC% × Tier 1% combination</span>
-        <span class="dimtxt" style="text-transform:none">40% of trades assumed Tier 1 (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</span></div>
+      <div class="ph"><span class="t">Two-tier grid — every REC% × Priority% combination</span>
+        <span class="dimtxt" style="text-transform:none">40% of trades assumed Priority (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</span></div>
       <div class="pb" style="overflow-x:auto">
         <table>
-          <thead><tr><th>REC / Tier 1</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
+          <thead><tr><th>REC / Priority</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
             <th>Worst 5% DD</th><th>Best 5% DD</th><th>Longest DD (med / p95)</th>
             <th>Recovery from ≥30% trough (med · ≤6m)</th><th>P(ever halved)</th></tr></thead>
           <tbody id="grid-tbody"></tbody>
@@ -539,7 +539,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         stretches from 5.7 to 6.2 months) and less growth.</p>
         <p><strong style="color:var(--yellow)">The sound version of the instinct:</strong> scale size on <em>information</em>,
         not on your own P&L — that's what the two-tier REC/Tier-1 split already does, and what the conditioner study
-        supports extending: downsize or skip FOMC-window trades (done — blocks Tier 1), size down after hot sector cohorts,
+        supports extending: downsize or skip FOMC-window trades (done — blocks Priority), size down after hot sector cohorts,
         up after quiet ones, and demand extra richness when VIX &lt; 15. Your own losing streak carries no information;
         market conditions do.</p>
       </div>
@@ -623,9 +623,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <!-- ══ IMPROVEMENTS TAB ══ -->
   <div id="tab-improve" style="display:none">
     <div class="note-box"><strong>Goal:</strong> raise win rate and per-trade return over the baseline three-filter model.
-      The first three ideas are implemented live in this scanner as the <span class="pill pill-t1">TIER 1 ★</span> rating;
+      The first three ideas are implemented live in this scanner as the <span class="pill pill-t1">PRIORITY ★</span> rating;
       the rest are candidates for the backtest queue.</div>
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Implemented in the scanner (Tier 1)</span></div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Implemented in the scanner (Priority)</span></div>
       <div class="pb mc-grid">
         <div class="mc"><h4>A · Premium richness vs history</h4>
           <p>Compare today's option-implied expected move against the stock's own average realized earnings move
@@ -646,7 +646,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           exactly the trade this filter exists to block.)</p></div>
         <div class="mc"><h4>C3 · Confirmed earnings date</h4>
           <p>Nasdaq and Yahoo must agree on the date within ±1 day. A projected (unconfirmed) date that shifts means you
-          sold a calendar around an event that isn't there — pure decay loss with no IV crush. Blocks Tier 1 until
+          sold a calendar around an event that isn't there — pure decay loss with no IV crush. Blocks Priority until
           the sources agree.</p></div>
       </div>
     </div>
@@ -654,7 +654,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="pb mc-grid">
         <div class="mc"><h4>Expected move vs strike width</h4>
           <p>If the option-implied move is smaller than the strike spacing, the "ATM" calendar can't be placed where the
-          model assumes — shown in the signal monitor as <code>DIAG</code>. Would become a Tier 1 gate if the tracker shows
+          model assumes — shown in the signal monitor as <code>DIAG</code>. Would become a Priority gate if the tracker shows
           off-model fills hurting.</p></div>
       </div>
     </div>
@@ -669,7 +669,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         <table>
           <thead><tr><th>Condition</th><th>n</th><th>Median z</th><th>Blowthrough</th><th>vs rest</th><th>Verdict for the strategy</th></tr></thead>
           <tbody>
-            <tr><td>FOMC within ±1 trading day</td><td>482</td><td class="neg">2.39</td><td class="neg">56.6%</td><td>+0.34 ***</td><td><b style="color:var(--yellow)">Now blocks Tier 1</b> — Fed vol lands inside the trade</td></tr>
+            <tr><td>FOMC within ±1 trading day</td><td>482</td><td class="neg">2.39</td><td class="neg">56.6%</td><td>+0.34 ***</td><td><b style="color:var(--yellow)">Now blocks Priority</b> — Fed vol lands inside the trade</td></tr>
             <tr><td>VIX &lt; 15 (calm)</td><td>288</td><td class="neg">2.66</td><td class="neg">59.7%</td><td>+0.61 ***</td><td>Counterintuitive: calm ≠ safe. IV/RV is least trustworthy here — lean on the richness check</td></tr>
             <tr><td>VIX ≥ 28 (stressed)</td><td>283</td><td class="pos">1.67</td><td class="pos">41.7%</td><td>−0.50 ***</td><td>Relative reactions are <em>smaller</em>; the stressed-regime risk is the calendar's back-month IV (vega), not the move</td></tr>
             <tr><td>VIX/VIX3M inverted</td><td>158</td><td class="pos">1.46</td><td class="pos">38.6%</td><td>−0.69 ***</td><td>Same pattern as high VIX</td></tr>
@@ -714,7 +714,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           back-month IV can crush with the front. Verdict: stay advisory, prefer the straddle structure over calendars
           in stressed regimes, and demand extra premium richness when VIX &lt; 15.</p></div>
         <div class="mc"><h4>G · Double calendar variant</h4>
-          <p>For Tier 1 setups with expected move ≫ strike spacing, a double calendar (one at +EM strike, one at −EM)
+          <p>For Priority setups with expected move ≫ strike spacing, a double calendar (one at +EM strike, one at −EM)
           widens the profit zone and cuts gamma pain when the stock moves ~1× the expected move — trading a bit of
           peak return for win rate.</p></div>
         <div class="mc"><h4>H · Scale by Kelly, cap correlation</h4>
@@ -1001,12 +1001,14 @@ function gmBar(lbl, val, lo, hi, thr, passRight, ok, txt, desc) {
   var failStyle = passRight ? 'left:0;width:' + tp + '%' : 'left:' + tp + '%;right:0';
   var passCol = inPass === true ? '#52E6BD' : '#357c6c';
   var failCol = inPass === false ? '#F2563A' : '#9a463a';
+  var passOp = inPass === true ? 0.92 : 0.32;
+  var failOp = inPass === false ? 0.92 : 0.32;
   var tip = ((desc || '') + '\nCurrent: ' + txt + ' — ' + (ok ? 'PASS' : 'FAIL') +
     '\nThreshold: ' + thr + ' (pass ' + (passRight ? 'above' : 'below') + ')').replace(/"/g, '&quot;');
   return '<div class="gm-bar" title="' + tip + '"><span class="l">' + lbl + '</span>' +
     '<span class="t" style="position:relative;overflow:visible">' +
-    '<span style="position:absolute;top:0;bottom:0;' + passStyle + ';background:' + passCol + ';opacity:0.5"></span>' +
-    '<span style="position:absolute;top:0;bottom:0;' + failStyle + ';background:' + failCol + ';opacity:0.45"></span>' +
+    '<span style="position:absolute;top:0;bottom:0;' + passStyle + ';background:' + passCol + ';opacity:' + passOp + '"></span>' +
+    '<span style="position:absolute;top:0;bottom:0;' + failStyle + ';background:' + failCol + ';opacity:' + failOp + '"></span>' +
     '<span style="position:absolute;top:-1px;bottom:-1px;left:calc(' + tp + '% - 1px);width:2px;background:#d8cfa0;z-index:1"></span>' +
     (vp !== null ? '<span style="position:absolute;top:-3px;bottom:-3px;left:calc(' + vp + '% - 1.5px);width:3px;background:#fff;box-shadow:0 0 5px #fff;z-index:2"></span>' : '') +
     '</span><span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span></div>';
@@ -1096,23 +1098,23 @@ function sigDefs() {
       val: function (e) { return e.avg_volume30 === null || e.avg_volume30 === undefined ? null : (e.avg_volume30 / 1e6).toFixed(2) + 'M'; },
       margin: function (e) { return e.avg_volume30 ? fmt(e.avg_volume30 / th.avg_volume30, 2) + '× threshold' : null; },
       pass: function (e) { return e.pass_volume; } },
-    { n: 'ATM spread', rule: '≤ ' + (th.max_atm_spread_pct * 100) + '% of mid (slippage kills a 7% edge)', gate: 'TIER 1',
+    { n: 'ATM spread', rule: '≤ ' + (th.max_atm_spread_pct * 100) + '% of mid (slippage kills a 7% edge)', gate: 'PRIORITY',
       val: function (e) { return e.atm_spread_pct === null || e.atm_spread_pct === undefined ? null : fmt(e.atm_spread_pct * 100, 1) + '%'; },
       margin: function (e) { return (e.atm_spread_pct === null || e.atm_spread_pct === undefined) ? null : fmt(e.atm_spread_pct / th.max_atm_spread_pct, 2) + '× limit'; },
       pass: function (e) { return e.enhanced ? e.enhanced.tight_spread : null; } },
-    { n: 'Share price', rule: '≥ $' + th.min_price + ' (cheap stocks: coarse strikes, wide relative spreads)', gate: 'TIER 1',
+    { n: 'Share price', rule: '≥ $' + th.min_price + ' (cheap stocks: coarse strikes, wide relative spreads)', gate: 'PRIORITY',
       val: function (e) { return e.price ? '$' + fmt(e.price, 2) : null; },
       margin: function (e) { return e.price ? fmt(e.price / th.min_price, 2) + '× minimum' : null; },
       pass: function (e) { return e.enhanced ? e.enhanced.price_ok : null; } },
-    { n: 'Premium richness', rule: '≥ ' + th.richness_min + '× the stock’s avg realized earnings move (last ≤8 qtrs); unknown history tolerated', gate: 'TIER 1',
+    { n: 'Premium richness', rule: '≥ ' + th.richness_min + '× the stock’s avg realized earnings move (last ≤8 qtrs); unknown history tolerated', gate: 'PRIORITY',
       val: function (e) { return e.richness ? fmt(e.richness, 2) + '×' : (e.expected_move_pct ? 'no history' : null); },
       margin: function (e) { return e.richness ? fmt(e.richness / th.richness_min, 2) + '× threshold' : null; },
       pass: function (e) { return e.enhanced ? e.enhanced.premium_rich : null; } },
-    { n: 'ATM open interest', rule: '≥ ' + (th.min_atm_oi || 500) + ' contracts on the thinner side (fills at both ends)', gate: 'TIER 1',
+    { n: 'ATM open interest', rule: '≥ ' + (th.min_atm_oi || 500) + ' contracts on the thinner side (fills at both ends)', gate: 'PRIORITY',
       val: function (e) { return (e.atm_oi === null || e.atm_oi === undefined) ? null : fmtInt(e.atm_oi); },
       margin: function (e) { return (e.atm_oi === null || e.atm_oi === undefined) ? null : fmt(e.atm_oi / (th.min_atm_oi || 500), 2) + '× minimum'; },
       pass: function (e) { return e.enhanced ? e.enhanced.oi_ok : null; } },
-    { n: 'Date confirmed', rule: 'Nasdaq and Yahoo agree within ±1 day (projected dates shift)', gate: 'TIER 1',
+    { n: 'Date confirmed', rule: 'Nasdaq and Yahoo agree within ±1 day (projected dates shift)', gate: 'PRIORITY',
       val: function (e) { return e.date_mismatch === true ? (e.date + ' vs ' + e.yahoo_date) : (e.yahoo_date ? 'agree' : 'no Yahoo data'); },
       margin: function () { return null; },
       pass: function (e) { return e.enhanced ? e.enhanced.date_confirmed : null; } },
@@ -1120,7 +1122,7 @@ function sigDefs() {
       val: function (e) { return (e.straddle_mid && e.strike_width) ? ('$' + fmt(e.straddle_mid, 2) + ' vs $' + fmt(e.strike_width, 2)) : null; },
       margin: function (e) { return (e.straddle_mid && e.strike_width) ? fmt(e.straddle_mid / e.strike_width, 2) + '× spacing' : null; },
       pass: function (e) { return e.enhanced ? e.enhanced.em_vs_width : null; } },
-    { n: 'FOMC window', rule: 'no Fed decision within ±1 trading day — study: reactions near FOMC run significantly larger (median z 2.39 vs 2.05)', gate: 'TIER 1',
+    { n: 'FOMC window', rule: 'no Fed decision within ±1 trading day — study: reactions near FOMC run significantly larger (median z 2.39 vs 2.05)', gate: 'PRIORITY',
       val: function (e) { return e.fomc_window === true ? 'FOMC nearby' : (e.fomc_window === false ? 'clear' : null); },
       margin: function () { return null; },
       pass: function (e) { return e.fomc_window === null || e.fomc_window === undefined ? null : !e.fomc_window; } },
@@ -1141,7 +1143,7 @@ function renderSigMon() {
   var tbl = $('sigmon-table');
   if (!ev) { tbl.innerHTML = '<tr><td class="sig-desc">No analyzed events in this scan.</td></tr>'; return; }
   $('sigmon-title').textContent = 'Signal monitor — ' + ev.ticker + ' (earnings ' + ev.date + ' ' + ev.when + ')';
-  var gateCls = { 'BASE': 'gate-base', 'TIER 1': 'gate-t1', 'DIAG': 'gate-diag' };
+  var gateCls = { 'BASE': 'gate-base', 'PRIORITY': 'gate-t1', 'DIAG': 'gate-diag' };
   var rows = sigDefs().map(function (d) {
     var v = d.val(ev), m = d.margin(ev), p = d.pass(ev);
     var badge = (p === null || v === null) ? '<span class="eb eb-na">N/A</span>'
@@ -1154,7 +1156,7 @@ function renderSigMon() {
       '<td><span class="' + gateCls[d.gate] + '">' + d.gate + '</span></td>' +
       '<td>' + badge + '</td></tr>';
   }).join('');
-  var verdict = '<tr><td class="sig-name">VERDICT</td><td class="sig-desc">base rating, then Tier 1 if all five execution checks also pass</td>' +
+  var verdict = '<tr><td class="sig-name">VERDICT</td><td class="sig-desc">base rating, then Priority if all five execution checks also pass</td>' +
     '<td colspan="4">' + tierPill(ev) + '</td></tr>';
   tbl.innerHTML = '<thead><tr><th>Signal</th><th>Rule / tolerance</th><th>Current</th><th>Margin</th><th>Gates</th><th>Status</th></tr></thead>' +
     '<tbody>' + rows + verdict + '</tbody>';
@@ -1447,7 +1449,7 @@ function renderPnl() {
     { l: 'Win rate', v: closed.length ? fmt(wins.length / closed.length * 100, 0) + '%' : '—', s: 'target ≈66% (research)' },
     { l: 'Avg win / loss', v: (avgW === null ? '—' : '+' + fmt(avgW, 1) + '%') + ' / ' + (avgL === null ? '—' : fmt(avgL, 1) + '%'), s: 'per trade, on debit' },
     { l: 'Profit factor', v: grossL > 0 ? fmt(grossW / grossL, 2) + 'x' : (grossW > 0 ? '∞' : '—'), s: 'gross wins / gross losses' },
-    { l: 'Tier 1 subset', v: t1.length ? (t1pnl >= 0 ? '+' : '') + fmt(t1pnl / t1.length, 1) + '%/tr' : '—', s: t1.length + ' Tier 1 trades closed', c: 'var(--yellow)' }
+    { l: 'Priority subset', v: t1.length ? (t1pnl >= 0 ? '+' : '') + fmt(t1pnl / t1.length, 1) + '%/tr' : '—', s: t1.length + ' Priority trades closed', c: 'var(--yellow)' }
   ];
   $('pnl-kpis').innerHTML = kpis.map(function (k) {
     return '<div class="kpi"><div class="kpi-label">' + k.l + '</div>' +
@@ -1557,14 +1559,14 @@ function renderSim() {
   selectSimVariant('baseline_calendar');
 
   var takeHtml = '<strong>Key takeaway:</strong> the improvements mostly trade raw growth for quality. ' +
-    'Execution filters (Tier 1) and tail trims lift the win rate and Sharpe and cut the average max drawdown ';
+    'Execution filters (Priority) and tail trims lift the win rate and Sharpe and cut the average max drawdown ';
   var base = vs[0]; var all = null;
   for (var i = 0; i < vs.length; i++) if (vs[i].id === 'all_combined') all = vs[i];
   if (all) {
     takeHtml += 'from ' + fmt(base.max_dd.mean * 100, 0) + '% to ' + fmt(all.max_dd.mean * 100, 0) + '% and the probability of ever halving the account from ' +
       fmt(base.prob.halved_at_any_point * 100, 1) + '% to ' + fmt(all.prob.halved_at_any_point * 100, 1) + '% — but they also filter out trades, and fewer trades means less compounding, so the median terminal value drops. ' +
       'If you can stomach the baseline drawdowns, the baseline compounds fastest; if you want the smoothest ride per unit of risk, the combined variant has the best Sharpe (' + fmt(all.sharpe, 2) + ' vs ' + fmt(base.sharpe, 2) + '). ' +
-      'A middle path — Tier 1 execution filters only — keeps most of the growth while still improving every risk metric.';
+      'A middle path — Priority execution filters only — keeps most of the growth while still improving every risk metric.';
   }
   $('sim-takeaway').innerHTML = takeHtml;
   renderSizing();
@@ -1578,7 +1580,7 @@ function renderSizing() {
   $('sizing-tbody').innerHTML = sz.sweep.map(function (s) {
     var hl = (s.frac === 0.06 || s.frac === 0.12) ? ' style="background:#191408"' : '';
     return '<tr' + hl + '>' +
-      '<td><b>' + (s.frac * 100).toFixed(0) + '%</b>' + (s.frac === 0.06 ? ' <span class="dimtxt">(REC)</span>' : (s.frac === 0.12 ? ' <span class="dimtxt">(Tier 1)</span>' : '')) + '</td>' +
+      '<td><b>' + (s.frac * 100).toFixed(0) + '%</b>' + (s.frac === 0.06 ? ' <span class="dimtxt">(REC)</span>' : (s.frac === 0.12 ? ' <span class="dimtxt">(Priority)</span>' : '')) + '</td>' +
       '<td>' + (s.kelly_mult * 100).toFixed(0) + '%</td>' +
       '<td><b>' + (s.cagr_median * 100).toFixed(0) + '%</b></td>' +
       '<td class="dimtxt">' + (s.cagr_p5 * 100).toFixed(0) + '% … ' + (s.cagr_p95 * 100).toFixed(0) + '%</td>' +
@@ -1632,7 +1634,7 @@ function renderSizing() {
       '<td>' + (s.p_halved * 100).toFixed(1) + '%</td></tr>';
   }).join('');
 
-  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Live setting — the public-account policy: 6% REC / 10% Tier 1, ' +
+  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Live setting — the public-account policy: 6% REC / 10% Priority, ' +
     'max 3 concurrent, drawdown circuit breaker</strong> (sizes halve below −25% from peak equity; new entries pause below −40%). ' +
     'Why not the aggressive corner the grid tempts with: every CAGR in these tables sits on assumptions (a stationary +7.3% edge, ' +
     'independent trades, ~120 trades/yr) that no free data source can verify — there is no historical options data behind this model. ' +
