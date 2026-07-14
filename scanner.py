@@ -444,28 +444,66 @@ def analyze_ticker(symbol, earnings_date):
     avg_vol = float(history["Volume"].rolling(30).mean().dropna().iloc[-1])
     exp_move_pct = (straddle / price * 100.0) if straddle else None
 
-    # calendar construction: sell front ATM, buy the expiry nearest front+30d
+    # calendar construction: sell front ATM, buy a liquid ~30-day-out back leg.
+    # CRITICAL (learned from a live PNC fill 2026-07): the naive "nearest expiry
+    # to front+30d" often lands on a THIN WEEKLY whose displayed bid/ask is
+    # garbage (OI ~1, 25-30% spread), which both inflates the computed debit
+    # AND causes a big immediate mark-to-market loss on entry. Standard MONTHLY
+    # expiries (3rd Friday) carry far more open interest, so we prefer them and
+    # score candidates by real liquidity before choosing.
     back_exp, cal_debit = None, None
+    back_oi = None
+    combo_spread_pct = None
     if front_exp:
         f_date = datetime.strptime(front_exp, "%Y-%m-%d").date()
+
+        def is_third_friday(dt):
+            return dt.weekday() == 4 and 15 <= dt.day <= 21
+
+        # candidate back expiries in a 21–60 day window past the front
+        window = [e for e in exp_all
+                  if 21 <= (datetime.strptime(e, "%Y-%m-%d").date() - f_date).days <= 60]
+        if not window:  # fall back to anything after the front
+            window = [e for e in exp_all
+                      if datetime.strptime(e, "%Y-%m-%d").date() > f_date]
+        monthlies = [e for e in window
+                     if is_third_friday(datetime.strptime(e, "%Y-%m-%d").date())]
+        # prefer monthlies nearest ~30d out; else weeklies nearest ~30d out
         target = f_date + timedelta(days=CALENDAR_GAP_DAYS)
-        cands = [e for e in exp_all
-                 if datetime.strptime(e, "%Y-%m-%d").date() > f_date]
-        if cands:
-            back_exp = min(cands, key=lambda e: abs(
-                (datetime.strptime(e, "%Y-%m-%d").date() - target).days))
-            try:
-                bchain = chains.get(back_exp) or stock.option_chain(back_exp)
-                bcalls = bchain.calls
-                b_idx = (bcalls["strike"] - atm_strike).abs().idxmin()
-                b_mid = mid(bcalls.loc[b_idx, "bid"], bcalls.loc[b_idx, "ask"])
-                fcalls = chains[front_exp].calls
-                f_idx = (fcalls["strike"] - atm_strike).abs().idxmin()
-                f_mid = mid(fcalls.loc[f_idx, "bid"], fcalls.loc[f_idx, "ask"])
-                if b_mid and f_mid and b_mid > f_mid:
-                    cal_debit = b_mid - f_mid
-            except Exception:
-                cal_debit = None
+        ordered = sorted(monthlies or window,
+                         key=lambda e: abs((datetime.strptime(e, "%Y-%m-%d").date() - target).days))
+        try:
+            fcalls = chains[front_exp].calls
+            f_idx = (fcalls["strike"] - atm_strike).abs().idxmin()
+            f_bid = float(fcalls.loc[f_idx, "bid"]); f_ask = float(fcalls.loc[f_idx, "ask"])
+            f_mid = mid(f_bid, f_ask)
+            best = None
+            for cand in ordered[:4]:   # inspect up to 4 candidates, keep the best-liquidity one
+                try:
+                    bchain = chains.get(cand) or stock.option_chain(cand)
+                    bcalls = bchain.calls
+                    b_idx = (bcalls["strike"] - atm_strike).abs().idxmin()
+                    b_bid = float(bcalls.loc[b_idx, "bid"]); b_ask = float(bcalls.loc[b_idx, "ask"])
+                    b_mid = mid(b_bid, b_ask)
+                    b_oi = int(bcalls.loc[b_idx, "openInterest"] or 0)
+                    if not (b_bid > 0 and b_ask > 0 and b_mid and f_mid and b_mid > f_mid):
+                        continue
+                    debit = b_mid - f_mid
+                    # combo entry cost = half the summed bid/ask spread over the
+                    # debit — the immediate mark-to-market hit you take on entry
+                    combo_sp = ((f_ask - f_bid) + (b_ask - b_bid)) / 2.0
+                    combo_pct = combo_sp / debit if debit > 0 else None
+                    # score: more OI and a tighter combo cost are better
+                    sc = b_oi - (combo_pct or 5) * 400
+                    if best is None or sc > best[0]:
+                        best = (sc, cand, round(debit, 2), b_oi, round(combo_pct, 3) if combo_pct else None)
+                    time.sleep(0.1)
+                except Exception:
+                    continue
+            if best:
+                _, back_exp, cal_debit, back_oi, combo_spread_pct = best
+        except Exception:
+            cal_debit = None
 
     # Improvement G — double calendar: when the expected move is much wider
     # than the strike spacing, split the calendar across ±EM strikes to widen
@@ -542,6 +580,8 @@ def analyze_ticker(symbol, earnings_date):
         "atm_strike": atm_strike,
         "straddle_mid": round(straddle, 2) if straddle else None,
         "calendar_debit_est": round(cal_debit, 2) if cal_debit else None,
+        "back_oi": back_oi,
+        "combo_spread_pct": combo_spread_pct,
         "double_calendar": dc,
         "structure_rec": "double calendar" if dc else "calendar",
         "expected_move_pct": round(exp_move_pct, 2) if exp_move_pct else None,

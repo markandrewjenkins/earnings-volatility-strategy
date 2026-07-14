@@ -267,6 +267,7 @@ def try_entries(log, scan, et, force=False):
                 "debit": debit,
                 "expected_move_pct": ev.get("expected_move_pct"),
                 "spread_pct": ev.get("atm_spread_pct"),
+                "combo_spread_pct": ev.get("combo_spread_pct"),
                 "iv30_rv30": ev.get("iv30_rv30"),
                 "ts_slope_0_45": ev.get("ts_slope_0_45"),
             },
@@ -291,8 +292,10 @@ def try_exits(log, et, force=False):
             continue
         value = round(legs["back"] - legs["front"], 3)
         debit = tr["entry"]["debit"]
-        slip = tr["entry"].get("spread_pct") or SLIPPAGE_FALLBACK
-        slip = min(max(slip, 0.0), 0.15) / 2.0
+        # combo entry spread = the immediate mark-to-market hit (both legs).
+        # Prefer it; fall back to the ATM front spread, then a flat default.
+        slip = tr["entry"].get("combo_spread_pct") or tr["entry"].get("spread_pct") or SLIPPAGE_FALLBACK
+        slip = min(max(slip, 0.0), 0.30) / 2.0
         entry_cost = debit * (1 + slip) * 100 + 2 * COMMISSION_PER_LEG
         exit_proceeds = value * (1 - slip) * 100 - 2 * COMMISSION_PER_LEG
         gross_pct = (value - debit) / debit * 100.0 if debit else 0.0
