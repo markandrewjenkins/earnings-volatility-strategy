@@ -297,6 +297,30 @@ def mid(bid, ask):
 
 # ── Historical earnings moves (for the richness filter) ─────────────────
 
+def _earnings_moves_from_gaps(history):
+    """Fallback when get_earnings_dates is unavailable (yfinance blocks it from
+    cloud IPs): earnings are quarterly and are usually among the largest single-
+    day gaps. Take the biggest abs daily moves >=25 trading days apart over ~2y
+    as a proxy for this stock's typical earnings reaction."""
+    closes = history["Close"]
+    if len(closes) < 60:
+        return None
+    rets = (closes / closes.shift(1) - 1.0).abs().dropna()
+    idx = list(rets.sort_values(ascending=False).index)
+    picked, moves = [], []
+    for ts in idx:
+        if all(abs((ts - p).days) >= 25 for p in picked):
+            picked.append(ts)
+            moves.append(float(rets.loc[ts]) * 100.0)
+        if len(moves) >= 8:
+            break
+    if len(moves) < 3:
+        return None
+    return {"avg_abs_move_pct": round(float(np.mean(moves)), 2),
+            "n": len(moves), "moves_pct": [round(m, 2) for m in moves],
+            "source": "price-gap estimate"}
+
+
 def historical_earnings_moves(stock, history, earnings_date):
     """Avg abs close-to-close move over past earnings (up to 8)."""
     try:
@@ -326,11 +350,12 @@ def historical_earnings_moves(stock, history, earnings_date):
                     cands.append(abs(cur / prev - 1.0))
         if cands:
             moves.append(max(cands) * 100.0)
-    if not moves:
-        return None
+    if len(moves) < 3:
+        return _earnings_moves_from_gaps(history)
     return {"avg_abs_move_pct": round(float(np.mean(moves)), 2),
             "n": len(moves),
-            "moves_pct": [round(m, 2) for m in moves]}
+            "moves_pct": [round(m, 2) for m in moves],
+            "source": "confirmed earnings dates"}
 
 
 # ── Per-ticker analysis ──────────────────────────────────────────────────
@@ -765,8 +790,15 @@ def rank_and_odds(m, ev, market):
     nudge(sec_tier == "high", -0.10, "high-blowthrough sector")
     nudge(bool(m.get("binary_risk")), -0.20, "binary-catalyst industry")
     vix = (market or {}).get("vix")
+    regime = (market or {}).get("regime")
     nudge(bool(vix and vix < 15 and not (rich and rich >= RICHNESS_MIN)),
           -0.10, "calm VIX without confirmed richness")
+    # Calendar-specific vega headwind: in a stressed/inverted-VIX regime the
+    # long back-month leg's IV can crush alongside the front, eroding the edge
+    # (conditioner study: the surviving risk in high-VIX regimes). Elevated is
+    # a milder version of the same.
+    nudge(regime == "STRESSED", -0.12, "stressed VIX regime (back-month vega crush risk)")
+    nudge(regime == "ELEVATED", -0.05, "elevated VIX regime")
 
     p = clamp(1 / (1 + math.exp(-lo_odds)), 0.40, 0.80)
 

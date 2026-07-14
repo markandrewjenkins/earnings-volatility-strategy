@@ -104,6 +104,7 @@ body {
 .live-lbl { color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.64rem; }
 .live-val { color: var(--text); font-weight: 700; }
 .live-updated { margin-left: auto; color: var(--dim); font-size: 0.72rem; }
+.live-updated .live-val { font-size: 0.68rem; letter-spacing: 0.09em; }
 
 /* ── Layout / panels ────────────────────────────────────────────────── */
 .body { display: flex; flex-direction: column; gap: 12px; padding: 16px; max-width: 1900px; margin: 0 auto }
@@ -429,7 +430,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         <table>
           <thead><tr>
             <th>Result</th><th>Ticker</th><th>Tier</th><th>Earnings</th><th>Implied move</th><th>Actual move</th>
-            <th>Debit</th><th>Exit value</th><th>Return</th><th>P&amp;L $</th><th>Equity after</th>
+            <th>Debit</th><th>Exit value</th><th>Gross</th><th>Costs</th><th>Net return</th><th>P&amp;L $</th><th>Equity after</th>
           </tr></thead>
           <tbody id="pnl-closed-tbody"></tbody>
         </table>
@@ -990,6 +991,12 @@ function gmBar(lbl, val, lo, hi, thr, passRight, ok, txt, desc) {
   var tp = Math.max(0, Math.min(100, tf * 100));
   var vp = (vf === null) ? null : Math.max(2, Math.min(98, vf * 100));
   var inPass = (vf === null) ? null : (passRight ? vf >= tf : vf <= tf);
+  if (vf === null) {
+    var htip = ((desc || '') + '\nNo data — not available for this ticker').replace(/"/g, '&quot;');
+    return '<div class="gm-bar" title="' + htip + '"><span class="l">' + lbl + '</span>' +
+      '<span class="t" style="background:repeating-linear-gradient(45deg,transparent 0 5px,rgba(106,85,31,0.28) 5px 9px)"></span>' +
+      '<span class="v" style="color:var(--gray);font-weight:600">' + txt + '</span></div>';
+  }
   var passStyle = passRight ? 'left:' + tp + '%;right:0' : 'left:0;width:' + tp + '%';
   var failStyle = passRight ? 'left:0;width:' + tp + '%' : 'left:' + tp + '%;right:0';
   var passCol = inPass === true ? '#52E6BD' : '#357c6c';
@@ -1379,7 +1386,7 @@ function renderStrip() {
     else { badge = 'DELAYED'; note = 'SCAN DELAY - SHOWING LAST SCAN'; col = 'var(--amber)'; }
   } else if (wd && mins >= 240 && mins < 570) { badge = 'PRE-MARKET'; note = 'SCANS RESUME AT THE OPEN'; col = 'var(--amber)'; }
   else if (wd && mins >= 960 && mins < 1215) { badge = 'AFTER HOURS'; note = 'ENTRIES CLOSED - SHOWING FINAL SCAN OF THE DAY'; col = 'var(--cyan)'; }
-  else { badge = 'OFFLINE'; note = 'MARKET CLOSED - SHOWING LAST SCAN'; col = 'var(--amber)'; }
+  else { badge = 'OFFLINE'; note = 'MARKET CLOSED - SHOWING LAST SCAN'; col = 'var(--gray)'; }
   var strip = $('live-strip');
   strip.className = pulse ? '' : 'stale';
   $('lv-feed').textContent = badge;
@@ -1392,7 +1399,7 @@ function renderStrip() {
     var end = new Date(DATA.scan_date + 'T12:00:00');
     end.setDate(end.getDate() + (DATA.horizon_days || 30));
     sub.textContent = DATA.scan_date + ' — ' + end.toISOString().slice(0, 10) + ' · ' +
-      fmtInt(DATA.counts.calendar_events) + ' upcoming earnings · ' + DATA.counts.analyzed + ' analyzed in detail' + (window.TRADES !== undefined ? ' · ' + window.TRADES + ' paper trades' : '');
+      fmtInt(DATA.counts.calendar_events) + ' upcoming earnings events in ' + (DATA.horizon_days || 45) + '-day observation window · ' + DATA.counts.analyzed + ' analyzed in detail' + (window.TRADES !== undefined ? ' · ' + window.TRADES + ' trades executed' : '');
   }
 }
 
@@ -1474,6 +1481,8 @@ function renderPnl() {
       '<td>' + (t.exit && t.exit.actual_move_pct !== null && t.exit.actual_move_pct !== undefined ? fmt(t.exit.actual_move_pct, 1) + '%' : '—') + '</td>' +
       '<td>$' + fmt(t.entry.debit, 2) + '</td>' +
       '<td>$' + fmt(t.exit.value, 2) + '</td>' +
+      '<td class="dimtxt">' + (r.gross_pnl_pct !== undefined ? (r.gross_pnl_pct >= 0 ? '+' : '') + fmt(r.gross_pnl_pct, 1) + '%' : '—') + '</td>' +
+      '<td class="neg" title="IBKR $0.65/leg commission + spread-scaled slippage">' + (r.cost_drag_pct !== undefined ? '−' + fmt(r.cost_drag_pct, 1) + '%' : '—') + '</td>' +
       '<td class="' + (win ? 'pos' : 'neg') + '"><b>' + (r.pnl_pct >= 0 ? '+' : '') + fmt(r.pnl_pct, 1) + '%</b></td>' +
       '<td class="' + (win ? 'pos' : 'neg') + '">' + (r.pnl_usd >= 0 ? '+' : '') + '$' + fmt(Math.abs(r.pnl_usd), 2) + '</td>' +
       '<td>$' + fmtInt(Math.round(r.equity_after)) + '</td></tr>';
