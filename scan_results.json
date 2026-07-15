@@ -1,19 +1,11 @@
 {
- "generated_utc": "2026-07-15T19:41:47+00:00",
- "generated_et": "2026-07-15T15:40:41-04:00",
+ "generated_utc": "2026-07-15T19:46:03+00:00",
+ "generated_et": "2026-07-15T15:45:35-04:00",
  "scan_date": "2026-07-15",
  "next_trading_day": "2026-07-16",
  "horizon_days": 45,
  "date_source": "Nasdaq earnings calendar API, cross-checked per ticker against Yahoo Finance (date_mismatch flags a >1 day gap)",
- "market": {
-  "vix": 15.85,
-  "vix3m": 19.0,
-  "vix_ratio": 0.834,
-  "spy": 754.0,
-  "spy_200dma": 692.54,
-  "spy_bull": true,
-  "regime": "CALM"
- },
+ "market": null,
  "thresholds": {
   "ts_slope_0_45": -0.00406,
   "iv30_rv30": 1.25,
@@ -38,7 +30,7 @@
   "avoid": 12,
   "tier1": 2,
   "watch_high": 38,
-  "errors": 1
+  "errors": 18
  },
  "events": [
   {
@@ -787,7 +779,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "UNH",
@@ -1539,7 +1532,8 @@
     }
    ],
    "suggested_frac": 0.0869,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "GE",
@@ -2295,7 +2289,8 @@
     }
    ],
    "suggested_frac": 0.077,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "ABT",
@@ -3043,7 +3038,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "PLD",
@@ -3766,7 +3762,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "USB",
@@ -4514,7 +4511,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "KMI",
@@ -5261,7 +5259,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "STT",
@@ -5992,7 +5991,8 @@
     }
    ],
    "suggested_frac": 0.0794,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "UAL",
@@ -6740,7 +6740,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "CFG",
@@ -7471,7 +7472,8 @@
     }
    ],
    "suggested_frac": 0.12,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "JBHT",
@@ -8198,7 +8200,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "WIT",
@@ -8933,7 +8936,8 @@
     }
    ],
    "suggested_frac": 0.0755,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "CBSH",
@@ -9660,7 +9664,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "HOMB",
@@ -10391,7 +10396,8 @@
     }
    ],
    "suggested_frac": 0.0975,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "MAN",
@@ -11118,7 +11124,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "MRTN",
@@ -11845,7 +11852,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "CTBI",
@@ -12571,7 +12579,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "NFLX",
@@ -34774,8 +34783,76 @@
  ],
  "errors": [
   {
+   "ticker": "TSM",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "UNH",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "GE",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "ABT",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "PLD",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "USB",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "KMI",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "STT",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "UAL",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "CFG",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "JBHT",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "WIT",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "CBSH",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "HOMB",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "MAN",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
    "ticker": "KARO",
-   "error": "no options"
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "MRTN",
+   "error": "Too Many Requests. Rate limited. Try after a while."
+  },
+  {
+   "ticker": "CTBI",
+   "error": "Too Many Requests. Rate limited. Try after a while."
   }
  ]
 }
