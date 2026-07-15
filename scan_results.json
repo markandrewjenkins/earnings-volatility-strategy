@@ -33,10 +33,10 @@
   "calendar_events": 4348,
   "analyzed": 43,
   "watchlist": 40,
-  "recommended": 13,
-  "consider": 19,
+  "recommended": 14,
+  "consider": 18,
   "avoid": 11,
-  "tier1": 2,
+  "tier1": 4,
   "watch_high": 38,
   "errors": 1
  },
@@ -774,7 +774,7 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 14.2,
+   "rank_score": 14.1,
    "odds": 0.468,
    "odds_factors": [
     {
@@ -2328,7 +2328,7 @@
     {
      "exp": "2026-07-17",
      "dte": 2,
-     "iv": 0.7266
+     "iv": 0.7383
     },
     {
      "exp": "2026-07-24",
@@ -3002,10 +3002,10 @@
    "hist_moves": null,
    "richness": null,
    "pass_slope": true,
-   "pass_ivrv": false,
+   "pass_ivrv": true,
    "pass_volume": true,
-   "tier": "CONSIDER",
-   "tier1": false,
+   "tier": "RECOMMENDED",
+   "tier1": true,
    "enhanced": {
     "tight_spread": true,
     "price_ok": true,
@@ -3026,19 +3026,19 @@
    "odds": 0.613,
    "odds_factors": [
     {
-     "f": "base: CONSIDER (56%)",
+     "f": "base: TIER 1 (70%)",
      "d": 0.0
     },
     {
-     "f": "backwardation depth (2.1\u00d7 threshold)",
-     "d": 0.17
+     "f": "backwardation depth (2.2\u00d7 threshold)",
+     "d": 0.18
     },
     {
      "f": "very deep liquidity",
      "d": 0.05
     }
    ],
-   "suggested_frac": null,
+   "suggested_frac": 0.12,
    "error": null
   },
   {
@@ -3086,7 +3086,7 @@
     {
      "exp": "2026-09-18",
      "dte": 65,
-     "iv": 0.2584
+     "iv": 0.2583
     }
    ],
    "back_iv": 0.259,
@@ -5236,7 +5236,7 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 12.3,
+   "rank_score": 12.2,
    "odds": 0.48,
    "odds_factors": [
     {
@@ -7425,9 +7425,9 @@
    "pass_ivrv": true,
    "pass_volume": true,
    "tier": "RECOMMENDED",
-   "tier1": false,
+   "tier1": true,
    "enhanced": {
-    "tight_spread": false,
+    "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -7446,7 +7446,7 @@
    "odds": 0.682,
    "odds_factors": [
     {
-     "f": "base: RECOMMENDED (66%)",
+     "f": "base: TIER 1 (70%)",
      "d": 0.0
     },
     {
@@ -7460,10 +7460,6 @@
     {
      "f": "very deep liquidity",
      "d": 0.05
-    },
-    {
-     "f": "wide ATM spread (slippage)",
-     "d": -0.15
     },
     {
      "f": "calm-reaction sector",
@@ -8214,7 +8210,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 1.88,
+   "price": 1.87,
    "yahoo_date": "2026-07-16",
    "date_mismatch": false,
    "front_exp": "2026-07-17",
@@ -8249,7 +8245,7 @@
     {
      "exp": "2026-09-18",
      "dte": 65,
-     "iv": 0.7109
+     "iv": 0.709
     }
    ],
    "back_iv": 1.1094,
@@ -8882,7 +8878,7 @@
      "o": 1.84,
      "h": 1.88,
      "l": 1.84,
-     "c": 1.88
+     "c": 1.87
     }
    ],
    "hist_moves": null,
@@ -9705,7 +9701,7 @@
     {
      "exp": "2026-07-17",
      "dte": 2,
-     "iv": 1.2881
+     "iv": 1.29
     },
     {
      "exp": "2026-08-21",
@@ -10386,7 +10382,7 @@
      "d": 0.3
     },
     {
-     "f": "IV richness vs RV (3.06)",
+     "f": "IV richness vs RV (3.07)",
      "d": 0.25
     },
     {
