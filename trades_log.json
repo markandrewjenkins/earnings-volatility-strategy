@@ -2,7 +2,7 @@
  "created_utc": "2026-07-03T15:18:01+00:00",
  "account": {
   "start": 10000.0,
-  "equity": 11131.85,
+  "equity": 10692.15,
   "mode": "fractional (idealized), two-tier + circuit breaker",
   "sizing": {
    "rec": 0.06,
@@ -13,95 +13,7 @@
   },
   "peak_equity": 11131.85
  },
- "open": [
-  {
-   "id": "FHN-20260715",
-   "ticker": "FHN",
-   "name": "First Horizon Corporation",
-   "earnings_date": "2026-07-15",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.0691,
-   "odds": 0.684,
-   "rank_score": 63.8,
-   "structure": "call calendar",
-   "strike": 26.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-15",
-   "entry": {
-    "ts_utc": "2026-07-14T19:41:50+00:00",
-    "et": "2026-07-14T15:41-04:00",
-    "stock_price": 25.739999771118164,
-    "front_mid": 0.35,
-    "back_mid": 0.9,
-    "debit": 0.55,
-    "expected_move_pct": 3.7,
-    "spread_pct": 0.2262,
-    "iv30_rv30": 1.638,
-    "ts_slope_0_45": -0.00489
-   }
-  },
-  {
-   "id": "ELV-20260715",
-   "ticker": "ELV",
-   "name": "Elevance Health, Inc.",
-   "earnings_date": "2026-07-15",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.0608,
-   "odds": 0.662,
-   "rank_score": 63.5,
-   "structure": "call calendar",
-   "strike": 430.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-15",
-   "entry": {
-    "ts_utc": "2026-07-14T19:41:51+00:00",
-    "et": "2026-07-14T15:41-04:00",
-    "stock_price": 428.3349914550781,
-    "front_mid": 9.45,
-    "back_mid": 19.75,
-    "debit": 10.3,
-    "expected_move_pct": 5.8,
-    "spread_pct": 0.1796,
-    "iv30_rv30": 1.547,
-    "ts_slope_0_45": -0.00666
-   }
-  },
-  {
-   "id": "BNY-20260715",
-   "ticker": "BNY",
-   "name": "The Bank Of New York Mellon Corporation",
-   "earnings_date": "2026-07-15",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.0575,
-   "odds": 0.653,
-   "rank_score": 62.5,
-   "structure": "call calendar",
-   "strike": 155.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-15",
-   "entry": {
-    "ts_utc": "2026-07-14T19:41:52+00:00",
-    "et": "2026-07-14T15:41-04:00",
-    "stock_price": 154.1300048828125,
-    "front_mid": 2.125,
-    "back_mid": 5.2,
-    "debit": 3.075,
-    "expected_move_pct": 3.88,
-    "spread_pct": 0.2364,
-    "iv30_rv30": 1.36,
-    "ts_slope_0_45": -0.00414
-   }
-  }
- ],
+ "open": [],
  "closed": [
   {
    "id": "FAST-20260714",
@@ -240,7 +152,148 @@
     "pnl_usd": 605.98,
     "equity_after": 11131.85
    }
+  },
+  {
+   "id": "FHN-20260715",
+   "ticker": "FHN",
+   "name": "First Horizon Corporation",
+   "earnings_date": "2026-07-15",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.0691,
+   "odds": 0.684,
+   "rank_score": 63.8,
+   "structure": "call calendar",
+   "strike": 26.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-15",
+   "entry": {
+    "ts_utc": "2026-07-14T19:41:50+00:00",
+    "et": "2026-07-14T15:41-04:00",
+    "stock_price": 25.739999771118164,
+    "front_mid": 0.35,
+    "back_mid": 0.9,
+    "debit": 0.55,
+    "expected_move_pct": 3.7,
+    "spread_pct": 0.2262,
+    "iv30_rv30": 1.638,
+    "ts_slope_0_45": -0.00489
+   },
+   "exit": {
+    "ts_utc": "2026-07-15T13:41:59+00:00",
+    "et": "2026-07-15T09:41-04:00",
+    "stock_price": 25.219999313354492,
+    "front_mid": 0.31,
+    "back_mid": 0.94,
+    "value": 0.63,
+    "actual_move_pct": 2.02
+   },
+   "result": {
+    "pnl_pct": -12.71,
+    "gross_pnl_pct": 14.55,
+    "cost_drag_pct": 27.25,
+    "win": false,
+    "alloc_usd": 769.21,
+    "pnl_usd": -97.76,
+    "equity_after": 11034.09
+   }
+  },
+  {
+   "id": "ELV-20260715",
+   "ticker": "ELV",
+   "name": "Elevance Health, Inc.",
+   "earnings_date": "2026-07-15",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.0608,
+   "odds": 0.662,
+   "rank_score": 63.5,
+   "structure": "call calendar",
+   "strike": 430.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-15",
+   "entry": {
+    "ts_utc": "2026-07-14T19:41:51+00:00",
+    "et": "2026-07-14T15:41-04:00",
+    "stock_price": 428.3349914550781,
+    "front_mid": 9.45,
+    "back_mid": 19.75,
+    "debit": 10.3,
+    "expected_move_pct": 5.8,
+    "spread_pct": 0.1796,
+    "iv30_rv30": 1.547,
+    "ts_slope_0_45": -0.00666
+   },
+   "exit": {
+    "ts_utc": "2026-07-15T13:42:01+00:00",
+    "et": "2026-07-15T09:41-04:00",
+    "stock_price": 379.6700134277344,
+    "front_mid": 12.9,
+    "back_mid": 20.95,
+    "value": 8.05,
+    "actual_move_pct": 11.36
+   },
+   "result": {
+    "pnl_pct": -34.92,
+    "gross_pnl_pct": -21.84,
+    "cost_drag_pct": 13.07,
+    "win": false,
+    "alloc_usd": 670.87,
+    "pnl_usd": -234.24,
+    "equity_after": 10799.85
+   }
+  },
+  {
+   "id": "BNY-20260715",
+   "ticker": "BNY",
+   "name": "The Bank Of New York Mellon Corporation",
+   "earnings_date": "2026-07-15",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.0575,
+   "odds": 0.653,
+   "rank_score": 62.5,
+   "structure": "call calendar",
+   "strike": 155.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-15",
+   "entry": {
+    "ts_utc": "2026-07-14T19:41:52+00:00",
+    "et": "2026-07-14T15:41-04:00",
+    "stock_price": 154.1300048828125,
+    "front_mid": 2.125,
+    "back_mid": 5.2,
+    "debit": 3.075,
+    "expected_move_pct": 3.88,
+    "spread_pct": 0.2364,
+    "iv30_rv30": 1.36,
+    "ts_slope_0_45": -0.00414
+   },
+   "exit": {
+    "ts_utc": "2026-07-15T13:42:02+00:00",
+    "et": "2026-07-15T09:41-04:00",
+    "stock_price": 158.11000061035156,
+    "front_mid": 2.4,
+    "back_mid": 5.65,
+    "value": 3.25,
+    "actual_move_pct": 2.58
+   },
+   "result": {
+    "pnl_pct": -17.34,
+    "gross_pnl_pct": 5.69,
+    "cost_drag_pct": 23.03,
+    "win": false,
+    "alloc_usd": 620.99,
+    "pnl_usd": -107.7,
+    "equity_after": 10692.15
+   }
   }
  ],
- "updated_utc": "2026-07-15T13:36:50+00:00"
+ "updated_utc": "2026-07-15T13:42:02+00:00"
 }
