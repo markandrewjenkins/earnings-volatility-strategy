@@ -55,14 +55,25 @@ jobs:
         run: python tracker.py
 
       - name: Commit if changed
+        # Never fail the run on a transient push race — cron-job.org (every
+        # 5 min) and the scheduled backups can overlap, so pushes sometimes
+        # get rejected non-fast-forward. Retry with rebase; give up quietly.
+        continue-on-error: true
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add scan_results.json calendar_cache.json trades_log.json sector_cache.json reaction_log.json
-          if ! git diff --cached --quiet; then
-            git pull --rebase --autostash || true
-            git commit -m "chore: refresh scan results [skip ci]"
-            git push
-          else
+          if git diff --cached --quiet; then
             echo "No data changes — nothing to commit."
+            exit 0
           fi
+          git commit -m "chore: refresh scan results [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main || true
+            if git push origin main; then
+              echo "pushed on attempt $i"; exit 0
+            fi
+            echo "push attempt $i failed (race) — retrying"; sleep 5
+          done
+          echo "could not push after retries — next scan will carry the data"
+          exit 0
