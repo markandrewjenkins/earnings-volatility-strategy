@@ -308,9 +308,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <div class="tabs">
     <button class="tab active" id="tabbtn-scanner" onclick="showTab('scanner')">Live Scanner w/ Signals</button>
     <button class="tab" id="tabbtn-pnl" onclick="showTab('pnl')">P&amp;L Summary</button>
-    <button class="tab" id="tabbtn-sim" onclick="showTab('sim')">Simulation</button>
+    <button class="tab" id="tabbtn-trades" onclick="showTab('trades')">Trades Detail</button>
     <button class="tab" id="tabbtn-strategy" onclick="showTab('strategy')">How It Works</button>
-    <button class="tab" id="tabbtn-improve" onclick="showTab('improve')">Improvements</button>
+    <button class="tab" id="tabbtn-about" onclick="showTab('about')">About</button>
   </div>
 </div>
 
@@ -373,17 +373,10 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
   <!-- ══ P&L TRACKER TAB ══ -->
   <div id="tab-pnl" style="display:none">
-    <div class="note-box"><strong>Paper-trade tracker — live grading of the strategy.</strong>
-      Every scheduled scan in the last ~40 min before the close (15:20–16:00 ET) opens a hypothetical
-      ATM call-calendar on each <span class="pill pill-rec">POTENTIAL</span> candidate in that day's trade
-      window (TBD-time reporters excluded), priced at delayed Yahoo mid quotes. The first scan at/after
-      9:40 ET on the reaction day closes it — the research's "jump" exit. Account model — the <strong>public-account
-      policy</strong>: $10,000 start; <strong>6% of current equity per POTENTIAL trade, 10% per PRIORITY ★ (odds-scaled 2-12%); max 3 concurrent
-      positions; circuit breaker</strong> (below −25% from peak equity all sizes halve, below −40% new entries pause).
-      Sizing is anchored to the published research's own 10%-Kelly figure, not this site's Monte Carlo — the account must
-      survive the edge being weaker than modeled, not just bad luck within the model. Priority status is
-      recorded per trade so the two rating levels can be compared as the sample grows. Delayed mids grade the
-      <em>strategy</em>, not your fills — expect your real executions to differ slightly.</div>
+    <div class="note-box"><strong>Paper-trade summary.</strong> An automated $10,000 account trading every Priority/Potential
+      calendar at delayed mids — entered ~3:45 PM ET, exited ~9:45 AM ET next session. Sizing 6% (Potential) / 10% (Priority),
+      odds-scaled 2–12%, max 3 concurrent, with a drawdown circuit breaker. Full ledger on <b>Trades Detail</b>; sizing rationale
+      on <b>How It Works</b>. Delayed mids grade the strategy, not your fills.</div>
 
     <div class="kpi-grid" id="pnl-kpis" style="margin-top:12px"></div>
 
@@ -391,6 +384,12 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="ph"><span class="t">Equity curve — closed trades</span><span class="dimtxt" id="pnl-eqsub" style="text-transform:none"></span></div>
       <div class="pb" style="position:relative;height:260px"><canvas id="pnlEqChart"></canvas></div>
     </div>
+
+  </div>
+
+  <!-- ══ TRADES DETAIL ══ -->
+  <div id="tab-trades" style="display:none">
+    <div class="note-box">The paper tracker's full ledger. Positions are opened ~3:45 PM ET on the entry day (Priority / Potential names) and closed ~9:45 AM ET the next session. Fills use delayed Yahoo mids; the <b>Costs</b> column applies IBKR commissions plus the real combo bid/ask spread, so net return reflects what a live account would keep.</div>
 
     <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">Open positions</span></div>
@@ -423,112 +422,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </div>
   </div>
 
-  <!-- ══ SIMULATION TAB ══ -->
-  <div id="tab-sim" style="display:none">
-    <div class="note-box"><strong>What this is (and isn't):</strong> free historical option-chain data doesn't exist,
-      so a tick-level 10-year backtest isn't possible. Instead: <strong>Monte Carlo over 4,000 simulated 10-year paths</strong>,
-      with per-trade return distributions calibrated to the published research moments (calendar: mean +7.3%/trade, σ28%,
-      66% win, floor −105%; straddle: +9%, σ48%, fat tail). Each improvement variant applies an <strong>explicitly stated
-      assumption</strong> (shown under the table). Read the <em>differences between variants</em> as the signal —
-      absolute dollar outcomes inherit every assumption, especially the ~120 qualifying trades/yr.</div>
-
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">10-year outcomes by variant — $10,000 start</span></div>
-      <div class="pb" style="overflow-x:auto">
-        <table id="sim-table">
-          <thead><tr>
-            <th>Variant</th><th>Trades/yr</th><th>Win rate</th><th>Mean/trade</th>
-            <th>Median terminal</th><th>Median CAGR</th><th>Mean max DD</th><th>Worst 5% DD</th>
-            <th>Longest DD</th><th>Sharpe</th><th>P(halved)</th><th>P(10x)</th>
-          </tr></thead>
-          <tbody id="sim-tbody"></tbody>
-        </table>
-      </div>
-      <div class="pb" id="sim-assumptions" style="padding-top:0;font-size:0.8rem;color:var(--dim);line-height:1.7"></div>
-    </div>
-
-    <div class="row" style="margin-top:12px">
-      <div class="panel" style="flex:1.3 1 460px">
-        <div class="ph"><span class="t" id="sim-eq-title">Equity paths (percentile bands, log scale)</span>
-          <span id="sim-variant-btns" style="display:inline-flex;gap:4px;flex-wrap:wrap"></span></div>
-        <div class="pb" style="position:relative;height:330px"><canvas id="simEqChart"></canvas></div>
-      </div>
-      <div class="panel" style="flex:1 1 360px">
-        <div class="ph"><span class="t">Per-trade return distribution</span></div>
-        <div class="pb" style="position:relative;height:330px"><canvas id="simHistChart"></canvas></div>
-      </div>
-    </div>
-
-    <div class="note-box" style="margin-top:12px" id="sim-takeaway"></div>
-
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Position sizing study — growth vs drawdown frontier</span>
-        <span class="dimtxt" style="text-transform:none" id="sizing-sub"></span></div>
-      <div class="pb prose" style="padding-bottom:6px">
-        <p><strong style="color:var(--yellow)">Reading the numbers:</strong> the "mean/trade +7.3%" is the return
-        <em>on the calendar debit</em>, averaged over a wide distribution — individual trades routinely land +50–100%
-        or −100%; the small mean is what's left after netting. The <em>portfolio</em> gains per-trade fraction × trade
-        return: at 6% sizing, a +50% trade adds +3% to the account. Sizing is what converts the small per-trade edge
-        into CAGR — but every step up buys growth with drawdown:</p>
-      </div>
-      <div class="pb" style="overflow-x:auto;padding-top:0">
-        <table>
-          <thead><tr><th>Size/trade</th><th>× Kelly</th><th>Median CAGR</th><th>CAGR p5–p95</th>
-            <th>Mean max DD</th><th>Worst 5% DD</th><th>Longest DD (med/p95)</th><th>P(ever halved)</th><th>P(DD ≥ 80%)</th></tr></thead>
-          <tbody id="sizing-tbody"></tbody>
-        </table>
-      </div>
-      <div class="pb" style="position:relative;height:300px"><canvas id="sizingChart"></canvas></div>
-      <div class="pb" style="overflow-x:auto;padding-top:0">
-        <table>
-          <thead><tr><th>Two-tier (confidence-scaled) sizing</th><th>Median CAGR</th><th>Mean max DD</th><th>P(ever halved)</th></tr></thead>
-          <tbody id="tiered-tbody"></tbody>
-        </table>
-      </div>
-      <div class="pb" id="sizing-verdict" style="padding-top:0"></div>
-    </div>
-
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Two-tier grid — every REC% × Priority% combination</span>
-        <span class="dimtxt" style="text-transform:none">40% of trades assumed Priority (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</span></div>
-      <div class="pb" style="overflow-x:auto">
-        <table>
-          <thead><tr><th>REC / Priority</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
-            <th>Worst 5% DD</th><th>Best 5% DD</th><th>Longest DD (med / p95)</th>
-            <th>Recovery from ≥30% trough (med · ≤6m)</th><th>P(ever halved)</th></tr></thead>
-          <tbody id="grid-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Dynamic sizing — scaling by your own drawdown</span></div>
-      <div class="pb" style="overflow-x:auto">
-        <table>
-          <thead><tr><th>Policy (base 6% / 12%)</th><th>Median CAGR</th><th>Mean max DD</th><th>Longest DD (med)</th><th>P(ever halved)</th></tr></thead>
-          <tbody id="dyn-tbody"></tbody>
-        </table>
-      </div>
-      <div class="pb prose" style="padding-top:0">
-        <p><strong style="color:var(--yellow)">Is boosting size in a drawdown strategically sound?</strong> The numbers above
-        say boost-in-DD earns slightly more and recovers faster — but read <em>why</em> before copying it. Trades here are
-        independent: after a losing streak the next trade's odds are <em>unchanged</em> ("the situation reverses itself soon"
-        is the gambler's fallacy — there is no mean-reversion in your own P&L). Boost-in-DD wins only because it raises
-        <em>average</em> exposure while the edge is positive; you'd get the same growth more safely by just sizing up
-        constantly. Its true cost shows up exactly when it matters: if a drawdown is happening because the <em>edge itself
-        degraded</em> (the usual reason live), boost-in-DD adds size to a broken strategy — the classic blow-up pattern.
-        Cut-in-DD is the defensible throttle if you fear edge decay: shallower holes, but slower recoveries (longest DD
-        stretches from 5.7 to 6.2 months) and less growth.</p>
-        <p><strong style="color:var(--yellow)">The sound version of the instinct:</strong> scale size on <em>information</em>,
-        not on your own P&L — that's what the two-tier REC/Tier-1 split already does, and what the conditioner study
-        supports extending: downsize or skip FOMC-window trades (done — blocks Priority), size down after hot sector cohorts,
-        up after quiet ones, and demand extra richness when VIX &lt; 15. Your own losing streak carries no information;
-        market conditions do.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ STRATEGY TAB ══ -->
+  <!-- ══ HOW IT WORKS (merged) ══ -->
   <div id="tab-strategy" style="display:none">
     <div class="panel"><div class="ph"><span class="t">The edge — selling earnings volatility</span></div>
       <div class="pb prose">
@@ -600,10 +494,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         </ul>
       </div>
     </div>
-  </div>
-
-  <!-- ══ IMPROVEMENTS TAB ══ -->
-  <div id="tab-improve" style="display:none">
+    <div style="height:1px;background:var(--border2);margin:22px 0 14px"></div>
+    <h2 style="color:var(--yellow);font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin:6px 4px 10px">Improvements &amp; refinements</h2>
     <div class="note-box"><strong>Goal:</strong> raise win rate and per-trade return over the baseline three-filter model.
       The first three ideas are implemented live in this scanner as the <span class="pill pill-t1">PRIORITY ★</span> rating;
       the rest are candidates for the backtest queue.</div>
@@ -708,12 +600,155 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           period for short vol.</p></div>
       </div>
     </div>
+    <div style="height:1px;background:var(--border2);margin:22px 0 14px"></div>
+    <h2 style="color:var(--yellow);font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin:6px 4px 10px">Simulation — 10-year Monte Carlo</h2>
+    <div class="note-box"><strong>What this is (and isn't):</strong> free historical option-chain data doesn't exist,
+      so a tick-level 10-year backtest isn't possible. Instead: <strong>Monte Carlo over 4,000 simulated 10-year paths</strong>,
+      with per-trade return distributions calibrated to the published research moments (calendar: mean +7.3%/trade, σ28%,
+      66% win, floor −105%; straddle: +9%, σ48%, fat tail). Each improvement variant applies an <strong>explicitly stated
+      assumption</strong> (shown under the table). Read the <em>differences between variants</em> as the signal —
+      absolute dollar outcomes inherit every assumption, especially the ~120 qualifying trades/yr.</div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">10-year outcomes by variant — $10,000 start</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table id="sim-table">
+          <thead><tr>
+            <th>Variant</th><th>Trades/yr</th><th>Win rate</th><th>Mean/trade</th>
+            <th>Median terminal</th><th>Median CAGR</th><th>Mean max DD</th><th>Worst 5% DD</th>
+            <th>Longest DD</th><th>Sharpe</th><th>P(halved)</th><th>P(10x)</th>
+          </tr></thead>
+          <tbody id="sim-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pb" id="sim-assumptions" style="padding-top:0;font-size:0.8rem;color:var(--dim);line-height:1.7"></div>
+    </div>
+
+    <div class="row" style="margin-top:12px">
+      <div class="panel" style="flex:1.3 1 460px">
+        <div class="ph"><span class="t" id="sim-eq-title">Equity paths (percentile bands, log scale)</span>
+          <span id="sim-variant-btns" style="display:inline-flex;gap:4px;flex-wrap:wrap"></span></div>
+        <div class="pb" style="position:relative;height:330px"><canvas id="simEqChart"></canvas></div>
+      </div>
+      <div class="panel" style="flex:1 1 360px">
+        <div class="ph"><span class="t">Per-trade return distribution</span></div>
+        <div class="pb" style="position:relative;height:330px"><canvas id="simHistChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="note-box" style="margin-top:12px" id="sim-takeaway"></div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Position sizing study — growth vs drawdown frontier</span>
+        <span class="dimtxt" style="text-transform:none" id="sizing-sub"></span></div>
+      <div class="pb prose" style="padding-bottom:6px">
+        <p><strong style="color:var(--yellow)">Reading the numbers:</strong> the "mean/trade +7.3%" is the return
+        <em>on the calendar debit</em>, averaged over a wide distribution — individual trades routinely land +50–100%
+        or −100%; the small mean is what's left after netting. The <em>portfolio</em> gains per-trade fraction × trade
+        return: at 6% sizing, a +50% trade adds +3% to the account. Sizing is what converts the small per-trade edge
+        into CAGR — but every step up buys growth with drawdown:</p>
+      </div>
+      <div class="pb" style="overflow-x:auto;padding-top:0">
+        <table>
+          <thead><tr><th>Size/trade</th><th>× Kelly</th><th>Median CAGR</th><th>CAGR p5–p95</th>
+            <th>Mean max DD</th><th>Worst 5% DD</th><th>Longest DD (med/p95)</th><th>P(ever halved)</th><th>P(DD ≥ 80%)</th></tr></thead>
+          <tbody id="sizing-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pb" style="position:relative;height:300px"><canvas id="sizingChart"></canvas></div>
+      <div class="pb" style="overflow-x:auto;padding-top:0">
+        <table>
+          <thead><tr><th>Two-tier (confidence-scaled) sizing</th><th>Median CAGR</th><th>Mean max DD</th><th>P(ever halved)</th></tr></thead>
+          <tbody id="tiered-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pb" id="sizing-verdict" style="padding-top:0"></div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Two-tier grid — every REC% × Priority% combination</span>
+        <span class="dimtxt" style="text-transform:none">40% of trades assumed Priority (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr><th>REC / Priority</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
+            <th>Worst 5% DD</th><th>Best 5% DD</th><th>Longest DD (med / p95)</th>
+            <th>Recovery from ≥30% trough (med · ≤6m)</th><th>P(ever halved)</th></tr></thead>
+          <tbody id="grid-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Dynamic sizing — scaling by your own drawdown</span></div>
+      <div class="pb" style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Policy (base 6% / 12%)</th><th>Median CAGR</th><th>Mean max DD</th><th>Longest DD (med)</th><th>P(ever halved)</th></tr></thead>
+          <tbody id="dyn-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pb prose" style="padding-top:0">
+        <p><strong style="color:var(--yellow)">Is boosting size in a drawdown strategically sound?</strong> The numbers above
+        say boost-in-DD earns slightly more and recovers faster — but read <em>why</em> before copying it. Trades here are
+        independent: after a losing streak the next trade's odds are <em>unchanged</em> ("the situation reverses itself soon"
+        is the gambler's fallacy — there is no mean-reversion in your own P&L). Boost-in-DD wins only because it raises
+        <em>average</em> exposure while the edge is positive; you'd get the same growth more safely by just sizing up
+        constantly. Its true cost shows up exactly when it matters: if a drawdown is happening because the <em>edge itself
+        degraded</em> (the usual reason live), boost-in-DD adds size to a broken strategy — the classic blow-up pattern.
+        Cut-in-DD is the defensible throttle if you fear edge decay: shallower holes, but slower recoveries (longest DD
+        stretches from 5.7 to 6.2 months) and less growth.</p>
+        <p><strong style="color:var(--yellow)">The sound version of the instinct:</strong> scale size on <em>information</em>,
+        not on your own P&L — that's what the two-tier REC/Tier-1 split already does, and what the conditioner study
+        supports extending: downsize or skip FOMC-window trades (done — blocks Priority), size down after hot sector cohorts,
+        up after quiet ones, and demand extra richness when VIX &lt; 15. Your own losing streak carries no information;
+        market conditions do.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ABOUT ══ -->
+  <div id="tab-about" style="display:none">
+    <div class="panel"><div class="ph"><span class="t">About this dashboard</span></div>
+      <div class="pb prose">
+        <p>A live, public research dashboard for a <strong>short-earnings-volatility</strong> strategy: ahead of a company's
+        quarterly earnings, options systematically overprice the expected move. We sell that richness with <strong>ATM
+        calendar spreads</strong> (sell the front-month option, buy a longer-dated one at the same strike) and harvest the
+        <strong>implied-volatility crush</strong> that follows the announcement.</p>
+        <p>It is the sibling of the <a href="https://markandrewjenkins.github.io/vix-swing-strategy/" target="_blank" rel="noopener">VIX Swing Strategy</a>
+        dashboard and shares its design. Both are linked from the <a href="https://markandrewjenkins.github.io/portfolio/" target="_blank" rel="noopener">portfolio</a>.</p>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Methodology &amp; data</span></div>
+      <div class="pb prose">
+        <p><strong>Research basis.</strong> The three core filters (term-structure slope, IV30/RV30, liquidity) come from the
+        Volatility Vibes study of <strong>72,500 earnings events (2007–present)</strong>. Our additions — execution-quality
+        checks, sector-cohort conditioning, FOMC/regime gating, position sizing and a fee/slippage model — are documented on
+        the How It Works tab.</p>
+        <p><strong>Data sources.</strong> Earnings calendar from the Nasdaq public API (cross-checked against Yahoo per
+        ticker); option chains, prices and implied vols from Yahoo Finance (~15-min delayed); VIX term structure and SPY for
+        the market-regime read. There is <strong>no paid/historical option-chain feed</strong>, so a tick-level backtest
+        isn't possible — the 10-year figures are a Monte Carlo calibrated to the published research moments, and the live
+        paper tracker is the real out-of-sample test.</p>
+        <p><strong>How it runs.</strong> A Python scanner regenerates the data roughly every 5 minutes during US market hours
+        (via an external cron trigger) and commits it to GitHub; this page reads that JSON. Signals finalize near the close;
+        trades are entered ~3:45 PM ET and exited ~9:45 AM ET the next session.</p>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Honest limitations</span></div>
+      <div class="pb prose">
+        <ul>
+          <li>Delayed mid-quotes grade the <em>strategy</em>, not your fills — real executions differ, sometimes materially on illiquid names.</li>
+          <li>Illiquid back-month expiries can show unreliable debits; the scanner prefers liquid monthlies but always verify at your broker.</li>
+          <li>The Monte Carlo inherits the published research's assumptions; treat differences between variants as the signal, not absolute dollar outcomes.</li>
+          <li>Educational/research only — not investment advice. Options involve substantial risk of loss.</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="foot">
     Educational/research dashboard — not investment advice. Options involve substantial risk of loss.
     Strategy basis: Volatility Vibes earnings IV research (72,500 events, 2007–present) · Scanner data: Nasdaq earnings calendar + Yahoo Finance options chains.<br>
-    Scan refreshes ~every 15 minutes during US market hours via GitHub Actions. Quotes are delayed; verify in your broker before trading.
+    Scan refreshes ~every 5 minutes during US market hours (external cron trigger). Quotes are delayed; verify in your broker before trading.
   </div>
 </div>
 
@@ -739,12 +774,12 @@ function acctChanged() {
 }
 
 function showTab(name) {
-  ['scanner', 'pnl', 'sim', 'strategy', 'improve'].forEach(function (t) {
+  ['scanner', 'pnl', 'trades', 'strategy', 'about'].forEach(function (t) {
     $('tab-' + t).style.display = (t === name) ? '' : 'none';
     $('tabbtn-' + t).className = 'tab' + (t === name ? ' active' : '');
   });
-  if (name === 'sim') loadSim();
-  if (name === 'pnl') loadPnl();
+  if (name === 'strategy') loadSim();
+  if (name === 'pnl' || name === 'trades') loadPnl();
 }
 
 function tierPill(ev) {
