@@ -374,8 +374,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <!-- ══ P&L TRACKER TAB ══ -->
   <div id="tab-pnl" style="display:none">
     <div class="note-box"><strong>Paper-trade summary.</strong> An automated $10,000 account trading every Priority/Potential
-      calendar at delayed mids — entered ~3:45 PM ET, exited ~9:45 AM ET next session. Sizing 6% (Potential) / 10% (Priority),
-      odds-scaled 2–12%, max 3 concurrent, with a drawdown circuit breaker. Full ledger on <b>Trades Detail</b>; sizing rationale
+      calendar at delayed mids — entered ~3:45 PM ET, exited ~9:45 AM ET next session. Sizing concentrates on conviction: Potential ~7% (odds-scaled 3–12%), Priority ~15% up to 22% on high-odds names; max 3 concurrent, drawdown circuit breaker. Full ledger on <b>Trades Detail</b>; sizing rationale
       on <b>How It Works</b>. Delayed mids grade the strategy, not your fills.</div>
 
     <div class="kpi-grid" id="pnl-kpis" style="margin-top:12px"></div>
@@ -1059,7 +1058,14 @@ function ganttMon(t, isW, hov) {
       '<div style="font-size:0.78rem;margin-top:4px;line-height:1.6">' + legs +
         (theDebit ? ' \u00b7 <span class="live-lbl">DEBIT</span> <b>~$' + fmt(theDebit) + '</b>' : '') +
         (n2 !== null ? ' \u00b7 <span class="live-lbl">SIZE</span> <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> \u2248 <b>$' + fmtInt(Math.round(acct() * ev.suggested_frac)) + '</b> (' + n2 + ' contract' + (n2 === 1 ? '' : 's') + ')' : '') + '</div>' +
-      '<div style="font-size:0.74rem;margin-top:3px"><span class="live-lbl">OPEN</span> ~3:45 PM ET <b>' + buy + '</b> \u00b7 <span class="live-lbl">CLOSE</span> ~9:45 AM ET <b>' + sell + '</b> (post-earnings IV crush)</div></div>';
+      '<div style="font-size:0.74rem;margin-top:3px"><span class="live-lbl">OPEN</span> ~3:45 PM ET <b>' + buy + '</b> \u00b7 <span class="live-lbl">CLOSE</span> ~9:45 AM ET <b>' + sell + '</b> (post-earnings IV crush)</div>' +
+      (ev.combo_spread_pct !== null && ev.combo_spread_pct !== undefined ?
+        '<div style="font-size:0.68rem;margin-top:4px;color:' + (ev.combo_spread_pct > 0.15 ? 'var(--coral)' : 'var(--gray)') + '">' +
+        (ev.combo_spread_pct > 0.15 ? '\u26a0 ' : '') + '<span class="live-lbl">COMBO SPREAD</span> <b>' + (ev.combo_spread_pct * 100).toFixed(0) +
+        '%</b> of debit \u2014 the immediate mark-to-market cost. ' +
+        (ev.combo_spread_pct > 0.15 ? 'Wide: your fill and exit will cost this much vs mid. ' : '') +
+        'Trade as a <b>combo LIMIT at mid</b>, worked patiently \u2014 never market. Exit ~9:45 (not 9:30, spreads widest at the open); don\'t chase the mark.</div>' : '') +
+      '</div>';
   } else {
     tradeLine = '<div class="tc-act" style="border:1px solid ' + actCol + ';background:rgba(232,185,79,0.03)">' +
       '<div style="font-weight:700;font-size:0.82rem;color:' + actCol + '">' + actLabel + '</div>' +

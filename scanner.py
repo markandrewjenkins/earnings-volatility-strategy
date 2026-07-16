@@ -861,11 +861,18 @@ def rank_and_odds(m, ev, market):
 
     p = clamp(1 / (1 + math.exp(-lo_odds)), 0.40, 0.80)
 
+    # Concentrated sizing: the liquidity/spread gate cuts trade count sharply,
+    # so we put more capital on each surviving high-conviction name rather than
+    # leaving the account underdeployed. PRIORITY (edge + execution both clean)
+    # anchors at 15% and scales with odds up to 22%; POTENTIAL stays modest at
+    # 7% (up to 12%) since its execution quality isn't confirmed.
     frac = None
     if m.get("tier") == "RECOMMENDED":
-        pol = 0.10 if m.get("tier1") else 0.06
-        anchor = 0.70 if m.get("tier1") else 0.66   # frac == policy base at base odds
-        frac = clamp(pol * (p - 0.5) / (anchor - 0.5), 0.02, 0.12)
+        if m.get("tier1"):
+            pol, anchor, cap = 0.15, 0.70, 0.22
+        else:
+            pol, anchor, cap = 0.07, 0.66, 0.12
+        frac = clamp(pol * (p - 0.5) / (anchor - 0.5), 0.03, cap)
     return round(score, 1), round(p, 3), factors, \
         (round(frac, 4) if frac is not None else None)
 

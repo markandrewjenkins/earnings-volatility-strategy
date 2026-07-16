@@ -59,8 +59,9 @@ START_EQUITY = 10_000.0
 #     drawdown improves past -40%, full size past -25%). A drawdown that
 #     deep on ~6% sizing means the EDGE is in question, not the luck —
 #     the breaker forces that conversation before more capital goes in.
-SIZING_FRAC_REC = 0.06
-SIZING_FRAC_T1 = 0.10
+SIZING_FRAC_REC = 0.07   # POTENTIAL fallback (odds-scaled 3-12% in scanner)
+SIZING_FRAC_T1 = 0.15    # PRIORITY fallback (odds-scaled up to 22%) — concentrate
+                         # capital on the few high-conviction, liquid names
 MAX_CONCURRENT = 3
 CB_HALVE_DD = 0.25      # halve sizing below this drawdown from peak equity
 CB_PAUSE_DD = 0.40      # stop new entries below this drawdown
