@@ -1555,11 +1555,11 @@
    "date_mismatch": false,
    "front_exp": "2026-07-17",
    "back_exp": "2026-08-21",
-   "atm_strike": 55.0,
-   "straddle_mid": 1.88,
-   "calendar_debit_est": 0.93,
-   "back_oi": 2448,
-   "combo_spread_pct": 0.081,
+   "atm_strike": 52.5,
+   "straddle_mid": 2.0,
+   "calendar_debit_est": 0.8,
+   "back_oi": 1492,
+   "combo_spread_pct": 0.187,
    "double_calendar": null,
    "structure_rec": "calendar",
    "expected_move_pct": 3.49,
@@ -2229,14 +2229,14 @@
    "tier": "CONSIDER",
    "tier1": false,
    "enhanced": {
-    "tight_spread": false,
+    "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
     "oi_ok": false,
     "date_confirmed": true,
     "em_vs_width": false,
-    "combo_liquid": true,
+    "combo_liquid": false,
     "debit_ok": false,
     "no_fomc": true
    },
@@ -2262,12 +2262,12 @@
      "d": 0.05
     },
     {
-     "f": "wide ATM spread (slippage)",
-     "d": -0.15
-    },
-    {
      "f": "calm-reaction sector",
      "d": 0.1
+    },
+    {
+     "f": "wide combo spread (12-20%)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -11106,7 +11106,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 61.33,
+   "price": 61.24,
    "yahoo_date": "2026-07-16",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
@@ -11136,10 +11136,10 @@
     {
      "exp": "2026-08-21",
      "dte": 36,
-     "iv": 0.6748
+     "iv": 0.6781
     }
    ],
-   "back_iv": 0.5806,
+   "back_iv": 0.5833,
    "ohlc": [
     {
      "t": "2026-03-09",
@@ -11769,7 +11769,7 @@
      "o": 59.26,
      "h": 61.56,
      "l": 59.25,
-     "c": 61.33
+     "c": 61.24
     }
    ],
    "hist_moves": null,
@@ -11830,7 +11830,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 3.05,
+   "price": 3.04,
    "yahoo_date": "2026-07-16",
    "date_mismatch": false,
    "front_exp": "2026-07-17",
@@ -12498,7 +12498,7 @@
      "o": 3.17,
      "h": 3.16,
      "l": 3.04,
-     "c": 3.05
+     "c": 3.04
     }
    ],
    "hist_moves": null,
