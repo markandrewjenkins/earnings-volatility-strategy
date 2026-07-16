@@ -2,7 +2,7 @@
  "created_utc": "2026-07-03T15:18:01+00:00",
  "account": {
   "start": 10000.0,
-  "equity": 10692.15,
+  "equity": 10392.32,
   "mode": "fractional (idealized), two-tier + circuit breaker",
   "sizing": {
    "rec": 0.06,
@@ -13,98 +13,7 @@
   },
   "peak_equity": 11131.85
  },
- "open": [
-  {
-   "id": "CFG-20260716",
-   "ticker": "CFG",
-   "name": "Citizens Financial Group, Inc.",
-   "earnings_date": "2026-07-16",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": true,
-   "frac": 0.12,
-   "odds": 0.746,
-   "rank_score": 91.3,
-   "structure": "call calendar",
-   "strike": 70.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-16",
-   "entry": {
-    "ts_utc": "2026-07-15T19:41:49+00:00",
-    "et": "2026-07-15T15:41-04:00",
-    "stock_price": 70.86000061035156,
-    "front_mid": 1.9,
-    "back_mid": 3.025,
-    "debit": 1.125,
-    "expected_move_pct": 3.95,
-    "spread_pct": 0.095,
-    "combo_spread_pct": 0.289,
-    "iv30_rv30": 1.467,
-    "ts_slope_0_45": -0.00519
-   }
-  },
-  {
-   "id": "HOMB-20260715",
-   "ticker": "HOMB",
-   "name": "Home BancShares, Inc.",
-   "earnings_date": "2026-07-15",
-   "when": "AMC",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.0975,
-   "odds": 0.76,
-   "rank_score": 68.8,
-   "structure": "call calendar",
-   "strike": 30.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-16",
-   "entry": {
-    "ts_utc": "2026-07-15T19:41:51+00:00",
-    "et": "2026-07-15T15:41-04:00",
-    "stock_price": 29.315000534057617,
-    "front_mid": 0.25,
-    "back_mid": 0.6,
-    "debit": 0.35,
-    "expected_move_pct": 3.07,
-    "spread_pct": 0.35,
-    "combo_spread_pct": 0.571,
-    "iv30_rv30": 2.445,
-    "ts_slope_0_45": -0.01633
-   }
-  },
-  {
-   "id": "GE-20260716",
-   "ticker": "GE",
-   "name": "GE Aerospace",
-   "earnings_date": "2026-07-16",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.077,
-   "odds": 0.705,
-   "rank_score": 66.4,
-   "structure": "call calendar",
-   "strike": 360.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-16",
-   "entry": {
-    "ts_utc": "2026-07-15T19:41:52+00:00",
-    "et": "2026-07-15T15:41-04:00",
-    "stock_price": 359.739990234375,
-    "front_mid": 9.1,
-    "back_mid": 18.05,
-    "debit": 8.95,
-    "expected_move_pct": 5.32,
-    "spread_pct": 0.0326,
-    "combo_spread_pct": 0.069,
-    "iv30_rv30": 1.367,
-    "ts_slope_0_45": -0.00779
-   }
-  }
- ],
+ "open": [],
  "closed": [
   {
    "id": "FAST-20260714",
@@ -384,7 +293,151 @@
     "pnl_usd": -107.7,
     "equity_after": 10692.15
    }
+  },
+  {
+   "id": "CFG-20260716",
+   "ticker": "CFG",
+   "name": "Citizens Financial Group, Inc.",
+   "earnings_date": "2026-07-16",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": true,
+   "frac": 0.12,
+   "odds": 0.746,
+   "rank_score": 91.3,
+   "structure": "call calendar",
+   "strike": 70.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-16",
+   "entry": {
+    "ts_utc": "2026-07-15T19:41:49+00:00",
+    "et": "2026-07-15T15:41-04:00",
+    "stock_price": 70.86000061035156,
+    "front_mid": 1.9,
+    "back_mid": 3.025,
+    "debit": 1.125,
+    "expected_move_pct": 3.95,
+    "spread_pct": 0.095,
+    "combo_spread_pct": 0.289,
+    "iv30_rv30": 1.467,
+    "ts_slope_0_45": -0.00519
+   },
+   "exit": {
+    "ts_utc": "2026-07-16T13:41:50+00:00",
+    "et": "2026-07-16T09:41-04:00",
+    "stock_price": 74.07499694824219,
+    "front_mid": 2.0,
+    "back_mid": 3.08,
+    "value": 1.08,
+    "actual_move_pct": 4.54
+   },
+   "result": {
+    "pnl_pct": -29.96,
+    "gross_pnl_pct": -4.0,
+    "cost_drag_pct": 25.96,
+    "win": false,
+    "alloc_usd": 1283.06,
+    "pnl_usd": -384.38,
+    "equity_after": 10307.77
+   }
+  },
+  {
+   "id": "HOMB-20260715",
+   "ticker": "HOMB",
+   "name": "Home BancShares, Inc.",
+   "earnings_date": "2026-07-15",
+   "when": "AMC",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.0975,
+   "odds": 0.76,
+   "rank_score": 68.8,
+   "structure": "call calendar",
+   "strike": 30.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-16",
+   "entry": {
+    "ts_utc": "2026-07-15T19:41:51+00:00",
+    "et": "2026-07-15T15:41-04:00",
+    "stock_price": 29.315000534057617,
+    "front_mid": 0.25,
+    "back_mid": 0.6,
+    "debit": 0.35,
+    "expected_move_pct": 3.07,
+    "spread_pct": 0.35,
+    "combo_spread_pct": 0.571,
+    "iv30_rv30": 2.445,
+    "ts_slope_0_45": -0.01633
+   },
+   "exit": {
+    "ts_utc": "2026-07-16T13:41:51+00:00",
+    "et": "2026-07-16T09:41-04:00",
+    "stock_price": 30.358999252319336,
+    "front_mid": 0.15,
+    "back_mid": 0.75,
+    "value": 0.6,
+    "actual_move_pct": 3.56
+   },
+   "result": {
+    "pnl_pct": 19.61,
+    "gross_pnl_pct": 71.43,
+    "cost_drag_pct": 51.81,
+    "win": true,
+    "alloc_usd": 1005.01,
+    "pnl_usd": 197.13,
+    "equity_after": 10504.9
+   }
+  },
+  {
+   "id": "GE-20260716",
+   "ticker": "GE",
+   "name": "GE Aerospace",
+   "earnings_date": "2026-07-16",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.077,
+   "odds": 0.705,
+   "rank_score": 66.4,
+   "structure": "call calendar",
+   "strike": 360.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-16",
+   "entry": {
+    "ts_utc": "2026-07-15T19:41:52+00:00",
+    "et": "2026-07-15T15:41-04:00",
+    "stock_price": 359.739990234375,
+    "front_mid": 9.1,
+    "back_mid": 18.05,
+    "debit": 8.95,
+    "expected_move_pct": 5.32,
+    "spread_pct": 0.0326,
+    "combo_spread_pct": 0.069,
+    "iv30_rv30": 1.367,
+    "ts_slope_0_45": -0.00779
+   },
+   "exit": {
+    "ts_utc": "2026-07-16T13:41:52+00:00",
+    "et": "2026-07-16T09:41-04:00",
+    "stock_price": 348.489990234375,
+    "front_mid": 10.0,
+    "back_mid": 18.28,
+    "value": 8.28,
+    "actual_move_pct": 3.13
+   },
+   "result": {
+    "pnl_pct": -13.92,
+    "gross_pnl_pct": -7.49,
+    "cost_drag_pct": 6.43,
+    "win": false,
+    "alloc_usd": 808.88,
+    "pnl_usd": -112.58,
+    "equity_after": 10392.32
+   }
   }
  ],
- "updated_utc": "2026-07-16T13:36:53+00:00"
+ "updated_utc": "2026-07-16T13:41:52+00:00"
 }
