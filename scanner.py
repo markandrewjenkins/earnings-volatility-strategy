@@ -78,6 +78,11 @@ MIN_PRICE = 20.0                # avoid wide-relative-spread cheap stocks
 RICHNESS_MIN = 1.15             # expected move >= 1.15x avg historical move
 MIN_ATM_OI = 500                # ATM open interest (min of call/put side)
                                 # — thin OI means bad fills at both ends
+MAX_COMBO_SPREAD = 0.15         # calendar combo bid/ask spread must be <= 15% of
+                                # the debit — else the round-trip spread eats the
+                                # edge (live tracker: 19% avg cost drag)
+MIN_DEBIT = 1.00                # min calendar debit ($/share): tiny debits carry
+                                # huge relative commission + spread cost
 
 MIN_MARKET_CAP = 1_000_000_000  # only scan liquid-ish names (the 1.5M-share
                                 # volume filter would reject most below this
@@ -558,6 +563,13 @@ def analyze_ticker(symbol, earnings_date):
     richness = None
     if exp_move_pct and hist and hist["avg_abs_move_pct"] > 0:
         richness = exp_move_pct / hist["avg_abs_move_pct"]
+    # Net-of-cost edge: the live paper tracker showed +27% GROSS mean per trade
+    # but a 19% cost drag from the round-trip combo spread — the spread eats
+    # ~two-thirds of the edge and flips winners into losers on illiquid names.
+    # So the calendar's combined bid/ask spread (combo_spread_pct) and a minimum
+    # debit are now first-class Priority gates, not just advisory.
+    combo_ok = bool(combo_spread_pct is not None and combo_spread_pct <= MAX_COMBO_SPREAD)
+    debit_ok = bool(cal_debit is not None and cal_debit >= MIN_DEBIT)
     enh_checks = {
         "tight_spread": bool(spread_pct is not None and spread_pct <= MAX_ATM_SPREAD_PCT),
         "price_ok": price >= MIN_PRICE,
@@ -566,10 +578,13 @@ def analyze_ticker(symbol, earnings_date):
         "oi_ok": bool(atm_oi is not None and atm_oi >= MIN_ATM_OI),
         "date_confirmed": bool(mismatch is not True),  # None (no Yahoo data) tolerated
         "em_vs_width": bool(straddle and strike_width and straddle >= strike_width),
+        "combo_liquid": combo_ok,       # combo spread ≤ MAX_COMBO_SPREAD of debit
+        "debit_ok": debit_ok,           # debit ≥ MIN_DEBIT (fixed costs are small %)
     }
     tier1 = (tier == "RECOMMENDED" and enh_checks["tight_spread"] and
              enh_checks["price_ok"] and enh_checks["premium_rich"] and
-             enh_checks["oi_ok"] and enh_checks["date_confirmed"])
+             enh_checks["oi_ok"] and enh_checks["date_confirmed"] and
+             combo_ok and debit_ok)
 
     return {
         "price": round(price, 2),
@@ -829,6 +844,10 @@ def rank_and_odds(m, ev, market):
     nudge(sec_tier == "low", +0.10, "calm-reaction sector")
     nudge(sec_tier == "high", -0.10, "high-blowthrough sector")
     nudge(bool(m.get("binary_risk")), -0.20, "binary-catalyst industry")
+    cs = m.get("combo_spread_pct")
+    nudge(cs is not None and cs > 0.20, -0.30, "very wide combo spread (>20% — eats the edge)")
+    nudge(cs is not None and 0.12 < cs <= 0.20, -0.12, "wide combo spread (12-20%)")
+    nudge(cs is not None and cs <= 0.08, +0.08, "tight combo spread (<8%)")
     vix = (market or {}).get("vix")
     regime = (market or {}).get("regime")
     nudge(bool(vix and vix < 15 and not (rich and rich >= RICHNESS_MIN)),
