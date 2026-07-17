@@ -204,9 +204,10 @@ tr.selected td { background: #241d0e }
 #gantt-grid { display: flex; flex-direction: column; padding-top: 14px }
 .g-cell { min-height: 26px }
 #g-mon2 .gm-hd, #gm-left .gm-hd { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap }
-.gm-frow { display: grid; grid-template-columns: minmax(58px,1fr) 2fr 2fr 2fr; align-items: center; gap: 12px; margin-bottom: 3px; }
+.gm-frow { display: grid; grid-template-columns: 88px minmax(84px,190px) 1fr max-content; align-items: center; gap: 10px; margin-bottom: 3px; }
 .gm-frow .l { font-size: 0.66rem; font-weight: 600; color: var(--text); line-height: 1.2; }
 .gm-frow .gm-fdesc { min-width: 0; font-size: 0.6rem; color: var(--gray); line-height: 1.25; }
+.gm-frow .gm-fbar { min-width: 60px; }
 .gm-frow .v { text-align: right; font-size: 0.66rem; font-weight: 700; white-space: nowrap; }
 .gm-fbar { position: relative; height: 5px; background: #0a0805; border: 1px solid var(--border); border-radius: 3px; overflow: visible; }
 .gm-fbar.hatch { background: repeating-linear-gradient(45deg,transparent 0 5px,rgba(106,85,31,0.28) 5px 9px); }
@@ -474,21 +475,20 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       </div>
     </div>
 
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Structures</span></div>
-      <div class="pb" style="overflow-x:auto">
-        <table>
-          <thead><tr><th></th><th>Long calendar spread (preferred)</th><th>Short straddle</th></tr></thead>
-          <tbody>
-            <tr><td class="dimtxt">Legs</td><td>Sell front-month ATM, buy ~+30d same-strike ATM (debit)</td><td>Sell ATM call + ATM put, same expiry (credit)</td></tr>
-            <tr><td class="dimtxt">Max loss</td><td class="pos">Debit paid (defined risk)</td><td class="neg">Unlimited — worst observed −9,200%</td></tr>
-            <tr><td class="dimtxt">Capital / margin up front</td><td class="pos">Just the debit (a few $100 per contract)</td><td class="neg">Naked-short margin — typically several × the equivalent calendar debit, and it can balloon intraday</td></tr>
-            <tr><td class="dimtxt">Used here</td><td class="pos">✓ The only structure traded &amp; tracked</td><td class="dimtxt">Reference only (research comparison)</td></tr>
-            <tr><td class="dimtxt">Filtered mean return</td><td>+7.3% per trade (σ 28%)</td><td>+9.0% per trade (σ 48%)</td></tr>
-            <tr><td class="dimtxt">Full Kelly</td><td>60% (misleading — 100% losses happen)</td><td>6.5%</td></tr>
-            <tr><td class="dimtxt">Sizing used here</td><td class="pos">10% Kelly → ~6% of account per trade</td><td>30% Kelly → ~2% of account premium</td></tr>
-            <tr><td class="dimtxt">10y Monte Carlo (10% Kelly cal.)</td><td colspan="2">win rate ≈ 66% · mean max DD ≈ 20% · Sharpe ≈ 3.5 · expectancy ≈ $265/trade on $10k start</td></tr>
-          </tbody>
-        </table>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">The structure — calendar spreads</span></div>
+      <div class="pb prose">
+        <p>The trade is a <strong>long calendar spread</strong>: sell the front-month ATM option (the one earnings IV
+        inflates most) and buy the same strike about 30 days out (which barely reacts to the event). Maximum loss on the
+        spread is the <strong>debit paid</strong> — defined risk, a few hundred dollars per contract. The profit is the
+        front-month IV crushing the morning after the report while the back month holds its value.</p>
+        <p><strong style="color:var(--yellow)">Single vs double calendar.</strong> When the option-implied move is well
+        contained within one strike, a single ATM calendar sits right on the money. When the expected move is large relative
+        to strike spacing, the scanner instead proposes a <strong>double calendar</strong> — one calendar a strike above and
+        one below the money (calls up, puts down). That widens the zone the stock can land in and still profit, trading a
+        little peak return for a higher win rate. The read-out ticket always names whichever structure applies and its exact
+        strikes.</p>
+        <p class="dimtxt" style="font-size:0.8rem">Sizing follows a 10%-Kelly policy: about 6% of the account on a Moderate
+        signal, up to ~10% on a Strong one (odds-scaled, max 3 concurrent, drawdown circuit breaker). Full sizing study below.</p>
       </div>
     </div>
 
@@ -553,10 +553,10 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
     <div style="height:1px;background:var(--border2);margin:22px 0 14px"></div>
     <h2 style="color:var(--yellow);font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin:6px 4px 10px">Improvements &amp; refinements</h2>
-    <div class="note-box"><strong>Goal:</strong> raise win rate and per-trade return over the baseline three-filter model.
-      The first three ideas are implemented live in this scanner as the <span class="pill pill-t1">STRONG ★</span> signal;
-      the rest are candidates for the backtest queue.</div>
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Implemented in the scanner (Strong signal)</span></div>
+    <div class="note-box"><strong>Goal:</strong> turn the baseline three-filter edge into a <em>realized</em> one — higher win
+      rate and per-trade return after real execution costs. These five checks are what a <span class="pill pill-t1">STRONG ★</span>
+      signal must clear on top of the three research filters; the conditioner study below is what shapes the odds model.</div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Why the Strong-signal gates exist</span></div>
       <div class="pb mc-grid">
         <div class="mc"><h4>A · Premium richness vs history</h4>
           <p>Compare today's option-implied expected move against the stock's own average realized earnings move
@@ -572,9 +572,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           often meaningfully off-strike. Filtering them removes a cluster of poor fills and off-model losses.</p></div>
         <div class="mc"><h4>C2 · ATM open interest ≥ 500</h4>
           <p>Open interest on the thinner side of the ATM pair must clear <code>500</code> contracts. Thin OI means you're
-          negotiating with one market maker at entry <em>and</em> exit — the realized spread is far worse than the quoted
-          one. (Live example from the first scan: SMPL rated RECOMMENDED with 66 contracts of OI and a 41% quoted spread —
-          exactly the trade this filter exists to block.)</p></div>
+          negotiating with one market maker at entry <em>and</em> exit — the realized spread is far worse than the quoted one,
+          which is exactly the case the combo-spread gate on the Scanner is built to catch.</p></div>
         <div class="mc"><h4>C3 · Confirmed earnings date</h4>
           <p>Nasdaq and Yahoo must agree on the date within ±1 day. A projected (unconfirmed) date that shifts means you
           sold a calendar around an event that isn't there — pure decay loss with no IV crush. Holds the signal below Strong until
@@ -614,47 +613,12 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       </div>
     </details>
 
-    <details class="panel" style="margin-top:12px"><summary class="ph"><span class="t">Backtest queue · candidate refinements</span></summary>
-      <div class="pb mc-grid">
-        <div class="mc"><h4>D0 · Sector-cohort heat filter <span style="color:var(--teal)">(NOW LIVE)</span></h4>
-          <p>The study's strongest effect: quiet same-sector cohorts → median z 0.79 / 17% blowthrough vs 52% baseline;
-          hot cohorts → the reverse. The scanner now keeps a rolling <code>reaction_log.json</code> of recent reporters'
-          normalized reactions by sector and computes each candidate's cohort heat (shown in the chart's mini monitor);
-          quiet cohorts add +0.30 log-odds, hot ones −0.15. The log fills as earnings season progresses.</p></div>
-        <div class="mc"><h4>D · Rank, don't just gate <span style="color:var(--teal)">(NOW LIVE)</span></h4>
-          <p>Every analyzed event gets a transparent <b>0–100 rank score</b> (how far each signal clears its threshold)
-          and a heuristic <b>odds-of-profit</b> (research base 66% shifted by documented nudges from the decile and
-          conditioner studies, clamped 40–80%). Suggested size scales with the odds; the paper tracker fills
-          best-ranked-first when the 3-position cap binds.</p></div>
-        <div class="mc"><h4>E · Skip binary-catalyst names <span style="color:var(--teal)">(NOW LIVE as down-weight)</span></h4>
-          <p>Biotech/specialty-pharma industries carry FDA-style tail risk unrelated to the earnings print. The scanner
-          flags them (<code>binary_risk</code>) and cuts their odds by −0.20 log-odds rather than hard-excluding —
-          the study's Health-sector result wasn't significant enough to justify a full ban.</p></div>
-        <div class="mc"><h4>F · Earnings-day VIX regime filter <span style="color:var(--amber)">(revised by the study)</span></h4>
-          <p>The conditioner study <em>refutes</em> half of this idea: relative to their own recent vol, stocks react
-          <em>less</em> in stressed regimes (median z 1.67 vs 2.66 in calm ones) — and calm regimes are where the IV/RV
-          filter is most flattered by a low denominator. What survives is the vega argument: in a VIX spike the calendar's
-          back-month IV can crush with the front. Verdict: stay advisory, prefer the straddle structure over calendars
-          in stressed regimes, and demand extra premium richness when VIX &lt; 15.</p></div>
-        <div class="mc"><h4>G · Double calendar variant</h4>
-          <p>For Strong setups with expected move ≫ strike spacing, a double calendar (one at +EM strike, one at −EM)
-          widens the profit zone and cuts gamma pain when the stock moves ~1× the expected move — trading a bit of
-          peak return for win rate.</p></div>
-        <div class="mc"><h4>H · Scale by Kelly, cap correlation</h4>
-          <p>Max 3 concurrent positions and ≤ ~18% of account in simultaneous earnings risk (3 × 6%). Multiple same-day
-          trades are nearly independent bets — the research's variance numbers assume one at a time.</p></div>
-        <div class="mc"><h4>I · Exit discipline on the jump</h4>
-          <p>Take the exit 15 min after the open mechanically. The data says the edge is fully realized in the jump;
-          discretionary "let it ride" holding re-exposes you to post-earnings drift, which is a <em>negative</em>-edge
-          period for short vol.</p></div>
-      </div>
-    </details>
     <div style="height:1px;background:var(--border2);margin:22px 0 14px"></div>
     <h2 style="color:var(--yellow);font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin:6px 4px 10px">Simulation · 10-year Monte Carlo</h2>
     <div class="note-box"><strong>What this is (and isn't):</strong> free historical option-chain data doesn't exist,
       so a tick-level 10-year backtest isn't possible. Instead: <strong>Monte Carlo over 4,000 simulated 10-year paths</strong>,
-      with per-trade return distributions calibrated to the published research moments (calendar: mean +7.3%/trade, σ28%,
-      66% win, floor −105%; straddle: +9%, σ48%, fat tail). Each improvement variant applies an <strong>explicitly stated
+      with the per-trade return distribution calibrated to the published research moments for the calendar (mean +7.3%/trade,
+      σ28%, 66% win, floor −105%). Each variant applies an <strong>explicitly stated
       assumption</strong> (shown under the table). Read the <em>differences between variants</em> as the signal —
       absolute dollar outcomes inherit every assumption, especially the ~120 qualifying trades/yr.</div>
 
@@ -1692,7 +1656,8 @@ function relbl(s) {
     .replace(/\bREC\b/g, 'Moderate');
 }
 function renderSim() {
-  var vs = SIM.variants;
+  // Calendars only — the short-straddle comparison variant is intentionally hidden.
+  var vs = SIM.variants.filter(function (v) { return !/straddle/i.test(v.id + ' ' + (v.label || '')); });
   $('sim-tbody').innerHTML = vs.map(function (v) {
     var base = vs[0];
     var hl = v.id === 'all_combined' ? ' style="background:#191408"' : '';
