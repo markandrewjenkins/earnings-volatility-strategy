@@ -1,18 +1,18 @@
 {
- "generated_utc": "2026-07-17T13:02:18+00:00",
- "generated_et": "2026-07-17T09:00:42-04:00",
+ "generated_utc": "2026-07-17T13:06:05+00:00",
+ "generated_et": "2026-07-17T09:05:32-04:00",
  "scan_date": "2026-07-17",
  "next_trading_day": "2026-07-20",
  "horizon_days": 45,
  "date_source": "Nasdaq earnings calendar API, cross-checked per ticker against Yahoo Finance (date_mismatch flags a >1 day gap)",
  "market": {
-  "vix": 18.52,
+  "vix": 18.65,
   "vix3m": 18.57,
-  "vix_ratio": 0.997,
+  "vix_ratio": 1.004,
   "spy": 750.72,
   "spy_200dma": 693.01,
   "spy_bull": true,
-  "regime": "ELEVATED"
+  "regime": "STRESSED"
  },
  "thresholds": {
   "ts_slope_0_45": -0.00406,
@@ -747,7 +747,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 9.5,
-   "odds": 0.468,
+   "odds": 0.45,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -766,8 +766,8 @@
      "d": 0.1
     },
     {
-     "f": "elevated VIX regime",
-     "d": -0.05
+     "f": "stressed VIX regime (back-month vega crush risk)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -1476,7 +1476,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 8.2,
-   "odds": 0.468,
+   "odds": 0.45,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -1495,8 +1495,8 @@
      "d": 0.1
     },
     {
-     "f": "elevated VIX regime",
-     "d": -0.05
+     "f": "stressed VIX regime (back-month vega crush risk)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -2205,7 +2205,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 6.2,
-   "odds": 0.43,
+   "odds": 0.413,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -2216,8 +2216,8 @@
      "d": -0.15
     },
     {
-     "f": "elevated VIX regime",
-     "d": -0.05
+     "f": "stressed VIX regime (back-month vega crush risk)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -2926,7 +2926,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 6.0,
-   "odds": 0.406,
+   "odds": 0.4,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -2941,8 +2941,8 @@
      "d": -0.1
     },
     {
-     "f": "elevated VIX regime",
-     "d": -0.05
+     "f": "stressed VIX regime (back-month vega crush risk)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -3651,7 +3651,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 8.1,
-   "odds": 0.468,
+   "odds": 0.45,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -3670,8 +3670,8 @@
      "d": 0.1
     },
     {
-     "f": "elevated VIX regime",
-     "d": -0.05
+     "f": "stressed VIX regime (back-month vega crush risk)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -4380,7 +4380,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 8.5,
-   "odds": 0.418,
+   "odds": 0.401,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -4399,8 +4399,8 @@
      "d": -0.1
     },
     {
-     "f": "elevated VIX regime",
-     "d": -0.05
+     "f": "stressed VIX regime (back-month vega crush risk)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -5104,7 +5104,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 15.1,
-   "odds": 0.455,
+   "odds": 0.438,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -5119,8 +5119,8 @@
      "d": 0.1
     },
     {
-     "f": "elevated VIX regime",
-     "d": -0.05
+     "f": "stressed VIX regime (back-month vega crush risk)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -5824,7 +5824,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 13.3,
-   "odds": 0.455,
+   "odds": 0.438,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -5839,8 +5839,8 @@
      "d": 0.1
     },
     {
-     "f": "elevated VIX regime",
-     "d": -0.05
+     "f": "stressed VIX regime (back-month vega crush risk)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
