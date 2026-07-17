@@ -204,10 +204,10 @@ tr.selected td { background: #241d0e }
 #gantt-grid { display: flex; flex-direction: column; padding-top: 14px }
 .g-cell { min-height: 26px }
 #g-mon2 .gm-hd, #gm-left .gm-hd { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap }
-.gm-frow { display: grid; grid-template-columns: 88px minmax(84px,190px) 1fr max-content; align-items: center; gap: 10px; margin-bottom: 3px; }
+.gm-frow { display: grid; grid-template-columns: 88px 150px 1fr 86px; align-items: center; gap: 8px; margin-bottom: 3px; }
 .gm-frow .l { font-size: 0.66rem; font-weight: 600; color: var(--text); line-height: 1.2; }
-.gm-frow .gm-fdesc { min-width: 0; font-size: 0.6rem; color: var(--gray); line-height: 1.25; }
-.gm-frow .gm-fbar { min-width: 60px; }
+.gm-frow .gm-fdesc { min-width: 0; font-size: 0.6rem; color: var(--gray); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gm-frow .gm-fbar { min-width: 40px; }
 .gm-frow .v { text-align: right; font-size: 0.66rem; font-weight: 700; white-space: nowrap; }
 .gm-fbar { position: relative; height: 5px; background: #0a0805; border: 1px solid var(--border); border-radius: 3px; overflow: visible; }
 .gm-fbar.hatch { background: repeating-linear-gradient(45deg,transparent 0 5px,rgba(106,85,31,0.28) 5px 9px); }
@@ -456,25 +456,6 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       </div>
     </div>
 
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Ratings — the action scale</span></div>
-      <div class="pb prose">
-        <p>One scale, describing how strongly a name's signal reads against the strategy's criteria. These are
-           observations about the data, not trade advice:<br>
-           <span class="pill pill-t1">STRONG ★</span>&nbsp; every edge <em>and</em> execution filter clears ·
-           <span class="pill pill-rec">MODERATE</span>&nbsp; the research's three edge filters clear, but an execution check does not ·
-           <span class="pill pill-con">WEAK</span>&nbsp; slope clears plus exactly one other filter ·
-           <span class="pill pill-avoid">NONE</span>&nbsp; the filters do not clear (muted grey deliberately — absence of signal isn't danger; coral is reserved for live warnings like FOMC ⚡).
-           Mapping to the original research's terms: STRONG/MODERATE = "Recommended", WEAK = "Consider", NONE = "Avoid".</p>
-        <p><strong style="color:var(--yellow)">STRONG is a strict subset of MODERATE</strong> and is treated distinctly
-           everywhere: its own odds base (70% vs 66%), its own sizing anchor, and precedence when the concurrency cap binds.
-           A signal reads STRONG only when all six execution &amp; event checks also clear: ATM spread ≤ 10% of mid, price ≥ $20,
-           expected move ≥ 1.15× the stock's own historical earnings moves, ATM open interest ≥ 500, the earnings
-           date confirmed (Nasdaq and Yahoo agree within a day), and no FOMC decision within ±1 trading day of the trade
-           window. In short: MODERATE says the <em>edge</em> is present; STRONG says it also survives real-world execution
-           costs. Every threshold is shown live in the Scanner tab's signal monitor.</p>
-      </div>
-    </div>
-
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">The structure — calendar spreads</span></div>
       <div class="pb prose">
         <p>The trade is a <strong>long calendar spread</strong>: sell the front-month ATM option (the one earnings IV
@@ -499,6 +480,25 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           <li><strong>Exit:</strong> ~15 minutes after the next session's open — the "jump" exit. Holding until the next close was a consistent loser in the data (post-earnings announcement drift works against a short-vol position).</li>
           <li><strong>Strike:</strong> at-the-money at entry. <strong>Calendar gap:</strong> ~30 days — wide enough that back-month IV holds while front-month IV crushes.</li>
         </ul>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Signal strength · the four levels</span></div>
+      <div class="pb prose">
+        <p>One scale, describing how strongly a name's signal reads against the strategy's criteria. These are
+           observations about the data, not trade advice:<br>
+           <span class="pill pill-t1">STRONG ★</span>&nbsp; every edge <em>and</em> execution filter clears ·
+           <span class="pill pill-rec">MODERATE</span>&nbsp; the research's three edge filters clear, but an execution check does not ·
+           <span class="pill pill-con">WEAK</span>&nbsp; slope clears plus exactly one other filter ·
+           <span class="pill pill-avoid">NONE</span>&nbsp; the filters do not clear (muted grey deliberately — absence of signal isn't danger; coral is reserved for live warnings like FOMC ⚡).
+           Mapping to the original research's terms: STRONG/MODERATE = "Recommended", WEAK = "Consider", NONE = "Avoid".</p>
+        <p><strong style="color:var(--yellow)">STRONG is a strict subset of MODERATE</strong> and is treated distinctly
+           everywhere: its own odds base (70% vs 66%), its own sizing anchor, and precedence when the concurrency cap binds.
+           A signal reads STRONG only when all six execution &amp; event checks also clear: ATM spread ≤ 10% of mid, price ≥ $20,
+           expected move ≥ 1.15× the stock's own historical earnings moves, ATM open interest ≥ 500, the earnings
+           date confirmed (Nasdaq and Yahoo agree within a day), and no FOMC decision within ±1 trading day of the trade
+           window. In short: MODERATE says the <em>edge</em> is present; STRONG says it also survives real-world execution
+           costs. Every threshold is shown live in the Scanner tab's signal monitor.</p>
       </div>
     </div>
 
@@ -1123,16 +1123,16 @@ function ganttMon(t, isW, hov) {
   var left = '<div class="gm-sub" style="border-top:none;padding-top:0;margin-top:0">SIGNAL FILTERS \u2014 how ' + ev.ticker + ' scores against the strategy criteria (white line = current value; shaded zone = pass range)</div>';
   if (isW) {
     left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', 'liquidity keeps premium rich') +
-      gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'under $20: coarse, wide spreads') +
+      gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'under $20: wide spreads') +
       ['Slope', 'IV/RV', 'Rich', 'Spread', 'OI', 'Combo'].map(function (l2) { return '<div class="gm-frow"><span class="l">' + l2 + '</span><span class="gm-fdesc">forms in the final days</span><div class="gm-fbar hatch"></div><span class="v" style="color:var(--gray);font-weight:400">\u22645d out</span></div>'; }).join('');
     $('gm-right').innerHTML = '<div class="dimtxt" style="font-size:0.74rem;padding-top:8px">Forecast only \u2014 the slope and IV/RV signals form in the final days. A full trade ticket and payoff diagram appear once this name is inside the 7-day window.</div>';
     if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
   } else {
     left += '<div class="gm-sub">EDGE &amp; EXECUTION FILTERS</div>';
-    left += gmBar('Slope \u2264 \u2212.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), 'backwardation = front IV richest');
+    left += gmBar('Slope \u2264 \u2212.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), 'backwardation = IV richest');
     left += gmBar('IV/RV \u2265 1.25', ev.iv30_rv30, 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), 'implied rich vs actual moves');
     left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', 'more flow, richer premium');
-    left += gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'under $20: coarse, wide spreads');
+    left += gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'under $20: wide spreads');
     var spv = (ev.atm_spread_pct === null || ev.atm_spread_pct === undefined) ? null : Math.min(ev.atm_spread_pct, 0.25);
     left += gmBar('Spread \u2264 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? 'N/A' : fmt(ev.atm_spread_pct * 100, 1) + '%', 'ATM bid/ask, paid in and out');
     left += gmBar('Rich \u2265 1.15\u00d7', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '\u00d7' : 'N/A', 'vs this name\u2019s own history');
@@ -1141,8 +1141,8 @@ function ganttMon(t, isW, hov) {
     left += gmBar('Combo \u2264 15%', cbv, 0, 0.5, th.max_combo_spread || 0.15, false, ev.enhanced && ev.enhanced.combo_liquid, cbv === null ? 'N/A' : fmt(ev.combo_spread_pct * 100, 0) + '%', 'bid/ask vs debit; edge-killer');
     left += '<div class="gm-sub">EVENT &amp; MARKET CONTEXT</div>';
     left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '\u26a1 FOMC \u00b11D' : 'CLEAR', 'Fed vol lands in the trade');
-    left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '\u26a0 UNCONFIRMED' : 'CONFIRMED', 'Nasdaq and Yahoo must agree');
-    if (DATA.market) left += gmBar('VIX REGIME', Math.min(DATA.market.vix, 45), 10, 45, 28, false, DATA.market.regime !== 'STRESSED', fmt(DATA.market.vix, 1) + ' \u00b7 ' + DATA.market.regime, 'stress crushes back-month IV');
+    left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '\u26a0 UNCONFIRMED' : 'CONFIRMED', 'Nasdaq & Yahoo must agree');
+    if (DATA.market) left += gmBar('VIX REGIME', Math.min(DATA.market.vix, 45), 10, 45, 28, false, DATA.market.regime !== 'STRESSED', fmt(DATA.market.vix, 1) + ' \u00b7 ' + DATA.market.regime, 'stress crushes back IV');
     $('gm-right').innerHTML = '<div class="gm-sub" style="border-top:none;padding-top:0;margin-top:0">CALENDAR PAYOFF AT FRONT EXPIRY</div><div id="gm-payoff-wrap" style="position:relative;height:300px"><canvas id="payoffChart"></canvas></div>';
     renderPayoff(ev);
   }
