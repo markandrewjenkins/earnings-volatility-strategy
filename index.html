@@ -361,7 +361,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           <thead><tr>
             <th>Ticker</th><th>Entry Date</th><th>Rating</th><th>Rank</th><th>Odds</th>
             <th>Price</th><th>Exp. move</th><th>TS slope</th><th>IV30/RV30</th><th>Vol 30d</th>
-            <th>Calendar legs</th><th>Debit</th><th>Sugg. size</th>
+            <th>Calendar legs</th><th>Debit</th><th>Combo</th><th>Sugg. size</th>
           </tr></thead>
           <tbody id="cand-tbody"></tbody>
         </table>
@@ -382,6 +382,11 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">Equity curve — closed trades</span><span class="dimtxt" id="pnl-eqsub" style="text-transform:none"></span></div>
       <div class="pb" style="position:relative;height:260px"><canvas id="pnlEqChart"></canvas></div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="ph"><span class="t">Daily P&amp;L — realized</span><span class="dimtxt" id="pnl-dailysub" style="text-transform:none"></span></div>
+      <div class="pb" style="position:relative;height:220px"><canvas id="pnlDailyChart"></canvas></div>
     </div>
 
   </div>
@@ -852,8 +857,13 @@ function candRow(ev) {
   var legs = (ev.front_exp && ev.back_exp)
     ? ev.front_exp.slice(5) + ' → ' + ev.back_exp.slice(5) + ' @ ' + fmt(ev.atm_strike, ev.atm_strike >= 100 ? 0 : 1)
     : '—';
-  var windowCell = (ev.bucket === 'now' ? '<span class="pill pill-t1">NOW</span> ' : '') +
-    '<span class="dimtxt">buy</span> <b>' + entryDateOf(ev).slice(5) + '</b>';
+  var windowCell = '<span class="dimtxt">buy</span> <b>' + entryDateOf(ev).slice(5) + '</b>';
+  var comboCell;
+  if (ev.combo_spread_pct === null || ev.combo_spread_pct === undefined) comboCell = '<span class="dimtxt">—</span>';
+  else {
+    var cc = (ev.enhanced && ev.enhanced.combo_liquid) ? 'pos' : (ev.combo_spread_pct > 0.35 ? 'neg' : '');
+    comboCell = '<span class="' + cc + '">' + fmt(ev.combo_spread_pct * 100, 0) + '%</span>';
+  }
   return [
     '<td><b>' + ev.ticker + '</b>' + mismatchFlag(ev) + ' <span class="dimtxt" style="font-size:0.72rem">' + (ev.sector || fmtCap(ev.market_cap)) + '</span></td>',
     '<td>' + windowCell + '</td>',
@@ -867,6 +877,7 @@ function candRow(ev) {
     '<td>' + passTxt(ev.pass_volume, fmtInt(ev.avg_volume30)) + '</td>',
     '<td style="font-size:0.78rem">' + legs + '</td>',
     '<td>' + (ev.calendar_debit_est ? '$' + fmt(ev.calendar_debit_est) : '—') + '</td>',
+    '<td>' + comboCell + '</td>',
     '<td>' + suggSize(ev) + '</td>'
   ].join('');
 }
@@ -880,8 +891,10 @@ function renderCandidates() {
   });
   var tb = $('cand-tbody');
   tb.innerHTML = evs.map(function (ev) {
+    var actionable = ev.tier1 || ev.tier === 'RECOMMENDED';
     var cls = 'clickable' + (ev.ticker === selectedTicker ? ' selected' : '');
-    return '<tr class="' + cls + '" onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev) + '</tr>';
+    var st = actionable ? '' : ' style="opacity:0.5"';
+    return '<tr class="' + cls + '"' + st + ' onclick="selectTicker(\'' + ev.ticker + '\')">' + candRow(ev) + '</tr>';
   }).join('');
   $('cand-empty').style.display = evs.length ? 'none' : '';
   $('cand-empty').textContent = 'No analyzed events this week. Quiet weeks are normal between earnings seasons — the strategy only trades ~10–12% of events even in peak season. See the Watchlist below for what’s coming.';
@@ -1439,6 +1452,7 @@ function render() {
 /* ── P&L tracker tab ────────────────────────────────────────────────── */
 var PNL = null;
 var pnlEqChart = null;
+var pnlDailyChart = null;
 
 function loadPnl() {
   fetch('trades_log.json?t=' + Date.now())
@@ -1525,6 +1539,32 @@ function renderPnl() {
         y: { title: { display: true, text: 'paper account $', color: '#b39a52' }, ticks: { color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' } }
       },
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return '$' + Math.round(c.parsed.y).toLocaleString(); } } } }
+    }
+  });
+
+  // ── Daily realized P&L (bucketed by reaction/exit date) ──
+  var byDay = {};
+  closed.forEach(function (t) {
+    var day = t.reaction_date || (t.exit && t.exit.et ? t.exit.et.slice(0, 10) : null);
+    if (!day) return;
+    byDay[day] = (byDay[day] || 0) + t.result.pnl_usd;
+  });
+  var days = Object.keys(byDay).sort();
+  var dBars = days.map(function (d) { return { x: d, y: byDay[d] }; });
+  var dCols = days.map(function (d) { return byDay[d] >= 0 ? 'rgba(82,230,189,0.75)' : 'rgba(242,86,58,0.75)'; });
+  var winD = days.filter(function (d) { return byDay[d] >= 0; }).length;
+  $('pnl-dailysub').textContent = days.length ? days.length + ' trading day' + (days.length === 1 ? '' : 's') + ' with exits · ' + winD + ' green' : '';
+  if (pnlDailyChart) pnlDailyChart.destroy();
+  pnlDailyChart = new Chart($('pnlDailyChart'), {
+    type: 'bar',
+    data: { labels: days, datasets: [{ label: 'daily P&L', data: dBars.map(function (b) { return b.y; }), backgroundColor: dCols, borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: {
+        x: { ticks: { color: '#b39a52', maxRotation: 0, autoSkip: true, callback: function (v) { var l = this.getLabelForValue(v); return l ? l.slice(5) : l; } }, grid: { display: false } },
+        y: { title: { display: true, text: 'realized $ / day', color: '#b39a52' }, ticks: { color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' }, beginAtZero: true }
+      },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return (c.parsed.y >= 0 ? '+$' : '−$') + Math.abs(Math.round(c.parsed.y)).toLocaleString(); } } } }
     }
   });
 }
