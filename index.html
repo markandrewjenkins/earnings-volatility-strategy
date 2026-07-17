@@ -204,15 +204,15 @@ tr.selected td { background: #241d0e }
 #gantt-grid { display: flex; flex-direction: column; padding-top: 14px }
 .g-cell { min-height: 26px }
 #g-mon2 .gm-hd, #gm-left .gm-hd { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap }
-.gm-frow { margin-bottom: 8px; }
-.gm-fhead { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.72rem; }
-.gm-fhead .l { color: var(--text); font-weight: 600; }
-.gm-fhead .v { font-weight: 700; }
-.gm-fdesc { font-size: 0.6rem; color: var(--gray); line-height: 1.4; margin: 2px 0 4px; }
+.gm-frow { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+.gm-frow .l { flex: 0 0 82px; font-size: 0.66rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+.gm-frow .gm-fdesc { flex: 1 1 auto; min-width: 0; font-size: 0.6rem; color: var(--gray); line-height: 1.25; }
+.gm-frow .gm-fbar { flex: 0 0 88px; }
+.gm-frow .v { flex: 0 0 auto; min-width: 50px; text-align: right; font-size: 0.66rem; font-weight: 700; white-space: nowrap; }
 .gm-fbar { position: relative; height: 5px; background: #0a0805; border: 1px solid var(--border); border-radius: 3px; overflow: visible; }
 .gm-fbar.hatch { background: repeating-linear-gradient(45deg,transparent 0 5px,rgba(106,85,31,0.28) 5px 9px); }
 .tc-act { border-radius: 6px; padding: 8px 12px; margin-top: 7px; }
-.gm-sub { font-size: 0.58rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.09em; margin: 9px 0 4px; border-top: 1px solid var(--border); padding-top: 6px; }
+.gm-sub { font-size: 0.58rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.09em; margin: 8px 0 3px; border-top: 1px solid var(--border); padding-top: 5px; }
 #gm-left .gm-hd b { font-size: 1.15rem }
 #g-mon2 { display: flex; gap: 18px; margin-top: 10px; background: var(--panel2); border: 1px solid var(--border2);
   border-radius: 6px; padding: 11px 14px; font-size: 0.74rem; line-height: 1.7; flex-wrap: wrap }
@@ -255,6 +255,14 @@ tr.selected td { background: #241d0e }
 .prose ul { margin: 0 0 9px 22px }
 .prose li { margin-bottom: 4px }
 .prose code { background: #1f1a10; border: 1px solid var(--border); border-radius: 3px; padding: 0 5px; font-size: 0.8rem; color: var(--cyan) }
+#tab-about .prose { max-width: none; }
+#tab-about a { color: #ff8f43; font-weight: 700; text-decoration: none; }
+#tab-about a:hover { text-decoration: underline; }
+#tab-about a:visited { color: #b06a34; }
+details.panel > summary { list-style: none; cursor: pointer; }
+details.panel > summary::-webkit-details-marker { display: none; }
+details.panel:not([open]) > summary .t::after { content: ' ▸ expand'; color: var(--dim); font-weight: 400; font-size: 0.72rem; text-transform: none; letter-spacing: 0; }
+details.panel[open] > summary .t::after { content: ' ▾'; color: var(--dim); }
 .acct-input { background: var(--panel2); color: var(--text); border: 1px solid var(--border2); border-radius: 3px; padding: 4px 8px; font-family: 'Saira', sans-serif; font-size: 0.8rem; width: 110px }
 
 /* ── Signal monitor (VIX-dashboard style) ───────────────────────────── */
@@ -331,11 +339,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
   <!-- ══ SCANNER TAB ══ -->
   <div id="tab-scanner">
-    <div class="note-box" style="line-height:1.7">
-      <div><strong>About this strategy —</strong> This strategy identifies tickers expecting earnings events and aims to profit off the expected IV crush immediately post-earnings via calendar spreads.</div>
-      <div style="margin-top:6px"><strong>How to use this chart —</strong> Tickers are shown against their trade entry date, not their earnings date. For all tickers labelled as <b style="color:var(--yellow)">Priority</b> or <b style="color:var(--yellow)">Potential</b>, enter a calendar spread at <b>3:45 PM ET the same day</b>, then close the position at <b>9:45 AM ET the next day</b>, to capitalize on the IV crush.</div>
-    </div>
-    <div class="panel" style="margin-top:12px">
+    <div class="panel">
       <div class="ph"><span class="t">Trade Calendar — Earnings Events by Trade Entry Day</span>
         <span class="dimtxt" style="text-transform:none;font-size:0.7rem">Lanes = rating · drag / scroll to pan · wheel to zoom · click a lane label to collapse · <b>hover</b> a ticker for its read-out below · <b>left-click</b> a ticker to lock the read-out, <b>left-click it again</b> to unlock. Hatched = developing.</span></div>
       <div id="tc-head" class="pb" style="display:none;border-bottom:1px solid var(--border)"></div>
@@ -498,6 +502,56 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         </ul>
       </div>
     </div>
+
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Risks — and how they're managed</span></div>
+      <div class="pb prose">
+        <p>The calendar is <strong>defined-risk on paper</strong> — the most the spread itself can lose is the debit paid — but
+        "defined risk" describes the option structure, not everything that can happen to the position. Three real risks sit
+        outside that debit.</p>
+
+        <h3 style="color:#ff8f43">Early assignment on the short leg</h3>
+        <p>The front-month option that is sold is an <strong>American-style equity option</strong>: its holder may exercise at
+        any time. If the short leg is assigned, the calendar stops being a tidy spread — the position becomes <strong>long or
+        short 100 shares per contract at the strike</strong>, still holding the long back-month option as a hedge. Two things
+        bite. First, assignment demands the <em>full share notional</em> (a $120 stock is $12,000 of stock per contract, versus
+        a debit of a few hundred dollars), which can trigger a margin call. Second, you carry unhedged gap risk on the residual
+        shares until they are unwound.</p>
+        <p><strong>Why it is usually small here — and when it is not.</strong> The trade is entered <em>at the money</em> and
+        held for a single overnight. An ATM option is almost never exercised early, because the holder would forfeit its
+        remaining extrinsic (time) value; early exercise is only rational when an option is deep in-the-money with little time
+        value left. The real trigger to watch is a <strong>dividend</strong>: a short call that is in-the-money going into an
+        <strong>ex-dividend date</strong> is a prime early-exercise candidate, because the holder exercises to capture the
+        dividend. A large overnight move that pushes the short leg deep ITM also raises the odds.</p>
+        <p><strong>Practical mitigations:</strong></p>
+        <ul>
+          <li><strong>Avoid ex-dividend dates</strong> inside the one-night hold — this removes the single biggest early-call-assignment trigger.</li>
+          <li><strong>Stay at-the-money</strong> (the strategy already does): maximum extrinsic value makes early exercise irrational for the holder.</li>
+          <li><strong>Prefer puts over calls when a dividend is near</strong> — short puts are not exercised early to capture dividends.</li>
+          <li><strong>Hold one night and unwind at the open</strong> — if assigned, close the resulting shares and the long option immediately rather than carrying them.</li>
+          <li><strong>Size for the share notional, not the debit</strong> (below).</li>
+        </ul>
+        <p><strong style="color:var(--yellow)">Is the only truly safe approach to size so small you could cover an assignment
+        yourself?</strong> In substance, yes — that is the honest answer. Debit-based sizing (a few hundred dollars per contract)
+        understates the capital a worst-case assignment demands, which is the full <em>share</em> notional: contracts × 100 ×
+        strike. The robust rule of thumb is to keep that share notional across all open short legs comfortably within what the
+        account could actually absorb — i.e. you could <strong>take delivery of (or be short) the shares and liquidate them
+        yourself at the next open without a forced margin sale</strong>. That is a materially smaller position than the debit
+        alone implies. It does not make the strategy risk-free, but it converts a potential margin-call blow-up into an orderly,
+        self-managed unwind. Combined with avoiding ex-dividend dates and staying ATM for one night, assignment moves from a
+        tail-risk landmine to a rare, coverable inconvenience.</p>
+
+        <h3 style="color:#ff8f43">Vega — a volatility spike</h3>
+        <p>The calendar is net-long vega on the back month. In a broad volatility spike (a VIX event overlapping the trade) the
+        back-month IV can crush alongside the front, hurting the position even if the underlying stock behaves. This is why the
+        scanner gates out FOMC windows and flags stressed VIX regimes.</p>
+
+        <h3 style="color:#ff8f43">Gap &amp; execution risk</h3>
+        <p>A very large earnings move can push the stock clean past the profit zone — the calendar wants a <em>small</em> move.
+        And the round-trip bid/ask, the combo spread, is a certain cost paid on every trade; on illiquid names it quietly
+        exceeds the edge. Both are handled by the liquidity gates and the combo-spread filter shown on the Scanner tab.</p>
+      </div>
+    </div>
+
     <div style="height:1px;background:var(--border2);margin:22px 0 14px"></div>
     <h2 style="color:var(--yellow);font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin:6px 4px 10px">Improvements &amp; refinements</h2>
     <div class="note-box"><strong>Goal:</strong> raise win rate and per-trade return over the baseline three-filter model.
@@ -526,14 +580,6 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           <p>Nasdaq and Yahoo must agree on the date within ±1 day. A projected (unconfirmed) date that shifts means you
           sold a calendar around an event that isn't there — pure decay loss with no IV crush. Blocks Priority until
           the sources agree.</p></div>
-      </div>
-    </div>
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Displayed as diagnostics (not gating yet)</span></div>
-      <div class="pb mc-grid">
-        <div class="mc"><h4>Expected move vs strike width</h4>
-          <p>If the option-implied move is smaller than the strike spacing, the "ATM" calendar can't be placed where the
-          model assumes — shown in the signal monitor as <code>DIAG</code>. Would become a Priority gate if the tracker shows
-          off-model fills hurting.</p></div>
       </div>
     </div>
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">What the data says — conditioner study (2,432 earnings events, 102 tickers, ~2019–2026)</span></div>
@@ -669,9 +715,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
       <div class="pb" id="sizing-verdict" style="padding-top:0"></div>
     </div>
 
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Two-tier grid — every REC% × Priority% combination</span>
-        <span class="dimtxt" style="text-transform:none">40% of trades assumed Priority (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</span></div>
+    <details class="panel" style="margin-top:12px">
+      <summary class="ph"><span class="t">Two-tier grid — every REC% × Priority% combination</span></summary>
+      <div class="pb prose" style="padding-bottom:0"><p class="dimtxt" style="font-size:0.78rem;margin:0">40% of trades assumed Priority (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</p></div>
       <div class="pb" style="overflow-x:auto">
         <table>
           <thead><tr><th>REC / Priority</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
@@ -680,10 +726,10 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           <tbody id="grid-tbody"></tbody>
         </table>
       </div>
-    </div>
+    </details>
 
-    <div class="panel" style="margin-top:12px">
-      <div class="ph"><span class="t">Dynamic sizing — scaling by your own drawdown</span></div>
+    <details class="panel" style="margin-top:12px">
+      <summary class="ph"><span class="t">Dynamic sizing — scaling by your own drawdown</span></summary>
       <div class="pb" style="overflow-x:auto">
         <table>
           <thead><tr><th>Policy (base 6% / 12%)</th><th>Median CAGR</th><th>Mean max DD</th><th>Longest DD (med)</th><th>P(ever halved)</th></tr></thead>
@@ -706,7 +752,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         up after quiet ones, and demand extra richness when VIX &lt; 15. Your own losing streak carries no information;
         market conditions do.</p>
       </div>
-    </div>
+    </details>
   </div>
 
   <!-- ══ ABOUT ══ -->
@@ -714,19 +760,25 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     <div class="panel"><div class="ph"><span class="t">About this dashboard</span></div>
       <div class="pb prose">
         <p>A live, public research dashboard for a <strong>short-earnings-volatility</strong> strategy: ahead of a company's
-        quarterly earnings, options systematically overprice the expected move. We sell that richness with <strong>ATM
-        calendar spreads</strong> (sell the front-month option, buy a longer-dated one at the same strike) and harvest the
-        <strong>implied-volatility crush</strong> that follows the announcement.</p>
-        <p>It is the sibling of the <a href="https://markandrewjenkins.github.io/vix-swing-strategy/" target="_blank" rel="noopener">VIX Swing Strategy</a>
-        dashboard and shares its design. Both are linked from the <a href="https://markandrewjenkins.github.io/portfolio/" target="_blank" rel="noopener">portfolio</a>.</p>
+        quarterly earnings, options systematically overprice the expected move. This strategy sells that richness with
+        <strong>ATM calendar spreads</strong> (sell the front-month option, buy a longer-dated one at the same strike) and
+        harvests the <strong>implied-volatility crush</strong> that follows the announcement.</p>
+        <p><strong>The idea in one line.</strong> Earnings uncertainty inflates near-term implied volatility far more than the
+        longer-dated month. Selling the expensive front month against the cheaper back month captures that gap when it
+        collapses the morning after the report.</p>
+        <p><strong>How to read the scanner.</strong> Tickers on the Trade Calendar are placed on their <em>trade-entry</em>
+        day, not their earnings day. For any name rated <strong>Priority</strong> or <strong>Potential</strong>, the calendar
+        spread is entered around 3:45 PM ET that day and closed around 9:45 AM ET the next session, capturing the crush.
+        Hover any ticker for its full read-out; the signal filters on the left show exactly how it scores against every
+        criterion.</p>
       </div>
     </div>
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Methodology &amp; data</span></div>
       <div class="pb prose">
         <p><strong>Research basis.</strong> The three core filters (term-structure slope, IV30/RV30, liquidity) come from the
-        Volatility Vibes study of <strong>72,500 earnings events (2007–present)</strong>. Our additions — execution-quality
-        checks, sector-cohort conditioning, FOMC/regime gating, position sizing and a fee/slippage model — are documented on
-        the How It Works tab.</p>
+        Volatility Vibes study of <strong>72,500 earnings events (2007–present)</strong>. Additions layered on top —
+        execution-quality checks, sector-cohort conditioning, FOMC/regime gating, position sizing and a fee/slippage model —
+        are documented on the How It Works tab.</p>
         <p><strong>Data sources.</strong> Earnings calendar from the Nasdaq public API (cross-checked against Yahoo per
         ticker); option chains, prices and implied vols from Yahoo Finance (~15-min delayed); VIX term structure and SPY for
         the market-regime read. There is <strong>no paid/historical option-chain feed</strong>, so a tick-level backtest
@@ -740,11 +792,26 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Honest limitations</span></div>
       <div class="pb prose">
         <ul>
-          <li>Delayed mid-quotes grade the <em>strategy</em>, not your fills — real executions differ, sometimes materially on illiquid names.</li>
-          <li>Illiquid back-month expiries can show unreliable debits; the scanner prefers liquid monthlies but always verify at your broker.</li>
+          <li>Delayed mid-quotes grade the <em>strategy</em>, not real fills — actual executions differ, sometimes materially on illiquid names.</li>
+          <li>Illiquid back-month expiries can show unreliable debits; the scanner prefers liquid monthlies, but always verify at a broker.</li>
           <li>The Monte Carlo inherits the published research's assumptions; treat differences between variants as the signal, not absolute dollar outcomes.</li>
+          <li>Short options carry <strong>early-assignment risk</strong> on the front leg (see How It Works for what it is and how it is managed).</li>
           <li>Educational/research only — not investment advice. Options involve substantial risk of loss.</li>
         </ul>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">About the author &amp; disclaimer</span></div>
+      <div class="pb prose">
+        <p>This dashboard is an <strong>educational research project</strong> built to explore what modern AI coding tools —
+        in particular <strong>Claude Code</strong> — can do when pointed at a real quantitative-finance problem end to end:
+        the data pipeline, the signal engine, the paper-trading tracker and this live front-end were built collaboratively
+        with AI. It is a personal project, not a product or a service.</p>
+        <p>Nothing here is investment advice, a recommendation, or a solicitation to trade. The author makes <strong>no claim
+        of ownership over the underlying strategy research and accepts no responsibility for any trading results, losses, or
+        decisions</strong> made on the basis of this page. Signals are model output on delayed data and can be wrong; anyone
+        who trades does so entirely at their own risk.</p>
+        <p>Further work from the author is collected on the
+        <a href="https://markandrewjenkins.github.io/portfolio/" target="_blank" rel="noopener">portfolio site</a>.</p>
       </div>
     </div>
   </div>
@@ -999,9 +1066,11 @@ function toggleLane(id) {
   renderGantt();
 }
 function gmFlag(lbl, ok, txt, desc) {
-  return '<div class="gm-frow" title="' + (desc || '').replace(/"/g, '&quot;') + '"><div class="gm-fhead"><span class="l">' + lbl + '</span><span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span></div>' +
-    (desc ? '<div class="gm-fdesc">' + desc + '</div>' : '') +
-    '<div class="gm-fbar"><span style="position:absolute;top:0;bottom:0;left:0;right:0;background:' + (ok ? '#52E6BD' : '#F2563A') + ';opacity:0.85"></span></div></div>';
+  return '<div class="gm-frow" title="' + (desc || '').replace(/"/g, '&quot;') + '">' +
+    '<span class="l">' + lbl + '</span>' +
+    '<span class="gm-fdesc">' + (desc || '') + '</span>' +
+    '<div class="gm-fbar"><span style="position:absolute;top:0;bottom:0;left:0;right:0;background:' + (ok ? '#52E6BD' : '#F2563A') + ';opacity:0.85"></span></div>' +
+    '<span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span></div>';
 }
 function ganttPick(t, isW) {
   gmLock = (gmLock === t) ? null : t;
@@ -1020,9 +1089,11 @@ function gmBar(lbl, val, lo, hi, thr, passRight, ok, txt, desc) {
   var tp = Math.max(0, Math.min(100, tf * 100));
   var vp = (vf === null) ? null : Math.max(2, Math.min(98, vf * 100));
   var inPass = (vf === null) ? null : (passRight ? vf >= tf : vf <= tf);
-  var head = '<div class="gm-fhead"><span class="l">' + lbl + '</span><span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span></div>';
-  var d = desc ? '<div class="gm-fdesc">' + desc + '</div>' : '';
-  if (vf === null) return '<div class="gm-frow">' + head + d + '<div class="gm-fbar hatch"></div></div>';
+  var lblEl = '<span class="l">' + lbl + '</span>';
+  var descEl = '<span class="gm-fdesc">' + (desc || '') + '</span>';
+  var valEl = '<span class="v ' + (ok ? 'pos' : 'neg') + '">' + txt + '</span>';
+  var tip = ' title="' + (desc || '').replace(/"/g, '&quot;') + '"';
+  if (vf === null) return '<div class="gm-frow"' + tip + '>' + lblEl + descEl + '<div class="gm-fbar hatch"></div>' + valEl + '</div>';
   var passStyle = passRight ? 'left:' + tp + '%;right:0' : 'left:0;width:' + tp + '%';
   var failStyle = passRight ? 'left:0;width:' + tp + '%' : 'left:' + tp + '%;right:0';
   var passCol = inPass === true ? '#52E6BD' : '#357c6c';
@@ -1034,7 +1105,7 @@ function gmBar(lbl, val, lo, hi, thr, passRight, ok, txt, desc) {
     '<span style="position:absolute;top:-1px;bottom:-1px;left:calc(' + tp + '% - 1px);width:2px;background:#d8cfa0;z-index:1"></span>' +
     (vp !== null ? '<span style="position:absolute;top:-2px;bottom:-2px;left:calc(' + vp + '% - 1.5px);width:3px;background:#fff;box-shadow:0 0 5px #fff;z-index:2"></span>' : '') +
     '</div>';
-  return '<div class="gm-frow" title="' + (desc || '').replace(/"/g, '&quot;') + '">' + head + d + bar + '</div>';
+  return '<div class="gm-frow"' + tip + '>' + lblEl + descEl + bar + valEl + '</div>';
 }
 function sellDateOf(ev) {
   var d = new Date(ev.date + 'T12:00:00');
@@ -1047,13 +1118,11 @@ function ganttMon(t, isW, hov) {
   for (var i = 0; i < pool.length; i++) if (pool[i].ticker === t) { ev = pool[i]; break; }
   if (!ev) return;
   var th = DATA.thresholds, buy = entryDateOf(ev), sell = sellDateOf(ev);
-  var pillH = isW ? likePill(ev.likelihood) : tierPill(ev);
-  if (isW || entryDateOf(ev) >= (window._fcst || '9999')) pillH = pillH.replace('<span class="pill', '<span style="border-style:dashed" class="pill');
   var evp = (ev.odds !== null && ev.odds !== undefined) ? (ev.odds * 22 - (1 - ev.odds) * 21.2) : null;
   var actLabel = ev.tier1 ? 'PRIORITY \u2014 TRADE THIS' : ev.tier === 'RECOMMENDED' ? 'POTENTIAL \u2014 TRADEABLE' : ev.tier === 'CONSIDER' ? 'MARGINAL \u2014 WATCH ONLY' : 'DISQUALIFIED \u2014 NO TRADE';
   var actCol = ev.tier1 ? '#5cf0c2' : ev.tier === 'RECOMMENDED' ? 'var(--yellow)' : ev.tier === 'CONSIDER' ? 'var(--coral)' : '#b5b5b5';
   var idLine = '<div style="display:flex;align-items:baseline;gap:13px;flex-wrap:wrap">' +
-    '<b style="font-size:1.3rem;color:var(--white)">' + ev.ticker + '</b>' + pillH +
+    '<b style="font-size:1.3rem;color:var(--white)">' + ev.ticker + '</b>' +
     '<span class="dimtxt" style="font-size:0.76rem">' + (ev.name || '') + (ev.sector ? ' \u00b7 ' + ev.sector : '') + '</span>' + mismatchFlag(ev) +
     '<span class="live-item"><span class="live-lbl">Rating</span><span class="live-val">' + (ev.rank_score || '\u2014') + '/100</span></span>' +
     '<span class="live-item"><span class="live-lbl">Odds</span>' + oddsTxt(ev) + '</span>' +
@@ -1066,16 +1135,19 @@ function ganttMon(t, isW, hov) {
       ? '<b>double calendar</b> \u2014 sell ' + ev.front_exp + ' / buy ' + ev.back_exp + ' <b>calls @ ' + dc.strike_up + '</b> and <b>puts @ ' + dc.strike_dn + '</b>'
       : '<b>call calendar</b> \u2014 sell ' + ev.front_exp + ' / buy ' + ev.back_exp + ' <b>calls @ ' + ev.atm_strike + '</b>';
     var n2 = (ev.suggested_frac && theDebit) ? Math.floor(acct() * ev.suggested_frac / (theDebit * 100)) : null;
+    var comboCol = (ev.enhanced && ev.enhanced.combo_liquid) ? 'var(--gray)' : 'var(--yellow)';
     tradeLine = '<div class="tc-act" style="border:1px solid ' + actCol + ';background:rgba(232,185,79,0.05)">' +
       '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">' +
         '<span style="font-weight:700;font-size:0.85rem;color:' + actCol + '">' + actLabel + '</span>' +
         '<span style="font-size:0.72rem"><span class="live-lbl">OPEN</span> ~3:45 PM ET <b>' + buy + '</b> \u00b7 <span class="live-lbl">CLOSE</span> ~9:45 AM ET <b>' + sell + '</b> <span class="dimtxt">(post-earnings IV crush)</span></span>' +
       '</div>' +
-      '<div style="font-size:0.78rem;margin-top:5px;line-height:1.6">' + legs +
-        (theDebit ? ' \u00b7 <span class="live-lbl">DEBIT</span> <b>~$' + fmt(theDebit) + '</b>' : '') +
-        (ev.combo_spread_pct !== null && ev.combo_spread_pct !== undefined ?
-          ' <span title="Combo bid/ask as a % of the debit \u2014 your immediate cost to get in and out. Full detail in the Combo filter at left.">(<span class="live-lbl">combo</span> <b style="color:' + (ev.enhanced && ev.enhanced.combo_liquid ? 'var(--gray)' : 'var(--coral)') + '">' + (ev.combo_spread_pct * 100).toFixed(0) + '%</b>)</span>' : '') +
+      '<div style="font-size:0.78rem;margin-top:6px;line-height:1.6">' + legs + '</div>' +
+      '<div style="font-size:0.78rem;margin-top:3px;line-height:1.6">' +
+        (theDebit ? '<span class="live-lbl">DEBIT</span> <b>~$' + fmt(theDebit) + '</b> <span class="dimtxt">per spread</span>' : '') +
         (n2 !== null ? ' \u00b7 <span class="live-lbl">SIZE</span> <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> \u2248 <b>$' + fmtInt(Math.round(acct() * ev.suggested_frac)) + '</b> (' + n2 + ' contract' + (n2 === 1 ? '' : 's') + ')' : '') + '</div>' +
+      (ev.combo_spread_pct !== null && ev.combo_spread_pct !== undefined ?
+        '<div style="font-size:0.7rem;margin-top:2px;padding-left:14px;color:var(--dim);line-height:1.5">' +
+          '<span style="color:var(--border2)">\u21b3</span> <span class="live-lbl">combo spread</span> <b style="color:' + comboCol + '">' + (ev.combo_spread_pct * 100).toFixed(0) + '%</b> of the debit \u2014 the bid/ask you cross entering and exiting (\u226415% qualifies for Priority). See the Combo filter at left.</div>' : '') +
       '</div>';
   } else {
     tradeLine = '<div class="tc-act" style="border:1px solid ' + actCol + ';background:rgba(232,185,79,0.03)">' +
@@ -1087,27 +1159,27 @@ function ganttMon(t, isW, hov) {
   if ($('tc-head')) { $('tc-head').style.display = ''; $('tc-head').innerHTML = idLine + tradeLine; }
   var left = '<div class="gm-sub" style="border-top:none;padding-top:0;margin-top:0">SIGNAL FILTERS \u2014 how ' + ev.ticker + ' scores against the strategy criteria (white line = current value; shaded zone = pass range)</div>';
   if (isW) {
-    left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', '30-day average share volume. 1.5M+ = enough price-insensitive hedging flow to keep premium rich.') +
-      gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'Share price floor. Below $20, strikes are coarse and spreads wide relative to premium.') +
-      ['Slope', 'IV/RV', 'Rich', 'Spread', 'OI', 'Combo'].map(function (l2) { return '<div class="gm-frow"><div class="gm-fhead"><span class="l">' + l2 + '</span><span class="v" style="color:var(--gray);font-weight:400">forms \u22645d out</span></div><div class="gm-fbar hatch"></div></div>'; }).join('');
+    left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', 'liquidity \u2014 keeps premium rich') +
+      gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'below $20: coarse strikes, wide spreads') +
+      ['Slope', 'IV/RV', 'Rich', 'Spread', 'OI', 'Combo'].map(function (l2) { return '<div class="gm-frow"><span class="l">' + l2 + '</span><span class="gm-fdesc">forms in the final days before earnings</span><div class="gm-fbar hatch"></div><span class="v" style="color:var(--gray);font-weight:400">\u22645d out</span></div>'; }).join('');
     $('gm-right').innerHTML = '<div class="dimtxt" style="font-size:0.74rem;padding-top:8px">Forecast only \u2014 the slope and IV/RV signals form in the final days. A full trade ticket and payoff diagram appear once this name is inside the 7-day window.</div>';
     if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
   } else {
     left += '<div class="gm-sub">EDGE &amp; EXECUTION FILTERS</div>';
-    left += gmBar('Slope \u2264 \u2212.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), 'IV term-structure slope (front \u2192 45-day). Negative (backwardation) = near-term options priced richest \u2014 the core edge.');
-    left += gmBar('IV/RV \u2265 1.25', ev.iv30_rv30, 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), '30-day implied vs Yang-Zhang realized vol. Above 1.25 = options already rich vs how the stock actually moves.');
-    left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', '30-day average share volume. More flow \u2192 more price-insensitive hedging \u2192 richer premium.');
-    left += gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'Share price floor. Below $20, strikes are coarse and spreads wide relative to premium.');
+    left += gmBar('Slope \u2264 \u2212.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), 'backwardation \u2014 near-term IV richest (the core edge)');
+    left += gmBar('IV/RV \u2265 1.25', ev.iv30_rv30, 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), 'implied rich vs how the stock actually moves');
+    left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', 'more flow \u2192 richer, tighter premium');
+    left += gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'below $20: coarse strikes, wide spreads');
     var spv = (ev.atm_spread_pct === null || ev.atm_spread_pct === undefined) ? null : Math.min(ev.atm_spread_pct, 0.25);
-    left += gmBar('Spread \u2264 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? 'N/A' : fmt(ev.atm_spread_pct * 100, 1) + '%', 'ATM bid/ask as a % of mid. Crossed at entry AND exit \u2014 wide spreads eat the edge.');
-    left += gmBar('Rich \u2265 1.15\u00d7', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '\u00d7' : 'N/A', 'Implied move vs this stock own avg realized earnings move. Above 1.15\u00d7 = premium rich for THIS name.');
-    left += gmBar('OI \u2265 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : (ev.atm_oi || 1), 40, 40000, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? 'N/A' : fmtInt(ev.atm_oi), 'Open interest on the thinner ATM side. Thin OI = one market maker at both ends.');
+    left += gmBar('Spread \u2264 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? 'N/A' : fmt(ev.atm_spread_pct * 100, 1) + '%', 'ATM bid/ask; crossed at entry and exit');
+    left += gmBar('Rich \u2265 1.15\u00d7', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '\u00d7' : 'N/A', 'implied move vs this name\u2019s own history');
+    left += gmBar('OI \u2265 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : (ev.atm_oi || 1), 40, 40000, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? 'N/A' : fmtInt(ev.atm_oi), 'thin OI = one market maker at both ends');
     var cbv = (ev.combo_spread_pct === null || ev.combo_spread_pct === undefined) ? null : Math.min(ev.combo_spread_pct, 0.5);
-    left += gmBar('Combo \u2264 15%', cbv, 0, 0.5, th.max_combo_spread || 0.15, false, ev.enhanced && ev.enhanced.combo_liquid, cbv === null ? 'N/A' : fmt(ev.combo_spread_pct * 100, 0) + '%', 'The calendar\u2019s combined bid/ask as a % of the debit \u2014 the immediate mark-to-market cost to get in AND out, and the single biggest edge-killer. Under 15% for PRIORITY; above ~35% the ~27% gross edge is gone and the name drops out of POTENTIAL. Trade as a combo LIMIT at mid, worked patiently \u2014 never market; exit ~9:45 (not 9:30, spreads widest at the open) and don\u2019t chase the mark down.');
+    left += gmBar('Combo \u2264 15%', cbv, 0, 0.5, th.max_combo_spread || 0.15, false, ev.enhanced && ev.enhanced.combo_liquid, cbv === null ? 'N/A' : fmt(ev.combo_spread_pct * 100, 0) + '%', 'combo bid/ask vs debit \u2014 the biggest edge-killer');
     left += '<div class="gm-sub">EVENT &amp; MARKET CONTEXT</div>';
-    left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '\u26a1 FOMC \u00b11D' : 'CLEAR', 'A Fed decision within \u00b11 trading day adds market vol the calendar is short. Blocks PRIORITY.');
-    left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '\u26a0 UNCONFIRMED' : 'CONFIRMED', 'Nasdaq and Yahoo must agree within \u00b11 day \u2014 projected dates shift.');
-    if (DATA.market) left += gmBar('VIX REGIME', Math.min(DATA.market.vix, 45), 10, 45, 28, false, DATA.market.regime !== 'STRESSED', fmt(DATA.market.vix, 1) + ' \u00b7 ' + DATA.market.regime, 'Market context: in stressed regimes the calendar back-month IV can crush too.');
+    left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '\u26a1 FOMC \u00b11D' : 'CLEAR', 'Fed decision within \u00b11 day adds market vol');
+    left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '\u26a0 UNCONFIRMED' : 'CONFIRMED', 'Nasdaq and Yahoo must agree within \u00b11 day');
+    if (DATA.market) left += gmBar('VIX REGIME', Math.min(DATA.market.vix, 45), 10, 45, 28, false, DATA.market.regime !== 'STRESSED', fmt(DATA.market.vix, 1) + ' \u00b7 ' + DATA.market.regime, 'stressed regimes crush back-month IV too');
     $('gm-right').innerHTML = '<div class="gm-sub" style="border-top:none;padding-top:0;margin-top:0">CALENDAR PAYOFF AT FRONT EXPIRY</div><div id="gm-payoff-wrap" style="position:relative;height:300px"><canvas id="payoffChart"></canvas></div>';
     renderPayoff(ev);
   }
@@ -1475,14 +1547,17 @@ function renderPnl() {
   var grossL = Math.abs(losses.reduce(function (a, t) { return a + t.result.pnl_usd; }, 0));
   var t1 = closed.filter(function (t) { return t.tier1; });
   var t1pnl = t1.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0);
+  var pot = closed.filter(function (t) { return !t.tier1; });
+  var potpnl = pot.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0);
   var kpis = [
     { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 6% REC / 10% T1 + breaker', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
     { l: 'Total return', v: (totRet >= 0 ? '+' : '') + fmt(totRet, 2) + '%', s: 'compounded, fractional sizing', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
+    { l: 'Priority return', v: t1.length ? (t1pnl / t1.length >= 0 ? '+' : '') + fmt(t1pnl / t1.length, 1) + '%/tr' : '—', s: t1.length + ' Priority trades · on debit', c: '#5cf0c2' },
+    { l: 'Potential return', v: pot.length ? (potpnl / pot.length >= 0 ? '+' : '') + fmt(potpnl / pot.length, 1) + '%/tr' : '—', s: pot.length + ' Potential trades · on debit', c: 'var(--yellow)' },
     { l: 'Closed trades', v: String(closed.length), s: open.length + ' open now' },
     { l: 'Win rate', v: closed.length ? fmt(wins.length / closed.length * 100, 0) + '%' : '—', s: 'target ≈66% (research)' },
     { l: 'Avg win / loss', v: (avgW === null ? '—' : '+' + fmt(avgW, 1) + '%') + ' / ' + (avgL === null ? '—' : fmt(avgL, 1) + '%'), s: 'per trade, on debit' },
-    { l: 'Profit factor', v: grossL > 0 ? fmt(grossW / grossL, 2) + 'x' : (grossW > 0 ? '∞' : '—'), s: 'gross wins / gross losses' },
-    { l: 'Priority subset', v: t1.length ? (t1pnl >= 0 ? '+' : '') + fmt(t1pnl / t1.length, 1) + '%/tr' : '—', s: t1.length + ' Priority trades closed', c: 'var(--yellow)' }
+    { l: 'Profit factor', v: grossL > 0 ? fmt(grossW / grossL, 2) + 'x' : (grossW > 0 ? '∞' : '—'), s: 'gross wins / gross losses' }
   ];
   $('pnl-kpis').innerHTML = kpis.map(function (k) {
     return '<div class="kpi"><div class="kpi-label">' + k.l + '</div>' +
@@ -1526,19 +1601,46 @@ function renderPnl() {
 
   var pts = [{ x: 0, y: acct.start }];
   closed.forEach(function (t, i) { pts.push({ x: i + 1, y: t.result.equity_after }); });
+  var ptCols = ['#e8b94f'].concat(closed.map(function (t) { return t.result.win ? '#52E6BD' : '#F2563A'; }));
   $('pnl-eqsub').textContent = closed.length + ' closed · updated ' + (PNL.updated_utc || '—').slice(0, 16).replace('T', ' ') + ' UTC';
   if (pnlEqChart) pnlEqChart.destroy();
+  // draw a per-trade arrow (▲ win / ▼ loss) + ticker & % label at each point
+  var tradeMarkers = {
+    id: 'tradeMarkers',
+    afterDatasetsDraw: function (chart) {
+      var ctx = chart.ctx, meta = chart.getDatasetMeta(0);
+      meta.data.forEach(function (pt, i) {
+        if (i === 0) return;
+        var t = closed[i - 1]; if (!t) return;
+        var win = t.result.win, col = win ? '#52E6BD' : '#F2563A', x = pt.x, y = pt.y;
+        ctx.save();
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        if (win) { ctx.moveTo(x, y - 15); ctx.lineTo(x - 4.5, y - 8); ctx.lineTo(x + 4.5, y - 8); }
+        else { ctx.moveTo(x, y + 15); ctx.lineTo(x - 4.5, y + 8); ctx.lineTo(x + 4.5, y + 8); }
+        ctx.closePath(); ctx.fill();
+        ctx.font = '600 9px Saira, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(t.ticker + ' ' + (t.result.pnl_pct >= 0 ? '+' : '') + t.result.pnl_pct.toFixed(0) + '%', x, win ? y - 19 : y + 27);
+        ctx.restore();
+      });
+    }
+  };
   pnlEqChart = new Chart($('pnlEqChart'), {
     type: 'line',
     data: { datasets: [{ label: 'equity', data: pts, borderColor: '#e8b94f', backgroundColor: 'rgba(232,185,79,0.12)',
-      pointBackgroundColor: '#e8b94f', tension: 0.15, fill: true, pointRadius: 3 }] },
+      pointBackgroundColor: ptCols, pointBorderColor: ptCols, tension: 0.15, fill: true, pointRadius: 4 }] },
+    plugins: [tradeMarkers],
     options: {
       responsive: true, maintainAspectRatio: false, animation: false,
+      layout: { padding: { top: 28, bottom: 24 } },
       scales: {
         x: { type: 'linear', title: { display: true, text: 'closed trade #', color: '#b39a52' }, ticks: { color: '#b39a52', stepSize: 1 }, grid: { color: 'rgba(106,85,31,0.25)' } },
         y: { title: { display: true, text: 'paper account $', color: '#b39a52' }, ticks: { color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' } }
       },
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return '$' + Math.round(c.parsed.y).toLocaleString(); } } } }
+      plugins: { legend: { display: false }, tooltip: { callbacks: {
+        title: function (c) { var i = c[0].parsed.x; return i === 0 ? 'Start' : (closed[i - 1] ? closed[i - 1].ticker + ' · ' + (closed[i - 1].tier1 ? 'Priority' : 'Potential') : ''); },
+        label: function (c) { var i = c.parsed.x, t = i > 0 ? closed[i - 1] : null; return '$' + Math.round(c.parsed.y).toLocaleString() + (t ? '  (' + (t.result.pnl_pct >= 0 ? '+' : '') + t.result.pnl_pct.toFixed(1) + '%)' : ''); } } } }
     }
   });
 
