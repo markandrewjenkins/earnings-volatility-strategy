@@ -2,7 +2,7 @@
  "created_utc": "2026-07-03T15:18:01+00:00",
  "account": {
   "start": 10000.0,
-  "equity": 10392.32,
+  "equity": 9765.75,
   "mode": "fractional (idealized), two-tier + circuit breaker",
   "sizing": {
    "rec": 0.07,
@@ -13,98 +13,7 @@
   },
   "peak_equity": 11131.85
  },
- "open": [
-  {
-   "id": "NFLX-20260716",
-   "ticker": "NFLX",
-   "name": "Netflix, Inc.",
-   "earnings_date": "2026-07-16",
-   "when": "AMC",
-   "tier": "RECOMMENDED",
-   "tier1": true,
-   "frac": 0.2037,
-   "odds": 0.772,
-   "rank_score": 96.0,
-   "structure": "call calendar",
-   "strike": 74.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-17",
-   "entry": {
-    "ts_utc": "2026-07-16T19:41:37+00:00",
-    "et": "2026-07-16T15:41-04:00",
-    "stock_price": 73.68499755859375,
-    "front_mid": 3.225,
-    "back_mid": 4.625,
-    "debit": 1.4,
-    "expected_move_pct": 8.98,
-    "spread_pct": 0.0113,
-    "combo_spread_pct": 0.037,
-    "iv30_rv30": 1.453,
-    "ts_slope_0_45": -0.02362
-   }
-  },
-  {
-   "id": "RF-20260717",
-   "ticker": "RF",
-   "name": "Regions Financial Corporation",
-   "earnings_date": "2026-07-17",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.0729,
-   "odds": 0.667,
-   "rank_score": 68.3,
-   "structure": "call calendar",
-   "strike": 32.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-17",
-   "entry": {
-    "ts_utc": "2026-07-16T19:41:37+00:00",
-    "et": "2026-07-16T15:41-04:00",
-    "stock_price": 32.290000915527344,
-    "front_mid": 0.875,
-    "back_mid": 1.35,
-    "debit": 0.475,
-    "expected_move_pct": 4.8,
-    "spread_pct": 0.1325,
-    "combo_spread_pct": 0.333,
-    "iv30_rv30": 1.503,
-    "ts_slope_0_45": -0.0117
-   }
-  },
-  {
-   "id": "FNB-20260716",
-   "ticker": "FNB",
-   "name": "F.N.B. Corporation",
-   "earnings_date": "2026-07-16",
-   "when": "AMC",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.0758,
-   "odds": 0.673,
-   "rank_score": 66.4,
-   "structure": "call calendar",
-   "strike": 20.0,
-   "front_exp": "2026-07-17",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-17",
-   "entry": {
-    "ts_utc": "2026-07-16T19:41:38+00:00",
-    "et": "2026-07-16T15:41-04:00",
-    "stock_price": 19.40999984741211,
-    "front_mid": 0.075,
-    "back_mid": 0.3,
-    "debit": 0.225,
-    "expected_move_pct": 1.16,
-    "spread_pct": 0.4167,
-    "combo_spread_pct": 0.556,
-    "iv30_rv30": 2.16,
-    "ts_slope_0_45": -0.00899
-   }
-  }
- ],
+ "open": [],
  "closed": [
   {
    "id": "FAST-20260714",
@@ -528,7 +437,151 @@
     "pnl_usd": -112.58,
     "equity_after": 10392.32
    }
+  },
+  {
+   "id": "NFLX-20260716",
+   "ticker": "NFLX",
+   "name": "Netflix, Inc.",
+   "earnings_date": "2026-07-16",
+   "when": "AMC",
+   "tier": "RECOMMENDED",
+   "tier1": true,
+   "frac": 0.2037,
+   "odds": 0.772,
+   "rank_score": 96.0,
+   "structure": "call calendar",
+   "strike": 74.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-17",
+   "entry": {
+    "ts_utc": "2026-07-16T19:41:37+00:00",
+    "et": "2026-07-16T15:41-04:00",
+    "stock_price": 73.68499755859375,
+    "front_mid": 3.225,
+    "back_mid": 4.625,
+    "debit": 1.4,
+    "expected_move_pct": 8.98,
+    "spread_pct": 0.0113,
+    "combo_spread_pct": 0.037,
+    "iv30_rv30": 1.453,
+    "ts_slope_0_45": -0.02362
+   },
+   "exit": {
+    "ts_utc": "2026-07-17T13:41:33+00:00",
+    "et": "2026-07-17T09:41-04:00",
+    "stock_price": 65.70010375976562,
+    "front_mid": 3.72,
+    "back_mid": 5.0,
+    "value": 1.28,
+    "actual_move_pct": 10.84
+   },
+   "result": {
+    "pnl_pct": -13.59,
+    "gross_pnl_pct": -8.57,
+    "cost_drag_pct": 5.02,
+    "win": false,
+    "alloc_usd": 2116.92,
+    "pnl_usd": -287.74,
+    "equity_after": 10104.58
+   }
+  },
+  {
+   "id": "RF-20260717",
+   "ticker": "RF",
+   "name": "Regions Financial Corporation",
+   "earnings_date": "2026-07-17",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.0729,
+   "odds": 0.667,
+   "rank_score": 68.3,
+   "structure": "call calendar",
+   "strike": 32.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-17",
+   "entry": {
+    "ts_utc": "2026-07-16T19:41:37+00:00",
+    "et": "2026-07-16T15:41-04:00",
+    "stock_price": 32.290000915527344,
+    "front_mid": 0.875,
+    "back_mid": 1.35,
+    "debit": 0.475,
+    "expected_move_pct": 4.8,
+    "spread_pct": 0.1325,
+    "combo_spread_pct": 0.333,
+    "iv30_rv30": 1.503,
+    "ts_slope_0_45": -0.0117
+   },
+   "exit": {
+    "ts_utc": "2026-07-17T13:41:35+00:00",
+    "et": "2026-07-17T09:41-04:00",
+    "stock_price": 31.889999389648438,
+    "front_mid": 0.85,
+    "back_mid": 1.4,
+    "value": 0.55,
+    "actual_move_pct": 1.24
+   },
+   "result": {
+    "pnl_pct": -18.73,
+    "gross_pnl_pct": 15.79,
+    "cost_drag_pct": 34.52,
+    "win": false,
+    "alloc_usd": 736.62,
+    "pnl_usd": -137.97,
+    "equity_after": 9966.61
+   }
+  },
+  {
+   "id": "FNB-20260716",
+   "ticker": "FNB",
+   "name": "F.N.B. Corporation",
+   "earnings_date": "2026-07-16",
+   "when": "AMC",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.0758,
+   "odds": 0.673,
+   "rank_score": 66.4,
+   "structure": "call calendar",
+   "strike": 20.0,
+   "front_exp": "2026-07-17",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-17",
+   "entry": {
+    "ts_utc": "2026-07-16T19:41:38+00:00",
+    "et": "2026-07-16T15:41-04:00",
+    "stock_price": 19.40999984741211,
+    "front_mid": 0.075,
+    "back_mid": 0.3,
+    "debit": 0.225,
+    "expected_move_pct": 1.16,
+    "spread_pct": 0.4167,
+    "combo_spread_pct": 0.556,
+    "iv30_rv30": 2.16,
+    "ts_slope_0_45": -0.00899
+   },
+   "exit": {
+    "ts_utc": "2026-07-17T13:41:37+00:00",
+    "et": "2026-07-17T09:41-04:00",
+    "stock_price": 19.059999465942383,
+    "front_mid": 0.09,
+    "back_mid": 0.34,
+    "value": 0.25,
+    "actual_move_pct": 1.8
+   },
+   "result": {
+    "pnl_pct": -26.59,
+    "gross_pnl_pct": 11.11,
+    "cost_drag_pct": 37.7,
+    "win": false,
+    "alloc_usd": 755.47,
+    "pnl_usd": -200.86,
+    "equity_after": 9765.75
+   }
   }
  ],
- "updated_utc": "2026-07-17T13:36:10+00:00"
+ "updated_utc": "2026-07-17T13:41:37+00:00"
 }
