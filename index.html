@@ -204,11 +204,10 @@ tr.selected td { background: #241d0e }
 #gantt-grid { display: flex; flex-direction: column; padding-top: 14px }
 .g-cell { min-height: 26px }
 #g-mon2 .gm-hd, #gm-left .gm-hd { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap }
-.gm-frow { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
-.gm-frow .l { flex: 0 0 82px; font-size: 0.66rem; font-weight: 600; color: var(--text); line-height: 1.2; }
-.gm-frow .gm-fdesc { flex: 1 1 auto; min-width: 0; font-size: 0.6rem; color: var(--gray); line-height: 1.25; }
-.gm-frow .gm-fbar { flex: 0 0 88px; }
-.gm-frow .v { flex: 0 0 auto; min-width: 50px; text-align: right; font-size: 0.66rem; font-weight: 700; white-space: nowrap; }
+.gm-frow { display: grid; grid-template-columns: minmax(58px,1fr) 2fr 2fr 2fr; align-items: center; gap: 12px; margin-bottom: 3px; }
+.gm-frow .l { font-size: 0.66rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+.gm-frow .gm-fdesc { min-width: 0; font-size: 0.6rem; color: var(--gray); line-height: 1.25; }
+.gm-frow .v { text-align: right; font-size: 0.66rem; font-weight: 700; white-space: nowrap; }
 .gm-fbar { position: relative; height: 5px; background: #0a0805; border: 1px solid var(--border); border-radius: 3px; overflow: visible; }
 .gm-fbar.hatch { background: repeating-linear-gradient(45deg,transparent 0 5px,rgba(106,85,31,0.28) 5px 9px); }
 .tc-act { border-radius: 6px; padding: 8px 12px; margin-top: 7px; }
@@ -249,16 +248,15 @@ tr.selected td { background: #241d0e }
 .mc h4 { color: var(--yellow); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px }
 .mc p, .mc li { font-size: 0.82rem; color: var(--text); line-height: 1.6 }
 .mc .big { font-size: 1.35rem; font-weight: 700 }
-.prose { font-size: 0.88rem; line-height: 1.75; max-width: 1000px }
+.prose { font-size: 0.88rem; line-height: 1.75 }
 .prose h3 { color: var(--yellow); margin: 14px 0 6px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.03em }
 .prose p { margin-bottom: 9px }
 .prose ul { margin: 0 0 9px 22px }
 .prose li { margin-bottom: 4px }
 .prose code { background: #1f1a10; border: 1px solid var(--border); border-radius: 3px; padding: 0 5px; font-size: 0.8rem; color: var(--cyan) }
-#tab-about .prose { max-width: none; }
-#tab-about a { color: #ff8f43; font-weight: 700; text-decoration: none; }
+#tab-about a { color: var(--yellow); font-weight: 700; text-decoration: none; }
 #tab-about a:hover { text-decoration: underline; }
-#tab-about a:visited { color: #b06a34; }
+#tab-about a:visited { color: #b39a52; }
 details.panel > summary { list-style: none; cursor: pointer; }
 details.panel > summary::-webkit-details-marker { display: none; }
 details.panel:not([open]) > summary .t::after { content: ' ▸ expand'; color: var(--dim); font-weight: 400; font-size: 0.72rem; text-transform: none; letter-spacing: 0; }
@@ -340,8 +338,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   <!-- ══ SCANNER TAB ══ -->
   <div id="tab-scanner">
     <div class="panel">
-      <div class="ph"><span class="t">Trade Calendar — Earnings Events by Trade Entry Day</span>
-        <span class="dimtxt" style="text-transform:none;font-size:0.7rem">Lanes = rating · drag / scroll to pan · wheel to zoom · click a lane label to collapse · <b>hover</b> a ticker for its read-out below · <b>left-click</b> a ticker to lock the read-out, <b>left-click it again</b> to unlock. Hatched = developing.</span></div>
+      <div class="ph"><span class="t">Trade Calendar · Earnings Events by Trade Entry Day</span>
+        <span style="text-transform:none;font-size:0.72rem;color:var(--yellow);white-space:nowrap"><b>Enter</b> ~3:45pm ET · <b>Exit</b> ~9:45am next open</span>
+        <span class="dimtxt" style="text-transform:none;font-size:0.7rem">Lanes = rating · drag / scroll to pan · wheel to zoom · click a lane label to collapse · <b>hover</b> a ticker for its read-out below · <b>left-click</b> to lock, again to unlock. Hatched = developing.</span></div>
       <div id="tc-head" class="pb" style="display:none;border-bottom:1px solid var(--border)"></div>
       <div class="pb">
         <div class="gantt-scroll" id="gantt-scroll"><div id="gantt-grid"></div></div>
@@ -377,8 +376,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
   <!-- ══ P&L TRACKER TAB ══ -->
   <div id="tab-pnl" style="display:none">
-    <div class="note-box"><strong>Paper-trade summary.</strong> An automated $10,000 account trading every Priority/Potential
-      calendar at delayed mids — entered ~3:45 PM ET, exited ~9:45 AM ET next session. Sizing concentrates on conviction: Potential ~7% (odds-scaled 3–12%), Priority ~15% up to 22% on high-odds names; max 3 concurrent, drawdown circuit breaker. Full ledger on <b>Trades Detail</b>; sizing rationale
+    <div class="note-box"><strong>Paper-trade summary.</strong> An automated $10,000 account trading every Strong/Moderate signal
+      calendar at delayed mids — entered ~3:45 PM ET, exited ~9:45 AM ET next session. Sizing scales with signal strength: Moderate ~7% (odds-scaled 3–12%), Strong ~15% up to 22% on high-odds names; max 3 concurrent, drawdown circuit breaker. Full ledger on <b>Trades Detail</b>; sizing rationale
       on <b>How It Works</b>. Delayed mids grade the strategy, not your fills.</div>
 
     <div class="kpi-grid" id="pnl-kpis" style="margin-top:12px"></div>
@@ -397,7 +396,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
   <!-- ══ TRADES DETAIL ══ -->
   <div id="tab-trades" style="display:none">
-    <div class="note-box">The paper tracker's full ledger. Positions are opened ~3:45 PM ET on the entry day (Priority / Potential names) and closed ~9:45 AM ET the next session. Fills use delayed Yahoo mids; the <b>Costs</b> column applies IBKR commissions plus the real combo bid/ask spread, so net return reflects what a live account would keep.</div>
+    <div class="note-box">The paper tracker's full ledger. Positions are opened ~3:45 PM ET on the entry day (Strong / Moderate signals) and closed ~9:45 AM ET the next session. Fills use delayed Yahoo mids; the <b>Costs</b> column applies IBKR commissions plus the real combo bid/ask spread, so net return reflects what a live account would keep.</div>
 
     <div class="panel" style="margin-top:12px">
       <div class="ph"><span class="t">Open positions</span></div>
@@ -458,20 +457,20 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
 
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Ratings — the action scale</span></div>
       <div class="pb prose">
-        <p>One hierarchy; each level tells you what to do:<br>
-           <span class="pill pill-t1">PRIORITY ★</span>&nbsp; edge <em>and</em> execution confirmed — take it at full size ·
-           <span class="pill pill-rec">POTENTIAL</span>&nbsp; the research's three edge filters pass but an execution check doesn't — tradeable at base size ·
-           <span class="pill pill-con">MARGINAL</span>&nbsp; slope passes plus exactly one other filter — monitor into the close ·
-           <span class="pill pill-avoid">DISQUALIFIED</span>&nbsp; no trade (muted grey deliberately — passivity isn't danger; coral is reserved for live warnings like FOMC ⚡).
-           Mapping to the original research's terms: PRIORITY/POTENTIAL = "Recommended", MARGINAL = "Consider", DISQUALIFIED = "Avoid".</p>
-        <p><strong style="color:var(--yellow)">PRIORITY is a strict subset of POTENTIAL</strong> and is treated distinctly
-           everywhere: its own odds base (70% vs 66%), its own sizing anchor (10% vs 6% of equity), and priority when the
-           concurrency cap binds. A trade earns the star by passing all six execution &amp; event checks: ATM spread ≤ 10% of mid, price ≥ $20,
+        <p>One scale, describing how strongly a name's signal reads against the strategy's criteria. These are
+           observations about the data, not trade advice:<br>
+           <span class="pill pill-t1">STRONG ★</span>&nbsp; every edge <em>and</em> execution filter clears ·
+           <span class="pill pill-rec">MODERATE</span>&nbsp; the research's three edge filters clear, but an execution check does not ·
+           <span class="pill pill-con">WEAK</span>&nbsp; slope clears plus exactly one other filter ·
+           <span class="pill pill-avoid">NONE</span>&nbsp; the filters do not clear (muted grey deliberately — absence of signal isn't danger; coral is reserved for live warnings like FOMC ⚡).
+           Mapping to the original research's terms: STRONG/MODERATE = "Recommended", WEAK = "Consider", NONE = "Avoid".</p>
+        <p><strong style="color:var(--yellow)">STRONG is a strict subset of MODERATE</strong> and is treated distinctly
+           everywhere: its own odds base (70% vs 66%), its own sizing anchor, and precedence when the concurrency cap binds.
+           A signal reads STRONG only when all six execution &amp; event checks also clear: ATM spread ≤ 10% of mid, price ≥ $20,
            expected move ≥ 1.15× the stock's own historical earnings moves, ATM open interest ≥ 500, the earnings
            date confirmed (Nasdaq and Yahoo agree within a day), and no FOMC decision within ±1 trading day of the trade
-           window. In short: POTENTIAL says the <em>edge</em> is there;
-           PRIORITY says you can actually <em>capture</em> it after real-world execution costs. Every threshold is shown
-           live in the Scanner tab's signal monitor.</p>
+           window. In short: MODERATE says the <em>edge</em> is present; STRONG says it also survives real-world execution
+           costs. Every threshold is shown live in the Scanner tab's signal monitor.</p>
       </div>
     </div>
 
@@ -555,9 +554,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     <div style="height:1px;background:var(--border2);margin:22px 0 14px"></div>
     <h2 style="color:var(--yellow);font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin:6px 4px 10px">Improvements &amp; refinements</h2>
     <div class="note-box"><strong>Goal:</strong> raise win rate and per-trade return over the baseline three-filter model.
-      The first three ideas are implemented live in this scanner as the <span class="pill pill-t1">PRIORITY ★</span> rating;
+      The first three ideas are implemented live in this scanner as the <span class="pill pill-t1">STRONG ★</span> signal;
       the rest are candidates for the backtest queue.</div>
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Implemented in the scanner (Priority)</span></div>
+    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Implemented in the scanner (Strong signal)</span></div>
       <div class="pb mc-grid">
         <div class="mc"><h4>A · Premium richness vs history</h4>
           <p>Compare today's option-implied expected move against the stock's own average realized earnings move
@@ -578,13 +577,13 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           exactly the trade this filter exists to block.)</p></div>
         <div class="mc"><h4>C3 · Confirmed earnings date</h4>
           <p>Nasdaq and Yahoo must agree on the date within ±1 day. A projected (unconfirmed) date that shifts means you
-          sold a calendar around an event that isn't there — pure decay loss with no IV crush. Blocks Priority until
+          sold a calendar around an event that isn't there — pure decay loss with no IV crush. Holds the signal below Strong until
           the sources agree.</p></div>
       </div>
     </div>
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">What the data says — conditioner study (2,432 earnings events, 102 tickers, ~2019–2026)</span></div>
+    <details class="panel" style="margin-top:12px"><summary class="ph"><span class="t">What the data says · conditioner study (2,432 events, 102 tickers, ~2019–2026)</span></summary>
       <div class="pb prose">
-        <p>We measured <code>move_z</code> — each earnings reaction normalized by that stock's own trailing 21-day
+        <p>We measured <code>move_z</code> · each earnings reaction normalized by that stock's own trailing 21-day
         volatility — across 2,432 past events, then bucketed by market and history conditions. Bigger move_z = worse
         for short earnings vol. "Blowthrough" = share of events with move_z &gt; 2. Baseline: median 2.10, blowthrough 52.1%.
         Full data: <code>analysis/conditioner_study.json</code>. *** = bootstrap 95% CI excludes zero.</p>
@@ -593,7 +592,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         <table>
           <thead><tr><th>Condition</th><th>n</th><th>Median z</th><th>Blowthrough</th><th>vs rest</th><th>Verdict for the strategy</th></tr></thead>
           <tbody>
-            <tr><td>FOMC within ±1 trading day</td><td>482</td><td class="neg">2.39</td><td class="neg">56.6%</td><td>+0.34 ***</td><td><b style="color:var(--yellow)">Now blocks Priority</b> — Fed vol lands inside the trade</td></tr>
+            <tr><td>FOMC within ±1 trading day</td><td>482</td><td class="neg">2.39</td><td class="neg">56.6%</td><td>+0.34 ***</td><td><b style="color:var(--yellow)">Now caps the signal below Strong</b> — Fed vol lands inside the trade</td></tr>
             <tr><td>VIX &lt; 15 (calm)</td><td>288</td><td class="neg">2.66</td><td class="neg">59.7%</td><td>+0.61 ***</td><td>Counterintuitive: calm ≠ safe. IV/RV is least trustworthy here — lean on the richness check</td></tr>
             <tr><td>VIX ≥ 28 (stressed)</td><td>283</td><td class="pos">1.67</td><td class="pos">41.7%</td><td>−0.50 ***</td><td>Relative reactions are <em>smaller</em>; the stressed-regime risk is the calendar's back-month IV (vega), not the move</td></tr>
             <tr><td>VIX/VIX3M inverted</td><td>158</td><td class="pos">1.46</td><td class="pos">38.6%</td><td>−0.69 ***</td><td>Same pattern as high VIX</td></tr>
@@ -613,9 +612,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         understates that effect). Universe is 102 liquid large/mid caps — survivorship applies. Sector-cohort buckets use
         peers within this universe.</p>
       </div>
-    </div>
+    </details>
 
-    <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Backtest queue — most promising next</span></div>
+    <details class="panel" style="margin-top:12px"><summary class="ph"><span class="t">Backtest queue · candidate refinements</span></summary>
       <div class="pb mc-grid">
         <div class="mc"><h4>D0 · Sector-cohort heat filter <span style="color:var(--teal)">(NOW LIVE)</span></h4>
           <p>The study's strongest effect: quiet same-sector cohorts → median z 0.79 / 17% blowthrough vs 52% baseline;
@@ -638,7 +637,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           back-month IV can crush with the front. Verdict: stay advisory, prefer the straddle structure over calendars
           in stressed regimes, and demand extra premium richness when VIX &lt; 15.</p></div>
         <div class="mc"><h4>G · Double calendar variant</h4>
-          <p>For Priority setups with expected move ≫ strike spacing, a double calendar (one at +EM strike, one at −EM)
+          <p>For Strong setups with expected move ≫ strike spacing, a double calendar (one at +EM strike, one at −EM)
           widens the profit zone and cuts gamma pain when the stock moves ~1× the expected move — trading a bit of
           peak return for win rate.</p></div>
         <div class="mc"><h4>H · Scale by Kelly, cap correlation</h4>
@@ -649,9 +648,9 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
           discretionary "let it ride" holding re-exposes you to post-earnings drift, which is a <em>negative</em>-edge
           period for short vol.</p></div>
       </div>
-    </div>
+    </details>
     <div style="height:1px;background:var(--border2);margin:22px 0 14px"></div>
-    <h2 style="color:var(--yellow);font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin:6px 4px 10px">Simulation — 10-year Monte Carlo</h2>
+    <h2 style="color:var(--yellow);font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin:6px 4px 10px">Simulation · 10-year Monte Carlo</h2>
     <div class="note-box"><strong>What this is (and isn't):</strong> free historical option-chain data doesn't exist,
       so a tick-level 10-year backtest isn't possible. Instead: <strong>Monte Carlo over 4,000 simulated 10-year paths</strong>,
       with per-trade return distributions calibrated to the published research moments (calendar: mean +7.3%/trade, σ28%,
@@ -716,11 +715,11 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </div>
 
     <details class="panel" style="margin-top:12px">
-      <summary class="ph"><span class="t">Two-tier grid — every REC% × Priority% combination</span></summary>
-      <div class="pb prose" style="padding-bottom:0"><p class="dimtxt" style="font-size:0.78rem;margin:0">40% of trades assumed Priority (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</p></div>
+      <summary class="ph"><span class="t">Two-tier grid · every Moderate% × Strong% combination</span></summary>
+      <div class="pb prose" style="padding-bottom:0"><p class="dimtxt" style="font-size:0.78rem;margin:0">40% of trades assumed Strong (+1.5pp mean). "Longest DD" = median / worst-5% months spent below a prior equity peak — the recovery-speed number. <b>P(ever halved)</b> = share of 10-year paths that at some point sat 50%+ below their previous peak.</p></div>
       <div class="pb" style="overflow-x:auto">
         <table>
-          <thead><tr><th>REC / Priority</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
+          <thead><tr><th>Moderate / Strong</th><th>Avg exposure</th><th>Median CAGR</th><th>Mean max DD</th>
             <th>Worst 5% DD</th><th>Best 5% DD</th><th>Longest DD (med / p95)</th>
             <th>Recovery from ≥30% trough (med · ≤6m)</th><th>P(ever halved)</th></tr></thead>
           <tbody id="grid-tbody"></tbody>
@@ -729,7 +728,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </details>
 
     <details class="panel" style="margin-top:12px">
-      <summary class="ph"><span class="t">Dynamic sizing — scaling by your own drawdown</span></summary>
+      <summary class="ph"><span class="t">Dynamic sizing · scaling by your own drawdown</span></summary>
       <div class="pb" style="overflow-x:auto">
         <table>
           <thead><tr><th>Policy (base 6% / 12%)</th><th>Median CAGR</th><th>Mean max DD</th><th>Longest DD (med)</th><th>P(ever halved)</th></tr></thead>
@@ -747,8 +746,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         Cut-in-DD is the defensible throttle if you fear edge decay: shallower holes, but slower recoveries (longest DD
         stretches from 5.7 to 6.2 months) and less growth.</p>
         <p><strong style="color:var(--yellow)">The sound version of the instinct:</strong> scale size on <em>information</em>,
-        not on your own P&L — that's what the two-tier REC/Tier-1 split already does, and what the conditioner study
-        supports extending: downsize or skip FOMC-window trades (done — blocks Priority), size down after hot sector cohorts,
+        not on your own P&L — that's what the two-tier Moderate/Strong split already does, and what the conditioner study
+        supports extending: downsize or skip FOMC-window trades (done — caps the signal below Strong), size down after hot sector cohorts,
         up after quiet ones, and demand extra richness when VIX &lt; 15. Your own losing streak carries no information;
         market conditions do.</p>
       </div>
@@ -767,7 +766,7 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         longer-dated month. Selling the expensive front month against the cheaper back month captures that gap when it
         collapses the morning after the report.</p>
         <p><strong>How to read the scanner.</strong> Tickers on the Trade Calendar are placed on their <em>trade-entry</em>
-        day, not their earnings day. For any name rated <strong>Priority</strong> or <strong>Potential</strong>, the calendar
+        day, not their earnings day. For any name whose signal reads <strong>Strong</strong> or <strong>Moderate</strong>, the calendar
         spread is entered around 3:45 PM ET that day and closed around 9:45 AM ET the next session, capturing the crush.
         Hover any ticker for its full read-out; the signal filters on the left show exactly how it scores against every
         criterion.</p>
@@ -810,8 +809,8 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
         of ownership over the underlying strategy research and accepts no responsibility for any trading results, losses, or
         decisions</strong> made on the basis of this page. Signals are model output on delayed data and can be wrong; anyone
         who trades does so entirely at their own risk.</p>
-        <p>Further work from the author is collected on the
-        <a href="https://markandrewjenkins.github.io/portfolio/" target="_blank" rel="noopener">portfolio site</a>.</p>
+        <p>Further work from the author is available on the
+        <a href="https://markandrewjenkins.github.io/portfolio/" target="_blank" rel="noopener">portfolio webpage</a>.</p>
       </div>
     </div>
   </div>
@@ -854,10 +853,10 @@ function showTab(name) {
 }
 
 function tierPill(ev) {
-  if (ev.tier1) return '<span class="pill pill-t1">PRIORITY ★</span>';
-  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">POTENTIAL</span>';
-  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">MARGINAL</span>';
-  return '<span class="pill pill-avoid">DISQUALIFIED</span>';
+  if (ev.tier1) return '<span class="pill pill-t1">STRONG ★</span>';
+  if (ev.tier === 'RECOMMENDED') return '<span class="pill pill-rec">MODERATE</span>';
+  if (ev.tier === 'CONSIDER') return '<span class="pill pill-con">WEAK</span>';
+  return '<span class="pill pill-avoid">NONE</span>';
 }
 function whenPill(w) {
   if (w === 'AMC') return '<span class="pill pill-amc">AMC</span>';
@@ -865,9 +864,9 @@ function whenPill(w) {
   return '<span class="pill pill-tns" title="Announcement time not supplied">TBD</span>';
 }
 function likePill(l) {
-  if (l === 'HIGH') return '<span class="pill pill-rec">POTENTIAL</span>';
-  if (l === 'MEDIUM') return '<span class="pill pill-con">MARGINAL</span>';
-  return '<span class="pill pill-avoid">DISQUALIFIED</span>';
+  if (l === 'HIGH') return '<span class="pill pill-rec">MODERATE</span>';
+  if (l === 'MEDIUM') return '<span class="pill pill-con">WEAK</span>';
+  return '<span class="pill pill-avoid">NONE</span>';
 }
 function mismatchFlag(ev) {
   var s = '';
@@ -896,9 +895,9 @@ function renderKpis() {
   var avgMove = moves.length ? (moves.reduce(function (a, b) { return a + b; }, 0) / moves.length) : null;
   var kpis = [
     { l: 'Tradeable today', v: String(evs.length), s: 'AMC today + BMO next session' },
-    { l: 'Potential', v: String(c.recommended), s: 'edge filters pass', c: 'var(--teal)' },
-    { l: 'Marginal', v: String(c.consider), s: 'slope + 1 of 2', c: 'var(--amber)' },
-    { l: 'Priority ★', v: String(c.tier1), s: 'edge + execution confirmed', c: 'var(--yellow)' },
+    { l: 'Moderate', v: String(c.recommended), s: 'core filters clear', c: 'var(--teal)' },
+    { l: 'Weak', v: String(c.consider), s: 'slope + 1 of 2', c: 'var(--amber)' },
+    { l: 'Strong ★', v: String(c.tier1), s: 'all filters clear', c: 'var(--yellow)' },
     { l: 'Avg expected move', v: avgMove === null ? '—' : fmt(avgMove, 1) + '%', s: 'ATM straddle / price' },
     { l: 'Watchlist HIGH', v: String(c.watch_high || 0), s: 'likely qualifiers, next 30d', c: 'var(--cyan)' },
     { l: 'Calendar events', v: String(c.calendar_events), s: (DATA.horizon_days || 30) + '-day horizon' }
@@ -995,10 +994,10 @@ function reportTxt(ev) {
          ev.when === 'AMC' ? 'reports after the close' : 'report time unconfirmed';
 }
 var LANES = [
-  { id: 'exec',  lbl: '<span class="pill pill-t1">PRIORITY ★</span>',  cls: 'gc-exec' },
-  { id: 'qual',  lbl: '<span class="pill pill-rec">POTENTIAL</span>', cls: 'gc-qual' },
-  { id: 'watch', lbl: '<span class="pill pill-con">MARGINAL</span>',   cls: 'gc-watch' },
-  { id: 'aside', lbl: '<span class="pill pill-avoid">DISQUALIFIED</span>', cls: 'gc-aside' }
+  { id: 'exec',  lbl: '<span class="pill pill-t1">STRONG ★</span>',  cls: 'gc-exec' },
+  { id: 'qual',  lbl: '<span class="pill pill-rec">MODERATE</span>', cls: 'gc-qual' },
+  { id: 'watch', lbl: '<span class="pill pill-con">WEAK</span>',   cls: 'gc-watch' },
+  { id: 'aside', lbl: '<span class="pill pill-avoid">NONE</span>', cls: 'gc-aside' }
 ];
 function laneOf(ev, isW) {
   if (isW) return ev.likelihood === 'HIGH' ? 'qual' : ev.likelihood === 'MEDIUM' ? 'watch' : 'aside';
@@ -1118,68 +1117,68 @@ function ganttMon(t, isW, hov) {
   for (var i = 0; i < pool.length; i++) if (pool[i].ticker === t) { ev = pool[i]; break; }
   if (!ev) return;
   var th = DATA.thresholds, buy = entryDateOf(ev), sell = sellDateOf(ev);
-  var evp = (ev.odds !== null && ev.odds !== undefined) ? (ev.odds * 22 - (1 - ev.odds) * 21.2) : null;
-  var actLabel = ev.tier1 ? 'PRIORITY \u2014 TRADE THIS' : ev.tier === 'RECOMMENDED' ? 'POTENTIAL \u2014 TRADEABLE' : ev.tier === 'CONSIDER' ? 'MARGINAL \u2014 WATCH ONLY' : 'DISQUALIFIED \u2014 NO TRADE';
   var actCol = ev.tier1 ? '#5cf0c2' : ev.tier === 'RECOMMENDED' ? 'var(--yellow)' : ev.tier === 'CONSIDER' ? 'var(--coral)' : '#b5b5b5';
-  var idLine = '<div style="display:flex;align-items:baseline;gap:13px;flex-wrap:wrap">' +
+  var tierName = ev.tier1 ? 'STRONG' : ev.tier === 'RECOMMENDED' ? 'MODERATE' : ev.tier === 'CONSIDER' ? 'WEAK' : 'NONE';
+  var tierSub = ev.tier1 ? 'all filters clear' : ev.tier === 'RECOMMENDED' ? 'core filters clear' : ev.tier === 'CONSIDER' ? 'one filter shy' : 'filtered out';
+  var dot = '<span style="color:var(--border2);margin:0 9px">\u00b7</span>';
+  var idLine = '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">' +
     '<b style="font-size:1.3rem;color:var(--white)">' + ev.ticker + '</b>' +
-    '<span class="dimtxt" style="font-size:0.76rem">' + (ev.name || '') + (ev.sector ? ' \u00b7 ' + ev.sector : '') + '</span>' + mismatchFlag(ev) +
-    '<span class="live-item"><span class="live-lbl">Rating</span><span class="live-val">' + (ev.rank_score || '\u2014') + '/100</span></span>' +
-    '<span class="live-item"><span class="live-lbl">Odds</span>' + oddsTxt(ev) + '</span>' +
-    (evp !== null ? '<span class="live-item"><span class="live-lbl">Est. EV</span><span class="live-val ' + (evp >= 0 ? 'pos' : 'neg') + '">' + (evp >= 0 ? '+' : '') + evp.toFixed(1) + '%</span></span>' : '') +
-    (gmLock === t ? '<span class="live-lbl" style="margin-left:auto;color:var(--yellow)">\uD83D\uDD12 LOCKED \u2014 CLICK TICKER TO UNLOCK</span>' : '') + '</div>';
+    '<span class="dimtxt" style="font-size:0.82rem">' + (ev.name || '') + (ev.sector ? '&nbsp;&nbsp;\u00b7&nbsp;&nbsp;' + ev.sector : '') + '</span>' + mismatchFlag(ev) +
+    (gmLock === t ? '<span class="live-lbl" style="margin-left:auto;color:var(--yellow)">\uD83D\uDD12 LOCKED \u00b7 CLICK TICKER TO UNLOCK</span>' : '') + '</div>';
+  var ratingLine = '<span style="font-weight:700;font-size:0.92rem;letter-spacing:0.02em;color:' + actCol + '">' + tierName + '</span>' +
+    '<span style="font-size:0.8rem;color:' + actCol + ';opacity:0.75"> (' + tierSub + ')</span>' +
+    (isW ? '' : dot + '<span class="live-lbl">Rating</span> <b style="color:var(--white)">' + (ev.rank_score || '\u2014') + '/100</b>' +
+      '<span style="margin-left:15px"></span><span class="live-lbl">Odds</span> ' + oddsTxt(ev));
   var tradeLine;
   if (!isW && (ev.tier1 || ev.tier === 'RECOMMENDED') && ev.front_exp && ev.back_exp) {
     var dc = ev.double_calendar, theDebit = dc ? dc.debit_est : ev.calendar_debit_est;
+    var structName = dc ? 'Double Calendar' : 'Call Calendar';
     var legs = dc
-      ? '<b>double calendar</b> \u2014 sell ' + ev.front_exp + ' / buy ' + ev.back_exp + ' <b>calls @ ' + dc.strike_up + '</b> and <b>puts @ ' + dc.strike_dn + '</b>'
-      : '<b>call calendar</b> \u2014 sell ' + ev.front_exp + ' / buy ' + ev.back_exp + ' <b>calls @ ' + ev.atm_strike + '</b>';
+      ? 'sell <b style="color:var(--white)">' + ev.front_exp + '</b> / buy <b style="color:var(--white)">' + ev.back_exp + '</b>' + dot + 'calls @ <b style="color:var(--white)">' + dc.strike_up + '</b> strike and puts @ <b style="color:var(--white)">' + dc.strike_dn + '</b> strike'
+      : 'sell <b style="color:var(--white)">' + ev.front_exp + '</b> / buy <b style="color:var(--white)">' + ev.back_exp + '</b>' + dot + 'ATM @ <b style="color:var(--white)">' + ev.atm_strike + '</b> strike';
     var n2 = (ev.suggested_frac && theDebit) ? Math.floor(acct() * ev.suggested_frac / (theDebit * 100)) : null;
-    var comboCol = (ev.enhanced && ev.enhanced.combo_liquid) ? 'var(--gray)' : 'var(--yellow)';
+    var comboOver = !(ev.enhanced && ev.enhanced.combo_liquid);
+    var comboNote = (ev.combo_spread_pct !== null && ev.combo_spread_pct !== undefined) ?
+      dot + '<span class="dimtxt">combo spread </span><b style="color:' + (comboOver ? 'var(--coral)' : 'var(--gray)') + '">~' + (ev.combo_spread_pct * 100).toFixed(0) + '%</b><span class="dimtxt"> of debit</span>' : '';
     tradeLine = '<div class="tc-act" style="border:1px solid ' + actCol + ';background:rgba(232,185,79,0.05)">' +
-      '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">' +
-        '<span style="font-weight:700;font-size:0.85rem;color:' + actCol + '">' + actLabel + '</span>' +
-        '<span style="font-size:0.72rem"><span class="live-lbl">OPEN</span> ~3:45 PM ET <b>' + buy + '</b> \u00b7 <span class="live-lbl">CLOSE</span> ~9:45 AM ET <b>' + sell + '</b> <span class="dimtxt">(post-earnings IV crush)</span></span>' +
-      '</div>' +
-      '<div style="font-size:0.78rem;margin-top:6px;line-height:1.6">' + legs + '</div>' +
-      '<div style="font-size:0.78rem;margin-top:3px;line-height:1.6">' +
-        (theDebit ? '<span class="live-lbl">DEBIT</span> <b>~$' + fmt(theDebit) + '</b> <span class="dimtxt">per spread</span>' : '') +
-        (n2 !== null ? ' \u00b7 <span class="live-lbl">SIZE</span> <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> \u2248 <b>$' + fmtInt(Math.round(acct() * ev.suggested_frac)) + '</b> (' + n2 + ' contract' + (n2 === 1 ? '' : 's') + ')' : '') + '</div>' +
-      (ev.combo_spread_pct !== null && ev.combo_spread_pct !== undefined ?
-        '<div style="font-size:0.7rem;margin-top:2px;padding-left:14px;color:var(--dim);line-height:1.5">' +
-          '<span style="color:var(--border2)">\u21b3</span> <span class="live-lbl">combo spread</span> <b style="color:' + comboCol + '">' + (ev.combo_spread_pct * 100).toFixed(0) + '%</b> of the debit \u2014 the bid/ask you cross entering and exiting (\u226415% qualifies for Priority). See the Combo filter at left.</div>' : '') +
+      '<div style="font-size:0.86rem;line-height:1.5">' + ratingLine + '</div>' +
+      '<div style="font-size:0.8rem;margin-top:7px;line-height:1.55"><span class="dimtxt">Enter</span> <b style="color:var(--yellow)">' + structName + '</b>' + dot + legs + '</div>' +
+      '<div style="font-size:0.8rem;margin-top:4px;line-height:1.55">' +
+        (theDebit ? '<span class="dimtxt">Debit</span> <b style="color:var(--white)">$' + fmt(theDebit) + '</b> <span class="dimtxt">per spread</span>' : '') +
+        (n2 !== null ? dot + '<span class="dimtxt">Size</span> <b style="color:var(--white)">' + (ev.suggested_frac * 100).toFixed(1) + '%</b> <span class="dimtxt">(' + n2 + ' contract' + (n2 === 1 ? '' : 's') + ') =</span> <b style="color:var(--white)">$' + fmtInt(Math.round(acct() * ev.suggested_frac)) + '</b>' : '') +
+        comboNote + '</div>' +
       '</div>';
   } else {
     tradeLine = '<div class="tc-act" style="border:1px solid ' + actCol + ';background:rgba(232,185,79,0.03)">' +
-      '<div style="font-weight:700;font-size:0.82rem;color:' + actCol + '">' + actLabel + '</div>' +
-      '<div style="font-size:0.72rem;margin-top:2px;color:var(--dim)">' +
-      (isW ? 'Forecast \u2014 full options analysis, odds and a trade ticket appear once this name is inside the 7-day window. Would enter ~3:45 PM ET on ' + buy + '.' :
-       ev.tier === 'CONSIDER' ? 'Near-miss \u2014 may be promoted to Potential or Priority as signals firm up into the close.' : 'Fails the edge filters \u2014 no trade.') + '</div></div>';
+      '<div style="font-size:0.86rem;line-height:1.5">' + ratingLine + '</div>' +
+      '<div style="font-size:0.76rem;margin-top:5px;color:var(--dim);line-height:1.5">' +
+      (isW ? 'Forecast only \u00b7 full options analysis, odds and a trade ticket appear once this name is inside the 7-day window. Would enter on ' + buy + '.' :
+       ev.tier === 'CONSIDER' ? 'Near-miss \u00b7 the signal may strengthen to Moderate or Strong as the filters firm up into the close.' : 'The edge filters do not clear \u00b7 no setup here.') + '</div></div>';
   }
   if ($('tc-head')) { $('tc-head').style.display = ''; $('tc-head').innerHTML = idLine + tradeLine; }
   var left = '<div class="gm-sub" style="border-top:none;padding-top:0;margin-top:0">SIGNAL FILTERS \u2014 how ' + ev.ticker + ' scores against the strategy criteria (white line = current value; shaded zone = pass range)</div>';
   if (isW) {
-    left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', 'liquidity \u2014 keeps premium rich') +
-      gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'below $20: coarse strikes, wide spreads') +
-      ['Slope', 'IV/RV', 'Rich', 'Spread', 'OI', 'Combo'].map(function (l2) { return '<div class="gm-frow"><span class="l">' + l2 + '</span><span class="gm-fdesc">forms in the final days before earnings</span><div class="gm-fbar hatch"></div><span class="v" style="color:var(--gray);font-weight:400">\u22645d out</span></div>'; }).join('');
+    left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', 'liquidity keeps premium rich') +
+      gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'under $20: coarse, wide spreads') +
+      ['Slope', 'IV/RV', 'Rich', 'Spread', 'OI', 'Combo'].map(function (l2) { return '<div class="gm-frow"><span class="l">' + l2 + '</span><span class="gm-fdesc">forms in the final days</span><div class="gm-fbar hatch"></div><span class="v" style="color:var(--gray);font-weight:400">\u22645d out</span></div>'; }).join('');
     $('gm-right').innerHTML = '<div class="dimtxt" style="font-size:0.74rem;padding-top:8px">Forecast only \u2014 the slope and IV/RV signals form in the final days. A full trade ticket and payoff diagram appear once this name is inside the 7-day window.</div>';
     if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
   } else {
     left += '<div class="gm-sub">EDGE &amp; EXECUTION FILTERS</div>';
-    left += gmBar('Slope \u2264 \u2212.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), 'backwardation \u2014 near-term IV richest (the core edge)');
-    left += gmBar('IV/RV \u2265 1.25', ev.iv30_rv30, 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), 'implied rich vs how the stock actually moves');
-    left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', 'more flow \u2192 richer, tighter premium');
-    left += gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'below $20: coarse strikes, wide spreads');
+    left += gmBar('Slope \u2264 \u2212.0041', ev.ts_slope_0_45 === null ? null : Math.max(-0.02, Math.min(0.005, ev.ts_slope_0_45)), -0.02, 0.005, th.ts_slope_0_45, false, ev.pass_slope, fmt(ev.ts_slope_0_45, 4), 'backwardation = front IV richest');
+    left += gmBar('IV/RV \u2265 1.25', ev.iv30_rv30, 0.5, 2.5, th.iv30_rv30, true, ev.pass_ivrv, fmt(ev.iv30_rv30, 2), 'implied rich vs actual moves');
+    left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', 'more flow, richer premium');
+    left += gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'under $20: coarse, wide spreads');
     var spv = (ev.atm_spread_pct === null || ev.atm_spread_pct === undefined) ? null : Math.min(ev.atm_spread_pct, 0.25);
-    left += gmBar('Spread \u2264 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? 'N/A' : fmt(ev.atm_spread_pct * 100, 1) + '%', 'ATM bid/ask; crossed at entry and exit');
-    left += gmBar('Rich \u2265 1.15\u00d7', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '\u00d7' : 'N/A', 'implied move vs this name\u2019s own history');
-    left += gmBar('OI \u2265 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : (ev.atm_oi || 1), 40, 40000, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? 'N/A' : fmtInt(ev.atm_oi), 'thin OI = one market maker at both ends');
+    left += gmBar('Spread \u2264 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? 'N/A' : fmt(ev.atm_spread_pct * 100, 1) + '%', 'ATM bid/ask, paid in and out');
+    left += gmBar('Rich \u2265 1.15\u00d7', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '\u00d7' : 'N/A', 'vs this name\u2019s own history');
+    left += gmBar('OI \u2265 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : (ev.atm_oi || 1), 40, 40000, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? 'N/A' : fmtInt(ev.atm_oi), 'thin OI = one market maker');
     var cbv = (ev.combo_spread_pct === null || ev.combo_spread_pct === undefined) ? null : Math.min(ev.combo_spread_pct, 0.5);
-    left += gmBar('Combo \u2264 15%', cbv, 0, 0.5, th.max_combo_spread || 0.15, false, ev.enhanced && ev.enhanced.combo_liquid, cbv === null ? 'N/A' : fmt(ev.combo_spread_pct * 100, 0) + '%', 'combo bid/ask vs debit \u2014 the biggest edge-killer');
+    left += gmBar('Combo \u2264 15%', cbv, 0, 0.5, th.max_combo_spread || 0.15, false, ev.enhanced && ev.enhanced.combo_liquid, cbv === null ? 'N/A' : fmt(ev.combo_spread_pct * 100, 0) + '%', 'bid/ask vs debit; edge-killer');
     left += '<div class="gm-sub">EVENT &amp; MARKET CONTEXT</div>';
-    left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '\u26a1 FOMC \u00b11D' : 'CLEAR', 'Fed decision within \u00b11 day adds market vol');
-    left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '\u26a0 UNCONFIRMED' : 'CONFIRMED', 'Nasdaq and Yahoo must agree within \u00b11 day');
-    if (DATA.market) left += gmBar('VIX REGIME', Math.min(DATA.market.vix, 45), 10, 45, 28, false, DATA.market.regime !== 'STRESSED', fmt(DATA.market.vix, 1) + ' \u00b7 ' + DATA.market.regime, 'stressed regimes crush back-month IV too');
+    left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '\u26a1 FOMC \u00b11D' : 'CLEAR', 'Fed vol lands in the trade');
+    left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '\u26a0 UNCONFIRMED' : 'CONFIRMED', 'Nasdaq and Yahoo must agree');
+    if (DATA.market) left += gmBar('VIX REGIME', Math.min(DATA.market.vix, 45), 10, 45, 28, false, DATA.market.regime !== 'STRESSED', fmt(DATA.market.vix, 1) + ' \u00b7 ' + DATA.market.regime, 'stress crushes back-month IV');
     $('gm-right').innerHTML = '<div class="gm-sub" style="border-top:none;padding-top:0;margin-top:0">CALENDAR PAYOFF AT FRONT EXPIRY</div><div id="gm-payoff-wrap" style="position:relative;height:300px"><canvas id="payoffChart"></canvas></div>';
     renderPayoff(ev);
   }
@@ -1203,23 +1202,23 @@ function sigDefs() {
       val: function (e) { return e.avg_volume30 === null || e.avg_volume30 === undefined ? null : (e.avg_volume30 / 1e6).toFixed(2) + 'M'; },
       margin: function (e) { return e.avg_volume30 ? fmt(e.avg_volume30 / th.avg_volume30, 2) + '× threshold' : null; },
       pass: function (e) { return e.pass_volume; } },
-    { n: 'ATM spread', rule: '≤ ' + (th.max_atm_spread_pct * 100) + '% of mid (slippage kills a 7% edge)', gate: 'PRIORITY',
+    { n: 'ATM spread', rule: '≤ ' + (th.max_atm_spread_pct * 100) + '% of mid (slippage kills a 7% edge)', gate: 'STRONG',
       val: function (e) { return e.atm_spread_pct === null || e.atm_spread_pct === undefined ? null : fmt(e.atm_spread_pct * 100, 1) + '%'; },
       margin: function (e) { return (e.atm_spread_pct === null || e.atm_spread_pct === undefined) ? null : fmt(e.atm_spread_pct / th.max_atm_spread_pct, 2) + '× limit'; },
       pass: function (e) { return e.enhanced ? e.enhanced.tight_spread : null; } },
-    { n: 'Share price', rule: '≥ $' + th.min_price + ' (cheap stocks: coarse strikes, wide relative spreads)', gate: 'PRIORITY',
+    { n: 'Share price', rule: '≥ $' + th.min_price + ' (cheap stocks: coarse strikes, wide relative spreads)', gate: 'STRONG',
       val: function (e) { return e.price ? '$' + fmt(e.price, 2) : null; },
       margin: function (e) { return e.price ? fmt(e.price / th.min_price, 2) + '× minimum' : null; },
       pass: function (e) { return e.enhanced ? e.enhanced.price_ok : null; } },
-    { n: 'Premium richness', rule: '≥ ' + th.richness_min + '× the stock’s avg realized earnings move (last ≤8 qtrs); unknown history tolerated', gate: 'PRIORITY',
+    { n: 'Premium richness', rule: '≥ ' + th.richness_min + '× the stock’s avg realized earnings move (last ≤8 qtrs); unknown history tolerated', gate: 'STRONG',
       val: function (e) { return e.richness ? fmt(e.richness, 2) + '×' : (e.expected_move_pct ? 'no history' : null); },
       margin: function (e) { return e.richness ? fmt(e.richness / th.richness_min, 2) + '× threshold' : null; },
       pass: function (e) { return e.enhanced ? e.enhanced.premium_rich : null; } },
-    { n: 'ATM open interest', rule: '≥ ' + (th.min_atm_oi || 500) + ' contracts on the thinner side (fills at both ends)', gate: 'PRIORITY',
+    { n: 'ATM open interest', rule: '≥ ' + (th.min_atm_oi || 500) + ' contracts on the thinner side (fills at both ends)', gate: 'STRONG',
       val: function (e) { return (e.atm_oi === null || e.atm_oi === undefined) ? null : fmtInt(e.atm_oi); },
       margin: function (e) { return (e.atm_oi === null || e.atm_oi === undefined) ? null : fmt(e.atm_oi / (th.min_atm_oi || 500), 2) + '× minimum'; },
       pass: function (e) { return e.enhanced ? e.enhanced.oi_ok : null; } },
-    { n: 'Date confirmed', rule: 'Nasdaq and Yahoo agree within ±1 day (projected dates shift)', gate: 'PRIORITY',
+    { n: 'Date confirmed', rule: 'Nasdaq and Yahoo agree within ±1 day (projected dates shift)', gate: 'STRONG',
       val: function (e) { return e.date_mismatch === true ? (e.date + ' vs ' + e.yahoo_date) : (e.yahoo_date ? 'agree' : 'no Yahoo data'); },
       margin: function () { return null; },
       pass: function (e) { return e.enhanced ? e.enhanced.date_confirmed : null; } },
@@ -1227,7 +1226,7 @@ function sigDefs() {
       val: function (e) { return (e.straddle_mid && e.strike_width) ? ('$' + fmt(e.straddle_mid, 2) + ' vs $' + fmt(e.strike_width, 2)) : null; },
       margin: function (e) { return (e.straddle_mid && e.strike_width) ? fmt(e.straddle_mid / e.strike_width, 2) + '× spacing' : null; },
       pass: function (e) { return e.enhanced ? e.enhanced.em_vs_width : null; } },
-    { n: 'FOMC window', rule: 'no Fed decision within ±1 trading day — study: reactions near FOMC run significantly larger (median z 2.39 vs 2.05)', gate: 'PRIORITY',
+    { n: 'FOMC window', rule: 'no Fed decision within ±1 trading day — study: reactions near FOMC run significantly larger (median z 2.39 vs 2.05)', gate: 'STRONG',
       val: function (e) { return e.fomc_window === true ? 'FOMC nearby' : (e.fomc_window === false ? 'clear' : null); },
       margin: function () { return null; },
       pass: function (e) { return e.fomc_window === null || e.fomc_window === undefined ? null : !e.fomc_window; } },
@@ -1248,7 +1247,7 @@ function renderSigMon() {
   var tbl = $('sigmon-table');
   if (!ev) { tbl.innerHTML = '<tr><td class="sig-desc">No analyzed events in this scan.</td></tr>'; return; }
   $('sigmon-title').textContent = 'Signal monitor — ' + ev.ticker + ' (earnings ' + ev.date + ' ' + ev.when + ')';
-  var gateCls = { 'BASE': 'gate-base', 'PRIORITY': 'gate-t1', 'DIAG': 'gate-diag' };
+  var gateCls = { 'BASE': 'gate-base', 'STRONG': 'gate-t1', 'DIAG': 'gate-diag' };
   var rows = sigDefs().map(function (d) {
     var v = d.val(ev), m = d.margin(ev), p = d.pass(ev);
     var badge = (p === null || v === null) ? '<span class="eb eb-na">N/A</span>'
@@ -1261,7 +1260,7 @@ function renderSigMon() {
       '<td><span class="' + gateCls[d.gate] + '">' + d.gate + '</span></td>' +
       '<td>' + badge + '</td></tr>';
   }).join('');
-  var verdict = '<tr><td class="sig-name">VERDICT</td><td class="sig-desc">base rating, then Priority if all five execution checks also pass</td>' +
+  var verdict = '<tr><td class="sig-name">VERDICT</td><td class="sig-desc">base signal strength, then Strong if all five execution checks also clear</td>' +
     '<td colspan="4">' + tierPill(ev) + '</td></tr>';
   tbl.innerHTML = '<thead><tr><th>Signal</th><th>Rule / tolerance</th><th>Current</th><th>Margin</th><th>Gates</th><th>Status</th></tr></thead>' +
     '<tbody>' + rows + verdict + '</tbody>';
@@ -1452,10 +1451,10 @@ function renderStrip() {
   function brk(list) {
     var c = { pri: 0, pot: 0, mar: 0, dis: 0 };
     list.forEach(function (e) { c[catOf(e)]++; });
-    return '<span class="live-item"><span class="live-lbl" style="color:#5cf0c2">PRIORITY</span><span class="live-val">' + c.pri + '</span></span>' +
-      '<span class="live-item"><span class="live-lbl" style="color:var(--yellow)">POTENTIAL</span><span class="live-val">' + c.pot + '</span></span>' +
-      '<span class="live-item"><span class="live-lbl" style="color:var(--coral)">MARGINAL</span><span class="live-val">' + c.mar + '</span></span>' +
-      '<span class="live-item"><span class="live-lbl" style="color:#b5b5b5">DISQUALIFIED</span><span class="live-val">' + c.dis + '</span></span>';
+    return '<span class="live-item"><span class="live-lbl" style="color:#5cf0c2">STRONG</span><span class="live-val">' + c.pri + '</span></span>' +
+      '<span class="live-item"><span class="live-lbl" style="color:var(--yellow)">MODERATE</span><span class="live-val">' + c.pot + '</span></span>' +
+      '<span class="live-item"><span class="live-lbl" style="color:var(--coral)">WEAK</span><span class="live-val">' + c.mar + '</span></span>' +
+      '<span class="live-item"><span class="live-lbl" style="color:#b5b5b5">NONE</span><span class="live-val">' + c.dis + '</span></span>';
   }
   var nowE = DATA.events.filter(function (e) { return e.bucket === 'now'; });
   var wkE = DATA.events.filter(function (e) { return e.bucket === 'now' || e.bucket === 'week'; });
@@ -1550,10 +1549,10 @@ function renderPnl() {
   var pot = closed.filter(function (t) { return !t.tier1; });
   var potpnl = pot.reduce(function (a, t) { return a + t.result.pnl_pct; }, 0);
   var kpis = [
-    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 6% REC / 10% T1 + breaker', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
+    { l: 'Paper equity', v: '$' + fmtInt(Math.round(acct.equity)), s: '$' + fmtInt(acct.start) + ' start · 6% Moderate / 10% Strong + breaker', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
     { l: 'Total return', v: (totRet >= 0 ? '+' : '') + fmt(totRet, 2) + '%', s: 'compounded, fractional sizing', c: totRet >= 0 ? 'var(--teal)' : 'var(--coral)' },
-    { l: 'Priority return', v: t1.length ? (t1pnl / t1.length >= 0 ? '+' : '') + fmt(t1pnl / t1.length, 1) + '%/tr' : '—', s: t1.length + ' Priority trades · on debit', c: '#5cf0c2' },
-    { l: 'Potential return', v: pot.length ? (potpnl / pot.length >= 0 ? '+' : '') + fmt(potpnl / pot.length, 1) + '%/tr' : '—', s: pot.length + ' Potential trades · on debit', c: 'var(--yellow)' },
+    { l: 'Strong return', v: t1.length ? (t1pnl / t1.length >= 0 ? '+' : '') + fmt(t1pnl / t1.length, 1) + '%/tr' : '—', s: t1.length + ' Strong-signal trades · on debit', c: '#5cf0c2' },
+    { l: 'Moderate return', v: pot.length ? (potpnl / pot.length >= 0 ? '+' : '') + fmt(potpnl / pot.length, 1) + '%/tr' : '—', s: pot.length + ' Moderate-signal trades · on debit', c: 'var(--yellow)' },
     { l: 'Closed trades', v: String(closed.length), s: open.length + ' open now' },
     { l: 'Win rate', v: closed.length ? fmt(wins.length / closed.length * 100, 0) + '%' : '—', s: 'target ≈66% (research)' },
     { l: 'Avg win / loss', v: (avgW === null ? '—' : '+' + fmt(avgW, 1) + '%') + ' / ' + (avgL === null ? '—' : fmt(avgL, 1) + '%'), s: 'per trade, on debit' },
@@ -1568,7 +1567,7 @@ function renderPnl() {
   $('pnl-open-tbody').innerHTML = open.map(function (t) {
     return '<tr>' +
       '<td><b>' + t.ticker + '</b></td>' +
-      '<td>' + (t.tier1 ? '<span class="pill pill-t1">PRI ★</span>' : '<span class="pill pill-rec">POT</span>') + '</td>' +
+      '<td>' + (t.tier1 ? '<span class="pill pill-t1">STRONG ★</span>' : '<span class="pill pill-rec">MOD</span>') + '</td>' +
       '<td>' + t.earnings_date + ' ' + whenPill(t.when) + '</td>' +
       '<td>' + (t.entry.et || '').replace('T', ' ') + '</td>' +
       '<td style="font-size:0.78rem">sell ' + t.front_exp + ' / buy ' + t.back_exp + '</td>' +
@@ -1585,7 +1584,7 @@ function renderPnl() {
     return '<tr>' +
       '<td><span class="eb ' + (win ? 'eb-pass' : 'eb-fail') + '">' + (win ? 'WIN' : 'LOSS') + '</span></td>' +
       '<td><b>' + t.ticker + '</b></td>' +
-      '<td>' + (t.tier1 ? '<span class="pill pill-t1">PRI ★</span>' : '<span class="pill pill-rec">POT</span>') + '</td>' +
+      '<td>' + (t.tier1 ? '<span class="pill pill-t1">STRONG ★</span>' : '<span class="pill pill-rec">MOD</span>') + '</td>' +
       '<td>' + t.earnings_date + ' ' + whenPill(t.when) + '</td>' +
       '<td>' + (t.entry.expected_move_pct ? '±' + fmt(t.entry.expected_move_pct, 1) + '%' : '—') + '</td>' +
       '<td>' + (t.exit && t.exit.actual_move_pct !== null && t.exit.actual_move_pct !== undefined ? fmt(t.exit.actual_move_pct, 1) + '%' : '—') + '</td>' +
@@ -1639,7 +1638,7 @@ function renderPnl() {
         y: { title: { display: true, text: 'paper account $', color: '#b39a52' }, ticks: { color: '#b39a52' }, grid: { color: 'rgba(106,85,31,0.25)' } }
       },
       plugins: { legend: { display: false }, tooltip: { callbacks: {
-        title: function (c) { var i = c[0].parsed.x; return i === 0 ? 'Start' : (closed[i - 1] ? closed[i - 1].ticker + ' · ' + (closed[i - 1].tier1 ? 'Priority' : 'Potential') : ''); },
+        title: function (c) { var i = c[0].parsed.x; return i === 0 ? 'Start' : (closed[i - 1] ? closed[i - 1].ticker + ' · ' + (closed[i - 1].tier1 ? 'Strong' : 'Moderate') : ''); },
         label: function (c) { var i = c.parsed.x, t = i > 0 ? closed[i - 1] : null; return '$' + Math.round(c.parsed.y).toLocaleString() + (t ? '  (' + (t.result.pnl_pct >= 0 ? '+' : '') + t.result.pnl_pct.toFixed(1) + '%)' : ''); } } } }
     }
   });
@@ -1687,13 +1686,18 @@ function loadSim() {
     });
 }
 
+function relbl(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/Tier[ -]1/g, 'Strong')
+    .replace(/\bREC\b/g, 'Moderate');
+}
 function renderSim() {
   var vs = SIM.variants;
   $('sim-tbody').innerHTML = vs.map(function (v) {
     var base = vs[0];
     var hl = v.id === 'all_combined' ? ' style="background:#191408"' : '';
     return '<tr' + hl + '>' +
-      '<td><b>' + v.label + '</b></td>' +
+      '<td><b>' + relbl(v.label) + '</b></td>' +
       '<td>' + v.params.trades_yr + '</td>' +
       '<td>' + fmt(v.per_trade.win_rate * 100, 1) + '%</td>' +
       '<td class="' + (v.per_trade.mean_pct >= base.per_trade.mean_pct ? 'pos' : 'dimtxt') + '">+' + fmt(v.per_trade.mean_pct, 1) + '%</td>' +
@@ -1709,25 +1713,25 @@ function renderSim() {
   }).join('');
 
   $('sim-assumptions').innerHTML = '<b style="color:var(--yellow)">Variant assumptions:</b><br>' +
-    vs.map(function (v) { return '<b style="color:var(--text)">' + v.label + ':</b> ' + v.assumption; }).join('<br>') +
+    vs.map(function (v) { return '<b style="color:var(--text)">' + relbl(v.label) + ':</b> ' + relbl(v.assumption); }).join('<br>') +
     '<br><span style="font-size:0.72rem">' + SIM.n_paths.toLocaleString() + ' paths × ' + SIM.years +
     ' years, $' + fmtInt(SIM.start_equity) + ' start · generated ' + SIM.generated_utc.slice(0, 10) + '</span>';
 
   $('sim-variant-btns').innerHTML = vs.map(function (v, i) {
     return '<button class="tab" id="simbtn-' + v.id + '" style="padding:3px 9px;font-size:0.68rem" ' +
-      'onclick="selectSimVariant(\'' + v.id + '\')">' + v.label.replace('Calendar', 'Cal').replace('Straddle', 'Strad').replace(' — research filters (baseline)', ' baseline').replace(/Cal \+ /, '+') + '</button>';
+      'onclick="selectSimVariant(\'' + v.id + '\')">' + relbl(v.label).replace('Calendar', 'Cal').replace('Straddle', 'Strad').replace(' — research filters (baseline)', ' baseline').replace(/Cal \+ /, '+') + '</button>';
   }).join('');
   selectSimVariant('baseline_calendar');
 
   var takeHtml = '<strong>Key takeaway:</strong> the improvements mostly trade raw growth for quality. ' +
-    'Execution filters (Priority) and tail trims lift the win rate and Sharpe and cut the average max drawdown ';
+    'Execution filters (Strong signal) and tail trims lift the win rate and Sharpe and cut the average max drawdown ';
   var base = vs[0]; var all = null;
   for (var i = 0; i < vs.length; i++) if (vs[i].id === 'all_combined') all = vs[i];
   if (all) {
     takeHtml += 'from ' + fmt(base.max_dd.mean * 100, 0) + '% to ' + fmt(all.max_dd.mean * 100, 0) + '% and the probability of ever halving the account from ' +
       fmt(base.prob.halved_at_any_point * 100, 1) + '% to ' + fmt(all.prob.halved_at_any_point * 100, 1) + '% — but they also filter out trades, and fewer trades means less compounding, so the median terminal value drops. ' +
       'If you can stomach the baseline drawdowns, the baseline compounds fastest; if you want the smoothest ride per unit of risk, the combined variant has the best Sharpe (' + fmt(all.sharpe, 2) + ' vs ' + fmt(base.sharpe, 2) + '). ' +
-      'A middle path — Priority execution filters only — keeps most of the growth while still improving every risk metric.';
+      'A middle path — Strong-signal execution filters only — keeps most of the growth while still improving every risk metric.';
   }
   $('sim-takeaway').innerHTML = takeHtml;
   renderSizing();
@@ -1741,7 +1745,7 @@ function renderSizing() {
   $('sizing-tbody').innerHTML = sz.sweep.map(function (s) {
     var hl = (s.frac === 0.06 || s.frac === 0.12) ? ' style="background:#191408"' : '';
     return '<tr' + hl + '>' +
-      '<td><b>' + (s.frac * 100).toFixed(0) + '%</b>' + (s.frac === 0.06 ? ' <span class="dimtxt">(REC)</span>' : (s.frac === 0.12 ? ' <span class="dimtxt">(Priority)</span>' : '')) + '</td>' +
+      '<td><b>' + (s.frac * 100).toFixed(0) + '%</b>' + (s.frac === 0.06 ? ' <span class="dimtxt">(Moderate)</span>' : (s.frac === 0.12 ? ' <span class="dimtxt">(Strong)</span>' : '')) + '</td>' +
       '<td>' + (s.kelly_mult * 100).toFixed(0) + '%</td>' +
       '<td><b>' + (s.cagr_median * 100).toFixed(0) + '%</b></td>' +
       '<td class="dimtxt">' + (s.cagr_p5 * 100).toFixed(0) + '% … ' + (s.cagr_p95 * 100).toFixed(0) + '%</td>' +
@@ -1789,13 +1793,13 @@ function renderSizing() {
   $('tiered-tbody').innerHTML = ['flat_6pct', 'confidence_scaled_same_exposure', 'confidence_scaled_sized_up'].map(function (k) {
     var s = tt[k];
     var hl = k === 'confidence_scaled_sized_up' ? ' style="background:#191408"' : '';
-    return '<tr' + hl + '><td><b>' + tt.labels[k] + '</b>' + (k === 'confidence_scaled_sized_up' ? ' <span class="pill pill-t1">LIVE ON TRACKER</span>' : '') + '</td>' +
+    return '<tr' + hl + '><td><b>' + relbl(tt.labels[k]) + '</b>' + (k === 'confidence_scaled_sized_up' ? ' <span class="pill pill-t1">LIVE ON TRACKER</span>' : '') + '</td>' +
       '<td><b>' + (s.cagr_median * 100).toFixed(0) + '%</b></td>' +
       '<td>' + (s.mdd_mean * 100).toFixed(1) + '%</td>' +
       '<td>' + (s.p_halved * 100).toFixed(1) + '%</td></tr>';
   }).join('');
 
-  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Live setting — the public-account policy: 6% REC / 10% Priority, ' +
+  $('sizing-verdict').innerHTML = '<div class="note-box"><strong>Live setting — the public-account policy: 6% Moderate / 10% Strong, ' +
     'max 3 concurrent, drawdown circuit breaker</strong> (sizes halve below −25% from peak equity; new entries pause below −40%). ' +
     'Why not the aggressive corner the grid tempts with: every CAGR in these tables sits on assumptions (a stationary +7.3% edge, ' +
     'independent trades, ~120 trades/yr) that no free data source can verify — there is no historical options data behind this model. ' +
@@ -1863,7 +1867,7 @@ function selectSimVariant(id) {
         tooltip: { callbacks: { label: function (c) { return c.dataset.label + ': $' + Math.round(c.parsed.y).toLocaleString(); } } } }
     }
   });
-  $('sim-eq-title').textContent = 'Equity paths — ' + v.label;
+  $('sim-eq-title').textContent = 'Equity paths — ' + relbl(v.label);
 
   var edges = v.ret_hist.edges, counts = v.ret_hist.counts;
   var labels = [], colors = [];
