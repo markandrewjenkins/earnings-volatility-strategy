@@ -78,9 +78,15 @@ MIN_PRICE = 20.0                # avoid wide-relative-spread cheap stocks
 RICHNESS_MIN = 1.15             # expected move >= 1.15x avg historical move
 MIN_ATM_OI = 500                # ATM open interest (min of call/put side)
                                 # — thin OI means bad fills at both ends
-MAX_COMBO_SPREAD = 0.15         # calendar combo bid/ask spread must be <= 15% of
-                                # the debit — else the round-trip spread eats the
-                                # edge (live tracker: 19% avg cost drag)
+MAX_COMBO_SPREAD = 0.15         # PRIORITY gate: calendar combo bid/ask spread must
+                                # be <= 15% of the debit — else the round-trip spread
+                                # eats the edge (live tracker: 19% avg cost drag)
+MAX_COMBO_SPREAD_POTENTIAL = 0.35  # POTENTIAL gate (looser, secondary): the gross
+                                # per-trade edge is ~27%; round-trip slippage ~= the
+                                # combo spread, so above ~35% there is no edge left to
+                                # capture. A name that passes all three research
+                                # filters but is this illiquid is downgraded out of
+                                # POTENTIAL (it would only ever be a guaranteed loser).
 MIN_DEBIT = 1.00                # min calendar debit ($/share): tiny debits carry
                                 # huge relative commission + spread cost
 
@@ -586,6 +592,20 @@ def analyze_ticker(symbol, earnings_date):
              enh_checks["oi_ok"] and enh_checks["date_confirmed"] and
              combo_ok and debit_ok)
 
+    # Secondary liquidity gate on the RATING itself (not just Priority): a name can
+    # pass all three research filters yet be untradeable because the round-trip combo
+    # spread dwarfs the debit (e.g. combo 800% of a $0.07 debit) or the debit is too
+    # small to clear fixed costs. Such names must not surface as POTENTIAL — knock
+    # them down to CONSIDER. Priority stays gated at MAX_COMBO_SPREAD (0.15); this is
+    # the looser POTENTIAL cap. combo_spread_pct None (unknown) is tolerated here.
+    combo_untradeable = (combo_spread_pct is not None and
+                         combo_spread_pct > MAX_COMBO_SPREAD_POTENTIAL)
+    debit_untradeable = (cal_debit is not None and cal_debit < MIN_DEBIT)
+    if tier == "RECOMMENDED" and (combo_untradeable or debit_untradeable):
+        tier = "CONSIDER"
+        tier1 = False
+    enh_checks["combo_potential_ok"] = not combo_untradeable
+
     return {
         "price": round(price, 2),
         "yahoo_date": y_date,
@@ -1070,6 +1090,9 @@ def run_scan(max_analyze=45, tickers_override=None, fast=False):
             "min_price": MIN_PRICE,
             "richness_min": RICHNESS_MIN,
             "min_atm_oi": MIN_ATM_OI,
+            "max_combo_spread": MAX_COMBO_SPREAD,
+            "max_combo_spread_potential": MAX_COMBO_SPREAD_POTENTIAL,
+            "min_debit": MIN_DEBIT,
             "calendar_gap_days": CALENDAR_GAP_DAYS,
             "min_market_cap": MIN_MARKET_CAP,
         },

@@ -1054,31 +1054,29 @@ function ganttMon(t, isW, hov) {
       : '<b>call calendar</b> \u2014 sell ' + ev.front_exp + ' / buy ' + ev.back_exp + ' <b>calls @ ' + ev.atm_strike + '</b>';
     var n2 = (ev.suggested_frac && theDebit) ? Math.floor(acct() * ev.suggested_frac / (theDebit * 100)) : null;
     tradeLine = '<div class="tc-act" style="border:1px solid ' + actCol + ';background:rgba(232,185,79,0.05)">' +
-      '<div style="font-weight:700;font-size:0.85rem;color:' + actCol + '">' + actLabel + '</div>' +
-      '<div style="font-size:0.78rem;margin-top:4px;line-height:1.6">' + legs +
+      '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">' +
+        '<span style="font-weight:700;font-size:0.85rem;color:' + actCol + '">' + actLabel + '</span>' +
+        '<span style="font-size:0.72rem"><span class="live-lbl">OPEN</span> ~3:45 PM ET <b>' + buy + '</b> \u00b7 <span class="live-lbl">CLOSE</span> ~9:45 AM ET <b>' + sell + '</b> <span class="dimtxt">(post-earnings IV crush)</span></span>' +
+      '</div>' +
+      '<div style="font-size:0.78rem;margin-top:5px;line-height:1.6">' + legs +
         (theDebit ? ' \u00b7 <span class="live-lbl">DEBIT</span> <b>~$' + fmt(theDebit) + '</b>' : '') +
+        (ev.combo_spread_pct !== null && ev.combo_spread_pct !== undefined ?
+          ' <span title="Combo bid/ask as a % of the debit \u2014 your immediate cost to get in and out. Full detail in the Combo filter at left.">(<span class="live-lbl">combo</span> <b style="color:' + (ev.enhanced && ev.enhanced.combo_liquid ? 'var(--gray)' : 'var(--coral)') + '">' + (ev.combo_spread_pct * 100).toFixed(0) + '%</b>)</span>' : '') +
         (n2 !== null ? ' \u00b7 <span class="live-lbl">SIZE</span> <b>' + (ev.suggested_frac * 100).toFixed(1) + '%</b> \u2248 <b>$' + fmtInt(Math.round(acct() * ev.suggested_frac)) + '</b> (' + n2 + ' contract' + (n2 === 1 ? '' : 's') + ')' : '') + '</div>' +
-      '<div style="font-size:0.74rem;margin-top:3px"><span class="live-lbl">OPEN</span> ~3:45 PM ET <b>' + buy + '</b> \u00b7 <span class="live-lbl">CLOSE</span> ~9:45 AM ET <b>' + sell + '</b> (post-earnings IV crush)</div>' +
-      (ev.combo_spread_pct !== null && ev.combo_spread_pct !== undefined ?
-        '<div style="font-size:0.68rem;margin-top:4px;color:' + (ev.combo_spread_pct > 0.15 ? 'var(--coral)' : 'var(--gray)') + '">' +
-        (ev.combo_spread_pct > 0.15 ? '\u26a0 ' : '') + '<span class="live-lbl">COMBO SPREAD</span> <b>' + (ev.combo_spread_pct * 100).toFixed(0) +
-        '%</b> of debit \u2014 the immediate mark-to-market cost. ' +
-        (ev.combo_spread_pct > 0.15 ? 'Wide: your fill and exit will cost this much vs mid. ' : '') +
-        'Trade as a <b>combo LIMIT at mid</b>, worked patiently \u2014 never market. Exit ~9:45 (not 9:30, spreads widest at the open); don\'t chase the mark.</div>' : '') +
       '</div>';
   } else {
     tradeLine = '<div class="tc-act" style="border:1px solid ' + actCol + ';background:rgba(232,185,79,0.03)">' +
       '<div style="font-weight:700;font-size:0.82rem;color:' + actCol + '">' + actLabel + '</div>' +
       '<div style="font-size:0.72rem;margin-top:2px;color:var(--dim)">' +
       (isW ? 'Forecast \u2014 full options analysis, odds and a trade ticket appear once this name is inside the 7-day window. Would enter ~3:45 PM ET on ' + buy + '.' :
-       ev.tier === 'CONSIDER' ? 'Near-miss \u2014 monitor into the close; may firm up.' : 'Fails the edge filters \u2014 no trade.') + '</div></div>';
+       ev.tier === 'CONSIDER' ? 'Near-miss \u2014 may be promoted to Potential or Priority as signals firm up into the close.' : 'Fails the edge filters \u2014 no trade.') + '</div></div>';
   }
   if ($('tc-head')) { $('tc-head').style.display = ''; $('tc-head').innerHTML = idLine + tradeLine; }
   var left = '<div class="gm-sub" style="border-top:none;padding-top:0;margin-top:0">SIGNAL FILTERS \u2014 how ' + ev.ticker + ' scores against the strategy criteria (white line = current value; shaded zone = pass range)</div>';
   if (isW) {
     left += gmBar('Vol \u2265 1.5M', (ev.avg_volume30 || 0) / 1e6 || 0.2, 0.3, 250, 1.5, true, ev.pass_volume, ((ev.avg_volume30 || 0) / 1e6).toFixed(1) + 'M', '30-day average share volume. 1.5M+ = enough price-insensitive hedging flow to keep premium rich.') +
       gmBar('Price \u2265 $20', ev.price || 1, 8, 1200, 20, true, (ev.price || 0) >= th.min_price, '$' + fmt(ev.price, 0), 'Share price floor. Below $20, strikes are coarse and spreads wide relative to premium.') +
-      ['Slope', 'IV/RV', 'Rich', 'Spread', 'OI'].map(function (l2) { return '<div class="gm-frow"><div class="gm-fhead"><span class="l">' + l2 + '</span><span class="v" style="color:var(--gray);font-weight:400">forms \u22645d out</span></div><div class="gm-fbar hatch"></div></div>'; }).join('');
+      ['Slope', 'IV/RV', 'Rich', 'Spread', 'OI', 'Combo'].map(function (l2) { return '<div class="gm-frow"><div class="gm-fhead"><span class="l">' + l2 + '</span><span class="v" style="color:var(--gray);font-weight:400">forms \u22645d out</span></div><div class="gm-fbar hatch"></div></div>'; }).join('');
     $('gm-right').innerHTML = '<div class="dimtxt" style="font-size:0.74rem;padding-top:8px">Forecast only \u2014 the slope and IV/RV signals form in the final days. A full trade ticket and payoff diagram appear once this name is inside the 7-day window.</div>';
     if (payoffChart) { payoffChart.destroy(); payoffChart = null; }
   } else {
@@ -1091,6 +1089,8 @@ function ganttMon(t, isW, hov) {
     left += gmBar('Spread \u2264 10%', spv, 0, 0.25, th.max_atm_spread_pct, false, ev.enhanced && ev.enhanced.tight_spread, spv === null ? 'N/A' : fmt(ev.atm_spread_pct * 100, 1) + '%', 'ATM bid/ask as a % of mid. Crossed at entry AND exit \u2014 wide spreads eat the edge.');
     left += gmBar('Rich \u2265 1.15\u00d7', ev.richness ? Math.min(ev.richness, 2.5) : null, 0, 2.5, th.richness_min, true, ev.enhanced && ev.enhanced.premium_rich, ev.richness ? fmt(ev.richness, 2) + '\u00d7' : 'N/A', 'Implied move vs this stock own avg realized earnings move. Above 1.15\u00d7 = premium rich for THIS name.');
     left += gmBar('OI \u2265 500', (ev.atm_oi === null || ev.atm_oi === undefined) ? null : (ev.atm_oi || 1), 40, 40000, th.min_atm_oi || 500, true, ev.enhanced && ev.enhanced.oi_ok, (ev.atm_oi === null || ev.atm_oi === undefined) ? 'N/A' : fmtInt(ev.atm_oi), 'Open interest on the thinner ATM side. Thin OI = one market maker at both ends.');
+    var cbv = (ev.combo_spread_pct === null || ev.combo_spread_pct === undefined) ? null : Math.min(ev.combo_spread_pct, 0.5);
+    left += gmBar('Combo \u2264 15%', cbv, 0, 0.5, th.max_combo_spread || 0.15, false, ev.enhanced && ev.enhanced.combo_liquid, cbv === null ? 'N/A' : fmt(ev.combo_spread_pct * 100, 0) + '%', 'The calendar\u2019s combined bid/ask as a % of the debit \u2014 the immediate mark-to-market cost to get in AND out, and the single biggest edge-killer. Under 15% for PRIORITY; above ~35% the ~27% gross edge is gone and the name drops out of POTENTIAL. Trade as a combo LIMIT at mid, worked patiently \u2014 never market; exit ~9:45 (not 9:30, spreads widest at the open) and don\u2019t chase the mark down.');
     left += '<div class="gm-sub">EVENT &amp; MARKET CONTEXT</div>';
     left += gmFlag('FOMC WINDOW', !ev.fomc_window, ev.fomc_window ? '\u26a1 FOMC \u00b11D' : 'CLEAR', 'A Fed decision within \u00b11 trading day adds market vol the calendar is short. Blocks PRIORITY.');
     left += gmFlag('EARNINGS DATE', !ev.date_mismatch, ev.date_mismatch ? '\u26a0 UNCONFIRMED' : 'CONFIRMED', 'Nasdaq and Yahoo must agree within \u00b11 day \u2014 projected dates shift.');
