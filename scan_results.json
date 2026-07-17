@@ -795,9 +795,9 @@
    "combo_spread_pct": 1.769,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 6.43,
-   "ts_slope_0_45": 0.00742,
-   "iv30": 0.3638,
+   "expected_move_pct": 6.44,
+   "ts_slope_0_45": 0.00741,
+   "iv30": 0.3645,
    "rv30": 0.2635,
    "iv30_rv30": 1.381,
    "avg_volume30": 7508707,
@@ -808,15 +808,15 @@
     {
      "exp": "2026-08-21",
      "dte": 35,
-     "iv": 0.3638
+     "iv": 0.3645
     },
     {
      "exp": "2026-09-18",
      "dte": 63,
-     "iv": 0.5715
+     "iv": 0.5719
     }
    ],
-   "back_iv": 0.5715,
+   "back_iv": 0.5719,
    "ohlc": [
     {
      "t": "2026-03-10",
@@ -2966,16 +2966,16 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 13.38,
+   "price": 13.37,
    "yahoo_date": "2026-07-20",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
-   "back_exp": null,
+   "back_exp": "2026-09-18",
    "atm_strike": 12.5,
    "straddle_mid": 1.17,
    "calendar_debit_est": null,
-   "back_oi": null,
-   "combo_spread_pct": null,
+   "back_oi": 1771,
+   "combo_spread_pct": 2702159776422297.5,
    "double_calendar": null,
    "structure_rec": "calendar",
    "expected_move_pct": 8.79,
@@ -3649,7 +3649,7 @@
     "em_vs_width": false,
     "combo_liquid": false,
     "debit_ok": false,
-    "combo_potential_ok": true,
+    "combo_potential_ok": false,
     "no_fomc": true
    },
    "sector": "Real Estate",
@@ -3658,8 +3658,8 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 12.5,
-   "odds": 0.53,
+   "rank_score": 12.6,
+   "odds": 0.455,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -3680,6 +3680,10 @@
     {
      "f": "calm-reaction sector",
      "d": 0.1
+    },
+    {
+     "f": "very wide combo spread (>20% \u2014 eats the edge)",
+     "d": -0.3
     }
    ],
    "suggested_frac": null,
@@ -4420,7 +4424,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 92.46,
+   "price": 92.4,
    "yahoo_date": "2026-07-24",
    "date_mismatch": true,
    "front_exp": "2026-11-20",
@@ -4445,10 +4449,10 @@
     {
      "exp": "2026-11-20",
      "dte": 126,
-     "iv": 0.2544
+     "iv": 0.2539
     }
    ],
-   "back_iv": 0.2544,
+   "back_iv": 0.2539,
    "ohlc": [
     {
      "t": "2026-03-10",
@@ -5078,7 +5082,7 @@
      "o": 92.0,
      "h": 93.85,
      "l": 91.5,
-     "c": 92.46
+     "c": 92.4
     }
    ],
    "hist_moves": null,
