@@ -258,6 +258,9 @@ tr.selected td { background: #241d0e }
 #tab-about a { color: var(--yellow); font-weight: 700; text-decoration: none; }
 #tab-about a:hover { text-decoration: underline; }
 #tab-about a:visited { color: #b39a52; }
+.foot a { color: var(--yellow); text-decoration: none; }
+.foot a:hover { text-decoration: underline; }
+.foot a:visited { color: #b39a52; }
 details.panel > summary { list-style: none; cursor: pointer; }
 details.panel > summary::-webkit-details-marker { display: none; }
 details.panel:not([open]) > summary .t::after { content: ' ▸ expand'; color: var(--dim); font-weight: 400; font-size: 0.72rem; text-transform: none; letter-spacing: 0; }
@@ -738,10 +741,16 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
     </div>
     <div class="panel" style="margin-top:12px"><div class="ph"><span class="t">Methodology &amp; data</span></div>
       <div class="pb prose">
-        <p><strong>Research basis.</strong> The three core filters (term-structure slope, IV30/RV30, liquidity) come from the
-        Volatility Vibes study of <strong>72,500 earnings events (2007–present)</strong>. Additions layered on top —
-        execution-quality checks, sector-cohort conditioning, FOMC/regime gating, position sizing and a fee/slippage model —
-        are documented on the How It Works tab.</p>
+        <p><strong>Research basis &amp; credit.</strong> The core of this strategy — selling richly-priced front-month
+        earnings implied volatility and harvesting the post-announcement crush — is adapted from research shared publicly by
+        the options educator <a href="https://www.youtube.com/@VolatilityVibes" target="_blank" rel="noopener">VolatilityVibes</a>,
+        and in particular the video <a href="https://www.youtube.com/watch?v=oW6MHjzxHpU&amp;t=2s" target="_blank" rel="noopener">"This
+        Option Strategy Turned $10k into $1 Million in One Year"</a>. That work lays out the term-structure edge and its three
+        primary filters (term-structure slope, IV30/RV30 and liquidity) over a study of <strong>72,500 earnings events
+        (2007–present)</strong>. The version implemented on this site builds on that foundation and extends it substantially
+        through the author's own research and testing — execution-quality and liquidity gates, sector-cohort conditioning,
+        FOMC and volatility-regime handling, position sizing, a fee/slippage model, and the live paper-trading tracker — all
+        documented on the How It Works tab.</p>
         <p><strong>Data sources.</strong> Earnings calendar from the Nasdaq public API (cross-checked against Yahoo per
         ticker); option chains, prices and implied vols from Yahoo Finance (~15-min delayed); VIX term structure and SPY for
         the market-regime read. There is <strong>no paid/historical option-chain feed</strong>, so a tick-level backtest
@@ -780,8 +789,10 @@ table.sig-mon td.sig-desc { color:var(--dim); font-size:0.72rem; white-space:nor
   </div>
 
   <div class="foot">
-    Educational/research dashboard — not investment advice. Options involve substantial risk of loss.
-    Strategy basis: Volatility Vibes earnings IV research (72,500 events, 2007–present) · Scanner data: Nasdaq earnings calendar + Yahoo Finance options chains.<br>
+    Educational/research dashboard — not investment advice. Options involve substantial risk of loss.<br>
+    Strategy core adapted from earnings IV-crush research by <a href="https://www.youtube.com/@VolatilityVibes" target="_blank" rel="noopener">VolatilityVibes</a>
+    (video: <a href="https://www.youtube.com/watch?v=oW6MHjzxHpU&amp;t=2s" target="_blank" rel="noopener">"$10k into $1 Million in One Year"</a>),
+    extended with the author's own research and testing · Scanner data: Nasdaq earnings calendar + Yahoo Finance options chains.<br>
     Scan refreshes ~every 5 minutes during US market hours (external cron trigger). Quotes are delayed; verify in your broker before trading.
   </div>
 </div>
