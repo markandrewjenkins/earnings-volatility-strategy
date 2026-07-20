@@ -1485,7 +1485,7 @@
     "oi_ok": false,
     "date_confirmed": true,
     "em_vs_width": true,
-    "combo_liquid": true,
+    "combo_liquid": false,
     "debit_ok": true,
     "combo_potential_ok": true,
     "no_fomc": true
@@ -1502,6 +1502,10 @@
     {
      "f": "base: CONSIDER (56%)",
      "d": 0.0
+    },
+    {
+     "f": "backwardation depth (1.1\u00d7 threshold)",
+     "d": 0.02
     },
     {
      "f": "very deep liquidity",
@@ -5975,8 +5979,8 @@
    "trade_window": "today",
    "fomc_window": false,
    "price": 144.79,
-   "yahoo_date": null,
-   "date_mismatch": null,
+   "yahoo_date": "2026-07-21",
+   "date_mismatch": false,
    "front_exp": "2026-07-24",
    "back_exp": "2026-09-18",
    "atm_strike": 145.0,
@@ -7405,7 +7409,7 @@
    "hist_moves": null,
    "richness": null,
    "pass_slope": false,
-   "pass_ivrv": false,
+   "pass_ivrv": true,
    "pass_volume": false,
    "tier": "AVOID",
    "tier1": false,
@@ -8164,7 +8168,7 @@
    "tier": "AVOID",
    "tier1": false,
    "enhanced": {
-    "tight_spread": false,
+    "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -8192,10 +8196,6 @@
     {
      "f": "very deep liquidity",
      "d": 0.05
-    },
-    {
-     "f": "wide ATM spread (slippage)",
-     "d": -0.15
     },
     {
      "f": "calm-reaction sector",
@@ -8914,7 +8914,7 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 16.4,
+   "rank_score": 16.3,
    "odds": 0.4,
    "odds_factors": [
     {
@@ -9690,7 +9690,7 @@
    "front_exp": "2026-08-21",
    "back_exp": "2026-09-18",
    "atm_strike": 72.5,
-   "straddle_mid": 6.53,
+   "straddle_mid": 6.55,
    "calendar_debit_est": 1.05,
    "back_oi": 73,
    "combo_spread_pct": 0.524,
@@ -9706,7 +9706,7 @@
    "rv30": 0.3458,
    "iv30_rv30": 1.151,
    "avg_volume30": 3635290,
-   "atm_spread_pct": 0.0739,
+   "atm_spread_pct": 0.069,
    "atm_oi": 25,
    "strike_width": 2.5,
    "term_structure": [
@@ -14074,8 +14074,8 @@
    "trade_window": "today",
    "fomc_window": false,
    "price": 81.59,
-   "yahoo_date": null,
-   "date_mismatch": null,
+   "yahoo_date": "2026-07-21",
+   "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-10-16",
    "atm_strike": 82.5,
