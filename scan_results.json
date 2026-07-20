@@ -1,18 +1,18 @@
 {
- "generated_utc": "2026-07-20T14:06:57+00:00",
- "generated_et": "2026-07-20T10:05:32-04:00",
+ "generated_utc": "2026-07-20T14:11:58+00:00",
+ "generated_et": "2026-07-20T10:10:39-04:00",
  "scan_date": "2026-07-20",
  "next_trading_day": "2026-07-21",
  "horizon_days": 45,
  "date_source": "Nasdaq earnings calendar API, cross-checked per ticker against Yahoo Finance (date_mismatch flags a >1 day gap)",
  "market": {
-  "vix": 17.83,
-  "vix3m": 19.9,
-  "vix_ratio": 0.896,
-  "spy": 745.89,
-  "spy_200dma": 693.87,
+  "vix": 18.14,
+  "vix3m": 20.07,
+  "vix_ratio": 0.904,
+  "spy": 745.11,
+  "spy_200dma": 693.86,
   "spy_bull": true,
-  "regime": "CALM"
+  "regime": "ELEVATED"
  },
  "thresholds": {
   "ts_slope_0_45": -0.00406,
@@ -36,8 +36,8 @@
   "calendar_events": 4354,
   "analyzed": 36,
   "watchlist": 40,
-  "recommended": 1,
-  "consider": 6,
+  "recommended": 2,
+  "consider": 5,
   "avoid": 29,
   "tier1": 0,
   "watch_high": 38,
@@ -54,44 +54,44 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 152.05,
+   "price": 152.09,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-10-16",
    "atm_strike": 150.0,
-   "straddle_mid": 10.85,
+   "straddle_mid": 10.9,
    "calendar_debit_est": 3.75,
    "back_oi": 624,
-   "combo_spread_pct": 0.12,
+   "combo_spread_pct": 0.093,
    "double_calendar": {
     "strike_up": 165.0,
     "strike_dn": 140.0,
-    "debit_est": 5.03
+    "debit_est": 4.95
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 7.14,
-   "ts_slope_0_45": -0.00028,
-   "iv30": 0.3087,
+   "expected_move_pct": 7.17,
+   "ts_slope_0_45": -0.0001,
+   "iv30": 0.3057,
    "rv30": 0.23,
-   "iv30_rv30": 1.342,
-   "avg_volume30": 2122116,
-   "atm_spread_pct": 0.0436,
+   "iv30_rv30": 1.329,
+   "avg_volume30": 2122620,
+   "atm_spread_pct": 0.027,
    "atm_oi": 551,
    "strike_width": 5.0,
    "term_structure": [
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.3087
+     "iv": 0.3057
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.3008
+     "iv": 0.3027
     }
    ],
-   "back_iv": 0.3087,
+   "back_iv": 0.3057,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -720,8 +720,8 @@
      "t": "2026-07-20",
      "o": 153.17,
      "h": 153.54,
-     "l": 151.99,
-     "c": 152.05
+     "l": 151.94,
+     "c": 152.09
     }
    ],
    "hist_moves": null,
@@ -750,12 +750,16 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 11.9,
-   "odds": 0.48,
+   "rank_score": 11.7,
+   "odds": 0.468,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
      "d": 0.0
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -771,65 +775,65 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 100.79,
+   "price": 100.34,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
    "back_exp": "2026-08-21",
-   "atm_strike": 101.0,
-   "straddle_mid": 4.6,
-   "calendar_debit_est": 2.04,
+   "atm_strike": 100.0,
+   "straddle_mid": 4.57,
+   "calendar_debit_est": 1.64,
    "back_oi": 5264,
-   "combo_spread_pct": 0.373,
+   "combo_spread_pct": 0.36,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 4.56,
-   "ts_slope_0_45": -0.00412,
-   "iv30": 0.3575,
-   "rv30": 0.274,
-   "iv30_rv30": 1.305,
-   "avg_volume30": 10414366,
-   "atm_spread_pct": 0.0909,
-   "atm_oi": 110,
+   "expected_move_pct": 4.55,
+   "ts_slope_0_45": -0.00373,
+   "iv30": 0.3547,
+   "rv30": 0.2747,
+   "iv30_rv30": 1.292,
+   "avg_volume30": 10419014,
+   "atm_spread_pct": 0.0829,
+   "atm_oi": 87,
    "strike_width": 1.0,
    "term_structure": [
     {
      "exp": "2026-07-24",
      "dte": 4,
-     "iv": 0.5144
+     "iv": 0.5028
     },
     {
      "exp": "2026-07-31",
      "dte": 11,
-     "iv": 0.4556
+     "iv": 0.422
     },
     {
      "exp": "2026-08-07",
      "dte": 18,
-     "iv": 0.4056
+     "iv": 0.4111
     },
     {
      "exp": "2026-08-14",
      "dte": 25,
-     "iv": 0.3817
+     "iv": 0.3937
     },
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.3478
+     "iv": 0.3391
     },
     {
      "exp": "2026-08-28",
      "dte": 39,
-     "iv": 0.3628
+     "iv": 0.3648
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.3019
+     "iv": 0.3123
     }
    ],
-   "back_iv": 0.3478,
+   "back_iv": 0.3391,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -1458,16 +1462,16 @@
      "t": "2026-07-20",
      "o": 100.61,
      "h": 101.37,
-     "l": 100.49,
-     "c": 100.79
+     "l": 100.34,
+     "c": 100.34
     }
    ],
    "hist_moves": null,
    "richness": null,
-   "pass_slope": true,
+   "pass_slope": false,
    "pass_ivrv": true,
    "pass_volume": true,
-   "tier": "CONSIDER",
+   "tier": "AVOID",
    "tier1": false,
    "enhanced": {
     "tight_spread": true,
@@ -1488,11 +1492,11 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 39.5,
-   "odds": 0.523,
+   "rank_score": 14.3,
+   "odds": 0.43,
    "odds_factors": [
     {
-     "f": "base: CONSIDER (56%)",
+     "f": "base: AVOID (48%)",
      "d": 0.0
     },
     {
@@ -1506,6 +1510,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -1521,37 +1529,37 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 203.58,
+   "price": 203.8,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
    "back_exp": "2026-08-21",
-   "atm_strike": 202.5,
-   "straddle_mid": 11.6,
-   "calendar_debit_est": 5.2,
+   "atm_strike": 205.0,
+   "straddle_mid": 12.15,
+   "calendar_debit_est": 6.15,
    "back_oi": 5237,
-   "combo_spread_pct": 0.519,
+   "combo_spread_pct": 0.35,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 5.7,
-   "ts_slope_0_45": -0.00462,
-   "iv30": 0.4387,
+   "expected_move_pct": 5.96,
+   "ts_slope_0_45": -0.00523,
+   "iv30": 0.4381,
    "rv30": 0.3047,
-   "iv30_rv30": 1.44,
-   "avg_volume30": 3949033,
-   "atm_spread_pct": 0.2502,
-   "atm_oi": 35,
+   "iv30_rv30": 1.438,
+   "avg_volume30": 3950482,
+   "atm_spread_pct": 0.154,
+   "atm_oi": 50,
    "strike_width": 2.5,
    "term_structure": [
     {
      "exp": "2026-07-24",
      "dte": 4,
-     "iv": 0.6102
+     "iv": 0.6346
     },
     {
      "exp": "2026-07-31",
      "dte": 11,
-     "iv": 0.5168
+     "iv": 0.5641
     },
     {
      "exp": "2026-08-07",
@@ -1561,25 +1569,25 @@
     {
      "exp": "2026-08-14",
      "dte": 25,
-     "iv": 0.4394
+     "iv": 0.439
     },
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.4384
+     "iv": 0.4377
     },
     {
      "exp": "2026-08-28",
      "dte": 39,
-     "iv": 0.4375
+     "iv": 0.4367
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.3792
+     "iv": 0.3787
     }
    ],
-   "back_iv": 0.4384,
+   "back_iv": 0.4377,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -2209,7 +2217,7 @@
      "o": 202.0,
      "h": 204.33,
      "l": 200.0,
-     "c": 203.58
+     "c": 203.8
     }
    ],
    "hist_moves": null,
@@ -2217,7 +2225,7 @@
    "pass_slope": true,
    "pass_ivrv": true,
    "pass_volume": true,
-   "tier": "CONSIDER",
+   "tier": "RECOMMENDED",
    "tier1": false,
    "enhanced": {
     "tight_spread": false,
@@ -2229,7 +2237,7 @@
     "em_vs_width": true,
     "combo_liquid": false,
     "debit_ok": true,
-    "combo_potential_ok": false,
+    "combo_potential_ok": true,
     "no_fomc": true
    },
    "sector": "Healthcare",
@@ -2238,16 +2246,16 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 38.0,
-   "odds": 0.463,
+   "rank_score": 63.4,
+   "odds": 0.561,
    "odds_factors": [
     {
-     "f": "base: CONSIDER (56%)",
+     "f": "base: RECOMMENDED (66%)",
      "d": 0.0
     },
     {
-     "f": "backwardation depth (1.1\u00d7 threshold)",
-     "d": 0.02
+     "f": "backwardation depth (1.3\u00d7 threshold)",
+     "d": 0.04
     },
     {
      "f": "IV richness vs RV (1.44)",
@@ -2260,9 +2268,13 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
-   "suggested_frac": null,
+   "suggested_frac": 0.03,
    "error": null
   },
   {
@@ -2275,7 +2287,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 180.6,
+   "price": 180.05,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
@@ -2291,12 +2303,12 @@
     "debit_est": 4.75
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 6.89,
-   "ts_slope_0_45": -0.00116,
-   "iv30": 0.3421,
-   "rv30": 0.2775,
-   "iv30_rv30": 1.233,
-   "avg_volume30": 2450638,
+   "expected_move_pct": 6.91,
+   "ts_slope_0_45": -0.00131,
+   "iv30": 0.3428,
+   "rv30": 0.2779,
+   "iv30_rv30": 1.234,
+   "avg_volume30": 2452948,
    "atm_spread_pct": 0.1885,
    "atm_oi": 37,
    "strike_width": 5.0,
@@ -2304,15 +2316,15 @@
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.3421
+     "iv": 0.3428
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.3098
+     "iv": 0.3062
     }
    ],
-   "back_iv": 0.3421,
+   "back_iv": 0.3428,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -2941,8 +2953,8 @@
      "t": "2026-07-20",
      "o": 180.5,
      "h": 181.31,
-     "l": 180.15,
-     "c": 180.6
+     "l": 179.85,
+     "c": 180.05
     }
    ],
    "hist_moves": null,
@@ -2971,7 +2983,7 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 9.8,
+   "rank_score": 9.9,
    "odds": 0.4,
    "odds_factors": [
     {
@@ -2989,6 +3001,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -3004,52 +3020,52 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 160.79,
+   "price": 161.24,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
    "back_exp": "2026-08-21",
    "atm_strike": 160.0,
-   "straddle_mid": 9.52,
-   "calendar_debit_est": 2.28,
+   "straddle_mid": 9.65,
+   "calendar_debit_est": 2.1,
    "back_oi": 542,
-   "combo_spread_pct": 0.538,
+   "combo_spread_pct": 0.667,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 5.92,
-   "ts_slope_0_45": -0.00579,
-   "iv30": 0.4044,
+   "expected_move_pct": 5.98,
+   "ts_slope_0_45": -0.00593,
+   "iv30": 0.4033,
    "rv30": 0.3166,
-   "iv30_rv30": 1.277,
-   "avg_volume30": 3500343,
-   "atm_spread_pct": 0.1416,
+   "iv30_rv30": 1.274,
+   "avg_volume30": 3503365,
+   "atm_spread_pct": 0.1522,
    "atm_oi": 108,
    "strike_width": 2.5,
    "term_structure": [
     {
      "exp": "2026-07-24",
      "dte": 4,
-     "iv": 0.6346
+     "iv": 0.6401
     },
     {
      "exp": "2026-07-31",
      "dte": 11,
-     "iv": 0.549
+     "iv": 0.5451
     },
     {
      "exp": "2026-08-07",
      "dte": 18,
-     "iv": 0.4689
+     "iv": 0.4641
     },
     {
      "exp": "2026-08-14",
      "dte": 25,
-     "iv": 0.4185
+     "iv": 0.4172
     },
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.3987
+     "iv": 0.3978
     },
     {
      "exp": "2026-08-28",
@@ -3059,10 +3075,10 @@
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.3594
+     "iv": 0.3586
     }
    ],
-   "back_iv": 0.3987,
+   "back_iv": 0.3978,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -3692,7 +3708,7 @@
      "o": 160.42,
      "h": 161.68,
      "l": 159.65,
-     "c": 160.79
+     "c": 161.24
     }
    ],
    "hist_moves": null,
@@ -3721,16 +3737,16 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 38.2,
-   "odds": 0.463,
+   "rank_score": 38.3,
+   "odds": 0.453,
    "odds_factors": [
     {
      "f": "base: CONSIDER (56%)",
      "d": 0.0
     },
     {
-     "f": "backwardation depth (1.4\u00d7 threshold)",
-     "d": 0.06
+     "f": "backwardation depth (1.5\u00d7 threshold)",
+     "d": 0.07
     },
     {
      "f": "wide ATM spread (slippage)",
@@ -3739,6 +3755,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -3754,7 +3774,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 525.41,
+   "price": 526.91,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
@@ -3766,16 +3786,16 @@
    "combo_spread_pct": 0.795,
    "double_calendar": {
     "strike_up": 570.0,
-    "strike_dn": 480.0,
-    "debit_est": 8.55
+    "strike_dn": 485.0,
+    "debit_est": 8.25
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 8.34,
+   "expected_move_pct": 8.31,
    "ts_slope_0_45": -0.00072,
-   "iv30": 0.3883,
-   "rv30": 0.2992,
-   "iv30_rv30": 1.298,
-   "avg_volume30": 986752,
+   "iv30": 0.3876,
+   "rv30": 0.299,
+   "iv30_rv30": 1.296,
+   "avg_volume30": 986884,
    "atm_spread_pct": 0.1166,
    "atm_oi": 24,
    "strike_width": 5.0,
@@ -3783,15 +3803,15 @@
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.3883
+     "iv": 0.3876
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.3681
+     "iv": 0.3675
     }
    ],
-   "back_iv": 0.3681,
+   "back_iv": 0.3675,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -4421,7 +4441,7 @@
      "o": 523.48,
      "h": 529.11,
      "l": 522.74,
-     "c": 525.41
+     "c": 526.91
     }
    ],
    "hist_moves": null,
@@ -4464,6 +4484,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -4479,65 +4503,65 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 76.0,
+   "price": 76.07,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
    "back_exp": "2026-09-18",
    "atm_strike": 76.0,
-   "straddle_mid": 4.77,
-   "calendar_debit_est": 2.95,
+   "straddle_mid": 4.88,
+   "calendar_debit_est": 2.87,
    "back_oi": 955,
-   "combo_spread_pct": 0.193,
+   "combo_spread_pct": 0.169,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 6.28,
-   "ts_slope_0_45": -0.00552,
-   "iv30": 0.47,
-   "rv30": 0.3242,
-   "iv30_rv30": 1.45,
-   "avg_volume30": 7633456,
-   "atm_spread_pct": 0.1047,
+   "expected_move_pct": 6.41,
+   "ts_slope_0_45": -0.00584,
+   "iv30": 0.4693,
+   "rv30": 0.3243,
+   "iv30_rv30": 1.447,
+   "avg_volume30": 7637254,
+   "atm_spread_pct": 0.0814,
    "atm_oi": 129,
    "strike_width": 1.0,
    "term_structure": [
     {
      "exp": "2026-07-24",
      "dte": 4,
-     "iv": 0.6721
+     "iv": 0.6868
     },
     {
      "exp": "2026-07-31",
      "dte": 11,
-     "iv": 0.5317
+     "iv": 0.5438
     },
     {
      "exp": "2026-08-07",
      "dte": 18,
-     "iv": 0.499
+     "iv": 0.4988
     },
     {
      "exp": "2026-08-14",
      "dte": 25,
-     "iv": 0.5104
+     "iv": 0.5099
     },
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.4539
+     "iv": 0.4531
     },
     {
      "exp": "2026-08-28",
      "dte": 39,
-     "iv": 0.4628
+     "iv": 0.4652
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.4033
+     "iv": 0.4028
     }
    ],
-   "back_iv": 0.4033,
+   "back_iv": 0.4028,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -5167,7 +5191,7 @@
      "o": 76.99,
      "h": 77.19,
      "l": 75.71,
-     "c": 76.0
+     "c": 76.07
     }
    ],
    "hist_moves": null,
@@ -5178,7 +5202,7 @@
    "tier": "RECOMMENDED",
    "tier1": false,
    "enhanced": {
-    "tight_spread": false,
+    "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -5196,8 +5220,8 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 64.4,
-   "odds": 0.607,
+   "rank_score": 65.9,
+   "odds": 0.635,
    "odds_factors": [
     {
      "f": "base: RECOMMENDED (66%)",
@@ -5205,7 +5229,7 @@
     },
     {
      "f": "backwardation depth (1.4\u00d7 threshold)",
-     "d": 0.05
+     "d": 0.07
     },
     {
      "f": "IV richness vs RV (1.45)",
@@ -5216,19 +5240,19 @@
      "d": 0.05
     },
     {
-     "f": "wide ATM spread (slippage)",
-     "d": -0.15
-    },
-    {
      "f": "high-blowthrough sector",
      "d": -0.1
     },
     {
      "f": "wide combo spread (12-20%)",
      "d": -0.12
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
-   "suggested_frac": 0.0467,
+   "suggested_frac": 0.059,
    "error": null
   },
   {
@@ -5241,16 +5265,16 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 623.98,
+   "price": 623.99,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-10-16",
    "atm_strike": 620.0,
    "straddle_mid": 53.7,
-   "calendar_debit_est": 14.2,
+   "calendar_debit_est": 14.6,
    "back_oi": 1,
-   "combo_spread_pct": 0.423,
+   "combo_spread_pct": 0.438,
    "double_calendar": null,
    "structure_rec": "calendar",
    "expected_move_pct": 8.61,
@@ -5258,7 +5282,7 @@
    "iv30": 0.4004,
    "rv30": 0.3272,
    "iv30_rv30": 1.224,
-   "avg_volume30": 624962,
+   "avg_volume30": 625109,
    "atm_spread_pct": 0.1145,
    "atm_oi": 79,
    "strike_width": 10.0,
@@ -5904,7 +5928,7 @@
      "o": 627.63,
      "h": 626.28,
      "l": 621.09,
-     "c": 623.98
+     "c": 623.99
     }
    ],
    "hist_moves": null,
@@ -5951,6 +5975,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -5966,65 +5994,65 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 147.91,
+   "price": 148.19,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
    "back_exp": "2026-09-18",
    "atm_strike": 148.0,
-   "straddle_mid": 10.2,
+   "straddle_mid": 10.05,
    "calendar_debit_est": 4.15,
    "back_oi": 99,
    "combo_spread_pct": 0.614,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 6.9,
-   "ts_slope_0_45": -0.00615,
-   "iv30": 0.5085,
-   "rv30": 0.3874,
-   "iv30_rv30": 1.313,
-   "avg_volume30": 2209178,
-   "atm_spread_pct": 0.1718,
+   "expected_move_pct": 6.78,
+   "ts_slope_0_45": -0.00579,
+   "iv30": 0.5086,
+   "rv30": 0.3876,
+   "iv30_rv30": 1.312,
+   "avg_volume30": 2209975,
+   "atm_spread_pct": 0.1904,
    "atm_oi": 2,
    "strike_width": 1.0,
    "term_structure": [
     {
      "exp": "2026-07-24",
      "dte": 4,
-     "iv": 0.7384
+     "iv": 0.7268
     },
     {
      "exp": "2026-07-31",
      "dte": 11,
-     "iv": 0.5709
+     "iv": 0.5707
     },
     {
      "exp": "2026-08-07",
      "dte": 18,
-     "iv": 0.5172
+     "iv": 0.5183
     },
     {
      "exp": "2026-08-14",
      "dte": 25,
-     "iv": 0.5529
+     "iv": 0.553
     },
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.4907
+     "iv": 0.4908
     },
     {
      "exp": "2026-08-28",
      "dte": 39,
-     "iv": 0.5
+     "iv": 0.5046
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.4522
+     "iv": 0.4521
     }
    ],
-   "back_iv": 0.4522,
+   "back_iv": 0.4521,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -6654,7 +6682,7 @@
      "o": 149.82,
      "h": 149.96,
      "l": 147.77,
-     "c": 147.91
+     "c": 148.19
     }
    ],
    "hist_moves": null,
@@ -6683,16 +6711,16 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 38.0,
-   "odds": 0.443,
+   "rank_score": 37.7,
+   "odds": 0.426,
    "odds_factors": [
     {
      "f": "base: CONSIDER (56%)",
      "d": 0.0
     },
     {
-     "f": "backwardation depth (1.5\u00d7 threshold)",
-     "d": 0.08
+     "f": "backwardation depth (1.4\u00d7 threshold)",
+     "d": 0.06
     },
     {
      "f": "wide ATM spread (slippage)",
@@ -6705,6 +6733,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -6720,28 +6752,28 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 234.76,
+   "price": 233.97,
    "yahoo_date": "2026-07-20",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-09-18",
    "atm_strike": 230.0,
    "straddle_mid": 27.35,
-   "calendar_debit_est": 4.55,
+   "calendar_debit_est": 4.65,
    "back_oi": 164,
-   "combo_spread_pct": 0.67,
+   "combo_spread_pct": 0.634,
    "double_calendar": {
     "strike_up": 260.0,
     "strike_dn": 210.0,
-    "debit_est": 6.45
+    "debit_est": 6.3
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 11.65,
-   "ts_slope_0_45": -0.00116,
-   "iv30": 0.5362,
-   "rv30": 0.3997,
-   "iv30_rv30": 1.341,
-   "avg_volume30": 1248941,
+   "expected_move_pct": 11.69,
+   "ts_slope_0_45": -0.00021,
+   "iv30": 0.5112,
+   "rv30": 0.3995,
+   "iv30_rv30": 1.28,
+   "avg_volume30": 1249460,
    "atm_spread_pct": 0.1021,
    "atm_oi": 65,
    "strike_width": 10.0,
@@ -6749,15 +6781,15 @@
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.5362
+     "iv": 0.5112
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.5037
+     "iv": 0.5053
     }
    ],
-   "back_iv": 0.5037,
+   "back_iv": 0.5053,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -7387,7 +7419,7 @@
      "o": 235.89,
      "h": 237.37,
      "l": 232.29,
-     "c": 234.76
+     "c": 233.97
     }
    ],
    "hist_moves": null,
@@ -7416,7 +7448,7 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 9.5,
+   "rank_score": 8.8,
    "odds": 0.4,
    "odds_factors": [
     {
@@ -7434,6 +7466,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -7449,65 +7485,65 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 35.8,
+   "price": 35.62,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
    "back_exp": "2026-09-18",
-   "atm_strike": 36.0,
-   "straddle_mid": 2.07,
-   "calendar_debit_est": 1.29,
-   "back_oi": 748,
-   "combo_spread_pct": 0.287,
+   "atm_strike": 35.5,
+   "straddle_mid": 2.19,
+   "calendar_debit_est": 1.65,
+   "back_oi": 27649,
+   "combo_spread_pct": 0.103,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 5.78,
-   "ts_slope_0_45": -0.00319,
-   "iv30": 0.471,
-   "rv30": 0.3343,
-   "iv30_rv30": 1.409,
-   "avg_volume30": 11326305,
-   "atm_spread_pct": 0.3683,
-   "atm_oi": 21,
+   "expected_move_pct": 6.15,
+   "ts_slope_0_45": -0.00273,
+   "iv30": 0.4737,
+   "rv30": 0.3349,
+   "iv30_rv30": 1.415,
+   "avg_volume30": 11336821,
+   "atm_spread_pct": 0.2215,
+   "atm_oi": 32,
    "strike_width": 0.5,
    "term_structure": [
     {
      "exp": "2026-07-24",
      "dte": 4,
-     "iv": 0.6758
+     "iv": 0.6587
     },
     {
      "exp": "2026-07-31",
      "dte": 11,
-     "iv": 0.5393
+     "iv": 0.5147
     },
     {
      "exp": "2026-08-07",
      "dte": 18,
-     "iv": 0.4807
+     "iv": 0.5537
     },
     {
      "exp": "2026-08-14",
      "dte": 25,
-     "iv": 0.5283
+     "iv": 0.5286
     },
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.4481
+     "iv": 0.4518
     },
     {
      "exp": "2026-08-28",
      "dte": 39,
-     "iv": 0.5967
+     "iv": 0.5986
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.4153
+     "iv": 0.4175
     }
    ],
-   "back_iv": 0.4153,
+   "back_iv": 0.4175,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -8137,7 +8173,7 @@
      "o": 35.25,
      "h": 35.92,
      "l": 35.12,
-     "c": 35.8
+     "c": 35.62
     }
    ],
    "hist_moves": null,
@@ -8155,7 +8191,7 @@
     "oi_ok": false,
     "date_confirmed": true,
     "em_vs_width": true,
-    "combo_liquid": false,
+    "combo_liquid": true,
     "debit_ok": true,
     "combo_potential_ok": true,
     "no_fomc": true
@@ -8166,15 +8202,15 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 12.9,
-   "odds": 0.413,
+   "rank_score": 12.6,
+   "odds": 0.475,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
      "d": 0.0
     },
     {
-     "f": "IV richness vs RV (1.41)",
+     "f": "IV richness vs RV (1.42)",
      "d": 0.03
     },
     {
@@ -8190,8 +8226,8 @@
      "d": 0.1
     },
     {
-     "f": "very wide combo spread (>20% \u2014 eats the edge)",
-     "d": -0.3
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -8207,39 +8243,39 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 72.14,
+   "price": 72.29,
    "yahoo_date": "2026-07-20",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-10-16",
    "atm_strike": 72.0,
-   "straddle_mid": 4.92,
-   "calendar_debit_est": 1.45,
+   "straddle_mid": 4.72,
+   "calendar_debit_est": 1.42,
    "back_oi": 131,
-   "combo_spread_pct": 1.241,
+   "combo_spread_pct": 1.421,
    "double_calendar": {
     "strike_up": 77.0,
     "strike_dn": 67.0,
     "debit_est": 2.58
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 6.83,
+   "expected_move_pct": 6.54,
    "ts_slope_0_45": null,
-   "iv30": 0.3472,
-   "rv30": 0.2653,
-   "iv30_rv30": 1.309,
-   "avg_volume30": 2029208,
-   "atm_spread_pct": 0.2161,
+   "iv30": 0.3147,
+   "rv30": 0.2654,
+   "iv30_rv30": 1.186,
+   "avg_volume30": 2030432,
+   "atm_spread_pct": 0.1531,
    "atm_oi": 11,
    "strike_width": 2.5,
    "term_structure": [
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.3472
+     "iv": 0.3147
     }
    ],
-   "back_iv": 0.3472,
+   "back_iv": 0.3147,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -8867,15 +8903,15 @@
     {
      "t": "2026-07-20",
      "o": 71.87,
-     "h": 72.26,
+     "h": 72.32,
      "l": 71.43,
-     "c": 72.14
+     "c": 72.29
     }
    ],
    "hist_moves": null,
    "richness": null,
    "pass_slope": false,
-   "pass_ivrv": true,
+   "pass_ivrv": false,
    "pass_volume": true,
    "tier": "AVOID",
    "tier1": false,
@@ -8898,7 +8934,7 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 16.6,
+   "rank_score": 16.3,
    "odds": 0.4,
    "odds_factors": [
     {
@@ -8916,6 +8952,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -8931,7 +8971,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 23.5,
+   "price": 23.43,
    "yahoo_date": null,
    "date_mismatch": null,
    "front_exp": "2026-08-21",
@@ -8947,12 +8987,12 @@
     "debit_est": 0.45
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 7.66,
-   "ts_slope_0_45": -0.00021,
-   "iv30": 0.3518,
-   "rv30": 0.2291,
-   "iv30_rv30": 1.536,
-   "avg_volume30": 11487775,
+   "expected_move_pct": 7.68,
+   "ts_slope_0_45": -0.00023,
+   "iv30": 0.3535,
+   "rv30": 0.2295,
+   "iv30_rv30": 1.541,
+   "avg_volume30": 11494380,
    "atm_spread_pct": 0.125,
    "atm_oi": 1056,
    "strike_width": 1.0,
@@ -8960,15 +9000,15 @@
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.3518
+     "iv": 0.3535
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.346
+     "iv": 0.3472
     }
    ],
-   "back_iv": 0.346,
+   "back_iv": 0.3472,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -9597,8 +9637,8 @@
      "t": "2026-07-20",
      "o": 23.58,
      "h": 23.73,
-     "l": 23.49,
-     "c": 23.5
+     "l": 23.42,
+     "c": 23.43
     }
    ],
    "hist_moves": null,
@@ -9628,7 +9668,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 12.6,
-   "odds": 0.421,
+   "odds": 0.409,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -9653,6 +9693,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -9668,7 +9712,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 73.98,
+   "price": 73.82,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
@@ -9681,15 +9725,15 @@
    "double_calendar": {
     "strike_up": 80.0,
     "strike_dn": 67.5,
-    "debit_est": 1.62
+    "debit_est": 1.85
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 9.09,
-   "ts_slope_0_45": -0.00065,
-   "iv30": 0.4288,
+   "expected_move_pct": 9.11,
+   "ts_slope_0_45": -0.00063,
+   "iv30": 0.4285,
    "rv30": 0.3448,
-   "iv30_rv30": 1.244,
-   "avg_volume30": 3491704,
+   "iv30_rv30": 1.243,
+   "avg_volume30": 3493983,
    "atm_spread_pct": 0.1377,
    "atm_oi": 63,
    "strike_width": 2.5,
@@ -9697,7 +9741,7 @@
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.4288
+     "iv": 0.4285
     },
     {
      "exp": "2026-09-18",
@@ -10335,7 +10379,7 @@
      "o": 73.8,
      "h": 74.26,
      "l": 73.47,
-     "c": 73.98
+     "c": 73.82
     }
    ],
    "hist_moves": null,
@@ -10382,6 +10426,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -10397,44 +10445,44 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 175.29,
+   "price": 175.51,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-10-16",
    "atm_strike": 175.0,
-   "straddle_mid": 21.85,
-   "calendar_debit_est": 4.15,
+   "straddle_mid": 21.5,
+   "calendar_debit_est": 4.8,
    "back_oi": 24,
-   "combo_spread_pct": 0.88,
+   "combo_spread_pct": 0.687,
    "double_calendar": {
     "strike_up": 195.0,
     "strike_dn": 155.0,
-    "debit_est": 7.65
+    "debit_est": 7.72
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 12.47,
-   "ts_slope_0_45": 0.00033,
-   "iv30": 0.5205,
-   "rv30": 0.4409,
-   "iv30_rv30": 1.181,
-   "avg_volume30": 1698012,
-   "atm_spread_pct": 0.1491,
+   "expected_move_pct": 12.25,
+   "ts_slope_0_45": 0.00063,
+   "iv30": 0.5118,
+   "rv30": 0.441,
+   "iv30_rv30": 1.161,
+   "avg_volume30": 1698537,
+   "atm_spread_pct": 0.1355,
    "atm_oi": 4,
    "strike_width": 5.0,
    "term_structure": [
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.5205
+     "iv": 0.5118
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.5297
+     "iv": 0.5293
     }
    ],
-   "back_iv": 0.5205,
+   "back_iv": 0.5118,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -11064,7 +11112,7 @@
      "o": 177.02,
      "h": 178.0,
      "l": 173.92,
-     "c": 175.29
+     "c": 175.51
     }
    ],
    "hist_moves": null,
@@ -11107,6 +11155,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -11122,7 +11174,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 121.82,
+   "price": 122.04,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
@@ -11134,12 +11186,12 @@
    "combo_spread_pct": null,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 10.36,
+   "expected_move_pct": 10.34,
    "ts_slope_0_45": null,
-   "iv30": 0.536,
-   "rv30": 0.4078,
-   "iv30_rv30": 1.314,
-   "avg_volume30": 1976684,
+   "iv30": 0.5349,
+   "rv30": 0.4081,
+   "iv30_rv30": 1.311,
+   "avg_volume30": 1977005,
    "atm_spread_pct": 0.2694,
    "atm_oi": 152,
    "strike_width": 5.0,
@@ -11147,10 +11199,10 @@
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.536
+     "iv": 0.5349
     }
    ],
-   "back_iv": 0.536,
+   "back_iv": 0.5349,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -11780,7 +11832,7 @@
      "o": 124.83,
      "h": 125.0,
      "l": 121.48,
-     "c": 121.82
+     "c": 122.04
     }
    ],
    "hist_moves": null,
@@ -11810,7 +11862,7 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 16.6,
-   "odds": 0.418,
+   "odds": 0.406,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -11823,6 +11875,10 @@
     {
      "f": "high-blowthrough sector",
      "d": -0.1
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -11838,13 +11894,13 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 45.46,
+   "price": 45.39,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-09-18",
    "atm_strike": 45.0,
-   "straddle_mid": 4.17,
+   "straddle_mid": 4.4,
    "calendar_debit_est": 0.4,
    "back_oi": 142,
    "combo_spread_pct": 2.5,
@@ -11854,28 +11910,28 @@
     "debit_est": 0.5
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 9.18,
-   "ts_slope_0_45": -0.00162,
-   "iv30": 0.4553,
-   "rv30": 0.2951,
-   "iv30_rv30": 1.543,
-   "avg_volume30": 3068956,
-   "atm_spread_pct": 0.1876,
+   "expected_move_pct": 9.69,
+   "ts_slope_0_45": -0.00163,
+   "iv30": 0.4561,
+   "rv30": 0.2949,
+   "iv30_rv30": 1.546,
+   "avg_volume30": 3069372,
+   "atm_spread_pct": 0.1193,
    "atm_oi": 830,
    "strike_width": 1.0,
    "term_structure": [
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.4553
+     "iv": 0.4561
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.4099
+     "iv": 0.4103
     }
    ],
-   "back_iv": 0.4099,
+   "back_iv": 0.4103,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -12505,7 +12561,7 @@
      "o": 45.77,
      "h": 45.9,
      "l": 45.24,
-     "c": 45.46
+     "c": 45.39
     }
    ],
    "hist_moves": null,
@@ -12535,14 +12591,14 @@
    "cohort_heat": null,
    "cohort_n": 0,
    "rank_score": 12.2,
-   "odds": 0.409,
+   "odds": 0.4,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
      "d": 0.0
     },
     {
-     "f": "IV richness vs RV (1.54)",
+     "f": "IV richness vs RV (1.55)",
      "d": 0.06
     },
     {
@@ -12556,6 +12612,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -12571,7 +12631,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 11.09,
+   "price": 11.1,
    "yahoo_date": "2026-07-20",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
@@ -12580,33 +12640,33 @@
    "straddle_mid": 0.36,
    "calendar_debit_est": 0.15,
    "back_oi": 19818,
-   "combo_spread_pct": 0.6,
+   "combo_spread_pct": 0.586,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 3.25,
-   "ts_slope_0_45": -0.00274,
-   "iv30": 0.2631,
-   "rv30": 0.2017,
-   "iv30_rv30": 1.304,
-   "avg_volume30": 15413538,
-   "atm_spread_pct": 0.1042,
+   "expected_move_pct": 3.29,
+   "ts_slope_0_45": -0.003,
+   "iv30": 0.252,
+   "rv30": 0.2019,
+   "iv30_rv30": 1.248,
+   "avg_volume30": 15417722,
+   "atm_spread_pct": 0.1225,
    "atm_oi": 3247,
    "strike_width": 0.5,
    "term_structure": [
     {
      "exp": "2026-07-24",
      "dte": 4,
-     "iv": 0.3809
+     "iv": 0.3906
     },
     {
      "exp": "2026-07-31",
      "dte": 11,
-     "iv": 0.3418
+     "iv": 0.3408
     },
     {
      "exp": "2026-08-07",
      "dte": 18,
-     "iv": 0.2705
+     "iv": 0.2959
     },
     {
      "exp": "2026-08-14",
@@ -12616,7 +12676,7 @@
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.252
+     "iv": 0.2363
     },
     {
      "exp": "2026-08-28",
@@ -12626,10 +12686,10 @@
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.249
+     "iv": 0.2461
     }
    ],
-   "back_iv": 0.249,
+   "back_iv": 0.2461,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -13259,13 +13319,13 @@
      "o": 11.28,
      "h": 11.28,
      "l": 11.07,
-     "c": 11.09
+     "c": 11.1
     }
    ],
    "hist_moves": null,
    "richness": null,
    "pass_slope": false,
-   "pass_ivrv": true,
+   "pass_ivrv": false,
    "pass_volume": true,
    "tier": "AVOID",
    "tier1": false,
@@ -13288,8 +13348,8 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 12.4,
-   "odds": 0.406,
+   "rank_score": 12.5,
+   "odds": 0.4,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -13310,6 +13370,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -13325,39 +13389,39 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 115.43,
+   "price": 115.79,
    "yahoo_date": "2026-07-20",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-10-16",
    "atm_strike": 115.0,
-   "straddle_mid": 9.88,
+   "straddle_mid": 9.85,
    "calendar_debit_est": 2.5,
    "back_oi": 175,
-   "combo_spread_pct": 1.08,
+   "combo_spread_pct": 1.0,
    "double_calendar": {
     "strike_up": 125.0,
     "strike_dn": 105.0,
-    "debit_est": 15.12
+    "debit_est": 15.45
    },
    "structure_rec": "double calendar",
-   "expected_move_pct": 8.55,
+   "expected_move_pct": 8.51,
    "ts_slope_0_45": null,
-   "iv30": 0.4451,
-   "rv30": 0.2875,
-   "iv30_rv30": 1.548,
-   "avg_volume30": 1082341,
-   "atm_spread_pct": 0.2517,
+   "iv30": 0.4368,
+   "rv30": 0.288,
+   "iv30_rv30": 1.516,
+   "avg_volume30": 1082778,
+   "atm_spread_pct": 0.2331,
    "atm_oi": 30,
    "strike_width": 5.0,
    "term_structure": [
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.4451
+     "iv": 0.4368
     }
    ],
-   "back_iv": 0.4451,
+   "back_iv": 0.4368,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -13987,7 +14051,7 @@
      "o": 117.4,
      "h": 117.44,
      "l": 115.39,
-     "c": 115.43
+     "c": 115.79
     }
    ],
    "hist_moves": null,
@@ -14016,7 +14080,7 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 16.7,
+   "rank_score": 16.6,
    "odds": 0.4,
    "odds_factors": [
     {
@@ -14024,8 +14088,8 @@
      "d": 0.0
     },
     {
-     "f": "IV richness vs RV (1.55)",
-     "d": 0.06
+     "f": "IV richness vs RV (1.52)",
+     "d": 0.05
     },
     {
      "f": "wide ATM spread (slippage)",
@@ -14038,6 +14102,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
@@ -14053,40 +14121,40 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 81.17,
+   "price": 81.31,
    "yahoo_date": "2026-07-21",
    "date_mismatch": false,
    "front_exp": "2026-08-21",
    "back_exp": "2026-10-16",
-   "atm_strike": 80.0,
-   "straddle_mid": 8.0,
-   "calendar_debit_est": 1.95,
-   "back_oi": 5,
-   "combo_spread_pct": 1.667,
+   "atm_strike": 82.5,
+   "straddle_mid": 9.55,
+   "calendar_debit_est": 1.3,
+   "back_oi": 3,
+   "combo_spread_pct": 2.385,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 9.86,
-   "ts_slope_0_45": -0.00368,
-   "iv30": 0.578,
-   "rv30": 0.2682,
-   "iv30_rv30": 2.155,
-   "avg_volume30": 1875505,
-   "atm_spread_pct": 0.4333,
-   "atm_oi": 109,
+   "expected_move_pct": 11.75,
+   "ts_slope_0_45": -0.00445,
+   "iv30": 0.5994,
+   "rv30": 0.2685,
+   "iv30_rv30": 2.232,
+   "avg_volume30": 1877718,
+   "atm_spread_pct": 0.2374,
+   "atm_oi": 35,
    "strike_width": 2.5,
    "term_structure": [
     {
      "exp": "2026-08-21",
      "dte": 32,
-     "iv": 0.578
+     "iv": 0.5994
     },
     {
      "exp": "2026-09-18",
      "dte": 60,
-     "iv": 0.475
+     "iv": 0.4748
     }
    ],
-   "back_iv": 0.578,
+   "back_iv": 0.5994,
    "ohlc": [
     {
      "t": "2026-03-11",
@@ -14716,15 +14784,15 @@
      "o": 82.77,
      "h": 83.39,
      "l": 81.0,
-     "c": 81.17
+     "c": 81.31
     }
    ],
    "hist_moves": null,
    "richness": null,
-   "pass_slope": false,
+   "pass_slope": true,
    "pass_ivrv": true,
    "pass_volume": true,
-   "tier": "AVOID",
+   "tier": "CONSIDER",
    "tier1": false,
    "enhanced": {
     "tight_spread": false,
@@ -14745,16 +14813,16 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 13.0,
-   "odds": 0.4,
+   "rank_score": 38.6,
+   "odds": 0.46,
    "odds_factors": [
     {
-     "f": "base: AVOID (48%)",
+     "f": "base: CONSIDER (56%)",
      "d": 0.0
     },
     {
-     "f": "IV richness vs RV (2.15)",
-     "d": 0.18
+     "f": "IV richness vs RV (2.23)",
+     "d": 0.2
     },
     {
      "f": "wide ATM spread (slippage)",
@@ -14767,6 +14835,10 @@
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
      "d": -0.3
+    },
+    {
+     "f": "elevated VIX regime",
+     "d": -0.05
     }
    ],
    "suggested_frac": null,
