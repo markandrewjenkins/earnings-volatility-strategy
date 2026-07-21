@@ -2,7 +2,7 @@
  "created_utc": "2026-07-03T15:18:01+00:00",
  "account": {
   "start": 10000.0,
-  "equity": 9765.75,
+  "equity": 9621.17,
   "mode": "fractional (idealized), two-tier + circuit breaker",
   "sizing": {
    "rec": 0.07,
@@ -13,68 +13,7 @@
   },
   "peak_equity": 11131.85
  },
- "open": [
-  {
-   "id": "GM-20260721",
-   "ticker": "GM",
-   "name": "General Motors Company",
-   "earnings_date": "2026-07-21",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.069,
-   "odds": 0.658,
-   "rank_score": 66.1,
-   "structure": "call calendar",
-   "strike": 75.0,
-   "front_exp": "2026-07-24",
-   "back_exp": "2026-09-18",
-   "reaction_date": "2026-07-21",
-   "entry": {
-    "ts_utc": "2026-07-20T19:41:43+00:00",
-    "et": "2026-07-20T15:41-04:00",
-    "stock_price": 75.58999633789062,
-    "front_mid": 2.87,
-    "back_mid": 5.25,
-    "debit": 2.38,
-    "expected_move_pct": 6.37,
-    "spread_pct": 0.0467,
-    "combo_spread_pct": 0.113,
-    "iv30_rv30": 1.333,
-    "ts_slope_0_45": -0.00658
-   }
-  },
-  {
-   "id": "MMM-20260721",
-   "ticker": "MMM",
-   "name": "3M Company",
-   "earnings_date": "2026-07-21",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.034,
-   "odds": 0.578,
-   "rank_score": 63.5,
-   "structure": "call calendar",
-   "strike": 160.0,
-   "front_exp": "2026-07-24",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-21",
-   "entry": {
-    "ts_utc": "2026-07-20T19:41:44+00:00",
-    "et": "2026-07-20T15:41-04:00",
-    "stock_price": 159.6699981689453,
-    "front_mid": 4.35,
-    "back_mid": 6.5,
-    "debit": 2.15,
-    "expected_move_pct": 5.54,
-    "spread_pct": 0.0555,
-    "combo_spread_pct": 0.221,
-    "iv30_rv30": 1.264,
-    "ts_slope_0_45": -0.00424
-   }
-  }
- ],
+ "open": [],
  "closed": [
   {
    "id": "FAST-20260714",
@@ -642,7 +581,103 @@
     "pnl_usd": -200.86,
     "equity_after": 9765.75
    }
+  },
+  {
+   "id": "GM-20260721",
+   "ticker": "GM",
+   "name": "General Motors Company",
+   "earnings_date": "2026-07-21",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.069,
+   "odds": 0.658,
+   "rank_score": 66.1,
+   "structure": "call calendar",
+   "strike": 75.0,
+   "front_exp": "2026-07-24",
+   "back_exp": "2026-09-18",
+   "reaction_date": "2026-07-21",
+   "entry": {
+    "ts_utc": "2026-07-20T19:41:43+00:00",
+    "et": "2026-07-20T15:41-04:00",
+    "stock_price": 75.58999633789062,
+    "front_mid": 2.87,
+    "back_mid": 5.25,
+    "debit": 2.38,
+    "expected_move_pct": 6.37,
+    "spread_pct": 0.0467,
+    "combo_spread_pct": 0.113,
+    "iv30_rv30": 1.333,
+    "ts_slope_0_45": -0.00658
+   },
+   "exit": {
+    "ts_utc": "2026-07-21T13:41:35+00:00",
+    "et": "2026-07-21T09:41-04:00",
+    "stock_price": 77.41000366210938,
+    "front_mid": 3.0,
+    "back_mid": 5.25,
+    "value": 2.25,
+    "actual_move_pct": 2.41
+   },
+   "result": {
+    "pnl_pct": -16.52,
+    "gross_pnl_pct": -5.46,
+    "cost_drag_pct": 11.06,
+    "win": false,
+    "alloc_usd": 673.84,
+    "pnl_usd": -111.33,
+    "equity_after": 9654.42
+   }
+  },
+  {
+   "id": "MMM-20260721",
+   "ticker": "MMM",
+   "name": "3M Company",
+   "earnings_date": "2026-07-21",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.034,
+   "odds": 0.578,
+   "rank_score": 63.5,
+   "structure": "call calendar",
+   "strike": 160.0,
+   "front_exp": "2026-07-24",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-21",
+   "entry": {
+    "ts_utc": "2026-07-20T19:41:44+00:00",
+    "et": "2026-07-20T15:41-04:00",
+    "stock_price": 159.6699981689453,
+    "front_mid": 4.35,
+    "back_mid": 6.5,
+    "debit": 2.15,
+    "expected_move_pct": 5.54,
+    "spread_pct": 0.0555,
+    "combo_spread_pct": 0.221,
+    "iv30_rv30": 1.264,
+    "ts_slope_0_45": -0.00424
+   },
+   "exit": {
+    "ts_utc": "2026-07-21T13:41:36+00:00",
+    "et": "2026-07-21T09:41-04:00",
+    "stock_price": 172.08999633789062,
+    "front_mid": 4.31,
+    "back_mid": 6.75,
+    "value": 2.44,
+    "actual_move_pct": 7.78
+   },
+   "result": {
+    "pnl_pct": -10.13,
+    "gross_pnl_pct": 13.49,
+    "cost_drag_pct": 23.62,
+    "win": false,
+    "alloc_usd": 328.25,
+    "pnl_usd": -33.25,
+    "equity_after": 9621.17
+   }
   }
  ],
- "updated_utc": "2026-07-21T13:36:53+00:00"
+ "updated_utc": "2026-07-21T13:41:36+00:00"
 }
