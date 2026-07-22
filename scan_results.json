@@ -3784,7 +3784,7 @@
    "tier": "CONSIDER",
    "tier1": false,
    "enhanced": {
-    "tight_spread": false,
+    "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -3816,10 +3816,6 @@
     {
      "f": "very deep liquidity",
      "d": 0.05
-    },
-    {
-     "f": "wide ATM spread (slippage)",
-     "d": -0.15
     },
     {
      "f": "very wide combo spread (>20% \u2014 eats the edge)",
@@ -5367,7 +5363,7 @@
    "ts_slope_0_45": -0.00812,
    "iv30": 0.4132,
    "rv30": 0.3392,
-   "iv30_rv30": 1.218,
+   "iv30_rv30": 1.201,
    "avg_volume30": 2118390,
    "atm_spread_pct": 0.1972,
    "atm_oi": 50,
@@ -5396,7 +5392,7 @@
     {
      "exp": "2026-08-21",
      "dte": 30,
-     "iv": 0.4132
+     "iv": 0.4075
     },
     {
      "exp": "2026-08-28",
@@ -6779,7 +6775,7 @@
    "tier": "AVOID",
    "tier1": false,
    "enhanced": {
-    "tight_spread": true,
+    "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -6788,7 +6784,7 @@
     "em_vs_width": true,
     "combo_liquid": false,
     "debit_ok": true,
-    "combo_potential_ok": true,
+    "combo_potential_ok": false,
     "no_fomc": true
    },
    "sector": "Energy",
@@ -6803,6 +6799,10 @@
     {
      "f": "base: AVOID (48%)",
      "d": 0.0
+    },
+    {
+     "f": "wide ATM spread (slippage)",
+     "d": -0.15
     },
     {
      "f": "calm-reaction sector",
@@ -6865,7 +6865,7 @@
     {
      "exp": "2026-08-07",
      "dte": 16,
-     "iv": 0.3569
+     "iv": 0.3368
     },
     {
      "exp": "2026-08-14",
@@ -7584,7 +7584,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 514.5,
+   "price": 514.36,
    "yahoo_date": "2026-07-23",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
@@ -7634,12 +7634,12 @@
     {
      "exp": "2026-08-28",
      "dte": 37,
-     "iv": 0.3805
+     "iv": 0.3806
     },
     {
      "exp": "2026-09-18",
      "dte": 58,
-     "iv": 0.3436
+     "iv": 0.3437
     }
    ],
    "back_iv": 0.3971,
@@ -8272,7 +8272,7 @@
      "o": 515.79,
      "h": 521.0,
      "l": 512.0,
-     "c": 514.5
+     "c": 514.36
     }
    ],
    "hist_moves": null,
@@ -11288,7 +11288,7 @@
      "o": 62.94,
      "h": 65.07,
      "l": 62.7,
-     "c": 64.99
+     "c": 65.0
     }
    ],
    "hist_moves": null,
@@ -12043,7 +12043,7 @@
     },
     {
      "t": "2026-07-22",
-     "o": 24.25,
+     "o": 24.16,
      "h": 24.25,
      "l": 23.49,
      "c": 23.52
@@ -12064,7 +12064,7 @@
     "oi_ok": false,
     "date_confirmed": true,
     "em_vs_width": true,
-    "combo_liquid": false,
+    "combo_liquid": true,
     "debit_ok": false,
     "combo_potential_ok": false,
     "no_fomc": true
@@ -12779,7 +12779,7 @@
      "o": 333.69,
      "h": 334.5,
      "l": 329.88,
-     "c": 331.17
+     "c": 330.94
     }
    ],
    "hist_moves": null,
@@ -12882,7 +12882,7 @@
     {
      "exp": "2026-08-21",
      "dte": 30,
-     "iv": 0.3972
+     "iv": 0.3953
     },
     {
      "exp": "2026-08-28",
@@ -12895,7 +12895,7 @@
      "iv": 0.372
     }
    ],
-   "back_iv": 0.3972,
+   "back_iv": 0.3953,
    "ohlc": [
     {
      "t": "2026-03-13",
@@ -13522,7 +13522,7 @@
     },
     {
      "t": "2026-07-22",
-     "o": 232.76,
+     "o": 232.46,
      "h": 238.11,
      "l": 231.32,
      "c": 232.99
@@ -13616,7 +13616,7 @@
     {
      "exp": "2026-07-24",
      "dte": 2,
-     "iv": 0.417
+     "iv": 0.4258
     },
     {
      "exp": "2026-07-31",
@@ -13636,7 +13636,7 @@
     {
      "exp": "2026-08-21",
      "dte": 30,
-     "iv": 0.2647
+     "iv": 0.2752
     },
     {
      "exp": "2026-08-28",
@@ -14279,7 +14279,7 @@
      "o": 32.69,
      "h": 32.74,
      "l": 32.3,
-     "c": 32.47
+     "c": 32.49
     }
    ],
    "hist_moves": null,
@@ -14308,8 +14308,8 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 14.9,
-   "odds": 0.517,
+   "rank_score": 15.1,
+   "odds": 0.487,
    "odds_factors": [
     {
      "f": "base: AVOID (48%)",
@@ -14322,6 +14322,10 @@
     {
      "f": "calm-reaction sector",
      "d": 0.1
+    },
+    {
+     "f": "wide combo spread (12-20%)",
+     "d": -0.12
     }
    ],
    "suggested_frac": null,
@@ -14337,7 +14341,7 @@
    "bucket": "now",
    "trade_window": "today",
    "fomc_window": false,
-   "price": 1034.49,
+   "price": 1035.06,
    "yahoo_date": "2026-07-22",
    "date_mismatch": false,
    "front_exp": "2026-07-24",
@@ -15023,9 +15027,9 @@
     {
      "t": "2026-07-22",
      "o": 1017.23,
-     "h": 1037.03,
+     "h": 1037.12,
      "l": 1006.34,
-     "c": 1034.49
+     "c": 1035.06
     }
    ],
    "hist_moves": null,
