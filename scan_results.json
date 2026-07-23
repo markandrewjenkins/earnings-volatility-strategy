@@ -33,7 +33,7 @@
   "straddle_frac": 0.02
  },
  "counts": {
-  "calendar_events": 4172,
+  "calendar_events": 4170,
   "analyzed": 20,
   "watchlist": 40,
   "recommended": 2,
@@ -3122,7 +3122,7 @@
     {
      "exp": "2026-07-31",
      "dte": 8,
-     "iv": 0.7432
+     "iv": 0.7433
     },
     {
      "exp": "2026-08-07",
@@ -3817,7 +3817,7 @@
      "d": 0.0
     },
     {
-     "f": "backwardation depth (4.6\u00d7 threshold)",
+     "f": "backwardation depth (4.7\u00d7 threshold)",
      "d": 0.3
     },
     {
@@ -3891,7 +3891,7 @@
     {
      "exp": "2026-08-21",
      "dte": 29,
-     "iv": 0.4894
+     "iv": 0.4871
     },
     {
      "exp": "2026-08-28",
@@ -4585,10 +4585,6 @@
     {
      "f": "calm-reaction sector",
      "d": 0.1
-    },
-    {
-     "f": "wide combo spread (12-20%)",
-     "d": -0.12
     },
     {
      "f": "elevated VIX regime",
@@ -6093,7 +6089,7 @@
     {
      "exp": "2026-08-07",
      "dte": 15,
-     "iv": 0.4085
+     "iv": 0.4089
     },
     {
      "exp": "2026-08-14",
@@ -6108,7 +6104,7 @@
     {
      "exp": "2026-08-28",
      "dte": 36,
-     "iv": 0.4287
+     "iv": 0.429
     },
     {
      "exp": "2026-09-18",
@@ -6823,9 +6819,9 @@
    "back_exp": "2026-08-21",
    "atm_strike": 180.0,
    "straddle_mid": 7.05,
-   "calendar_debit_est": 3.6,
+   "calendar_debit_est": 3.7,
    "back_oi": 214,
-   "combo_spread_pct": 0.278,
+   "combo_spread_pct": 0.243,
    "double_calendar": null,
    "structure_rec": "calendar",
    "expected_move_pct": 3.92,
@@ -6871,7 +6867,7 @@
     {
      "exp": "2026-09-18",
      "dte": 57,
-     "iv": 0.3409
+     "iv": 0.341
     }
    ],
    "back_iv": 0.362,
@@ -7586,8 +7582,8 @@
    "combo_spread_pct": 0.156,
    "double_calendar": {
     "strike_up": 2180.0,
-    "strike_dn": 1520.0,
-    "debit_est": 118.7
+    "strike_dn": 1500.0,
+    "debit_est": 119.45
    },
    "structure_rec": "double calendar",
    "expected_move_pct": 17.95,
@@ -8985,7 +8981,7 @@
     "date_confirmed": true,
     "em_vs_width": true,
     "combo_liquid": false,
-    "debit_ok": true,
+    "debit_ok": false,
     "combo_potential_ok": false,
     "no_fomc": true
    },
@@ -10435,7 +10431,7 @@
    "tier": "AVOID",
    "tier1": false,
    "enhanced": {
-    "tight_spread": false,
+    "tight_spread": true,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -10459,10 +10455,6 @@
     {
      "f": "base: AVOID (48%)",
      "d": 0.0
-    },
-    {
-     "f": "wide ATM spread (slippage)",
-     "d": -0.15
     },
     {
      "f": "high-blowthrough sector",
@@ -10499,7 +10491,7 @@
    "straddle_mid": 15.55,
    "calendar_debit_est": 4.15,
    "back_oi": 620,
-   "combo_spread_pct": 0.373,
+   "combo_spread_pct": 0.443,
    "double_calendar": null,
    "structure_rec": "calendar",
    "expected_move_pct": 12.35,
@@ -11189,7 +11181,7 @@
    "tier": "CONSIDER",
    "tier1": false,
    "enhanced": {
-    "tight_spread": true,
+    "tight_spread": false,
     "price_ok": true,
     "premium_rich": true,
     "richness_known": false,
@@ -11207,8 +11199,8 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 42.6,
-   "odds": 0.523,
+   "rank_score": 41.3,
+   "odds": 0.485,
    "odds_factors": [
     {
      "f": "base: CONSIDER (56%)",
@@ -11217,6 +11209,10 @@
     {
      "f": "backwardation depth (7.2\u00d7 threshold)",
      "d": 0.3
+    },
+    {
+     "f": "wide ATM spread (slippage)",
+     "d": -0.15
     },
     {
      "f": "high-blowthrough sector",
@@ -11974,10 +11970,10 @@
    "front_exp": "2026-08-21",
    "back_exp": "2027-02-19",
    "atm_strike": 195.0,
-   "straddle_mid": 26.85,
-   "calendar_debit_est": 19.85,
+   "straddle_mid": 27.05,
+   "calendar_debit_est": 19.6,
    "back_oi": 3,
-   "combo_spread_pct": 0.123,
+   "combo_spread_pct": 0.122,
    "double_calendar": null,
    "structure_rec": "calendar",
    "expected_move_pct": 13.74,
@@ -12660,7 +12656,7 @@
    "binary_risk": false,
    "cohort_heat": null,
    "cohort_n": 0,
-   "rank_score": 10.3,
+   "rank_score": 10.4,
    "odds": 0.445,
    "odds_factors": [
     {
@@ -12705,7 +12701,7 @@
    "combo_spread_pct": 0.733,
    "double_calendar": null,
    "structure_rec": "calendar",
-   "expected_move_pct": 8.56,
+   "expected_move_pct": 8.55,
    "ts_slope_0_45": null,
    "iv30": 0.4098,
    "rv30": 0.3011,
@@ -13423,10 +13419,10 @@
    "front_exp": "2026-07-24",
    "back_exp": "2026-09-18",
    "atm_strike": 97.0,
-   "straddle_mid": 10.4,
-   "calendar_debit_est": 10.35,
+   "straddle_mid": 10.35,
+   "calendar_debit_est": 10.4,
    "back_oi": 62,
-   "combo_spread_pct": 0.227,
+   "combo_spread_pct": 0.221,
    "double_calendar": null,
    "structure_rec": "calendar",
    "expected_move_pct": 10.62,
@@ -13447,7 +13443,7 @@
     {
      "exp": "2026-07-31",
      "dte": 8,
-     "iv": 0.8547
+     "iv": 0.8751
     },
     {
      "exp": "2026-08-07",
@@ -14146,7 +14142,7 @@
      "d": 0.3
     },
     {
-     "f": "IV richness vs RV (1.40)",
+     "f": "IV richness vs RV (1.39)",
      "d": 0.03
     },
     {
@@ -14192,7 +14188,7 @@
    "double_calendar": {
     "strike_up": 195.0,
     "strike_dn": 155.0,
-    "debit_est": 3.05
+    "debit_est": 3.5
    },
    "structure_rec": "double calendar",
    "expected_move_pct": 11.39,
@@ -16255,14 +16251,6 @@
    "bucket": "now"
   },
   {
-   "ticker": "UTMD",
-   "name": "Utah Medical Products, Inc.",
-   "date": "2026-07-23",
-   "when": "TNS",
-   "market_cap": 220302690.0,
-   "bucket": "now"
-  },
-  {
    "ticker": "OPBK",
    "name": "OP Bancorp",
    "date": "2026-07-23",
@@ -16276,14 +16264,6 @@
    "date": "2026-07-23",
    "when": "TNS",
    "market_cap": 178317856.0,
-   "bucket": "now"
-  },
-  {
-   "ticker": "ECBK",
-   "name": "ECB Bancorp, Inc.",
-   "date": "2026-07-23",
-   "when": "TNS",
-   "market_cap": 173853844.0,
    "bucket": "now"
   },
   {
@@ -18100,6 +18080,22 @@
    "date": "2026-07-28",
    "when": "BMO",
    "market_cap": 1785975707.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "CTS",
+   "name": "CTS Corporation",
+   "date": "2026-07-28",
+   "when": "BMO",
+   "market_cap": 1719291678.0,
+   "bucket": "week"
+  },
+  {
+   "ticker": "OXLC",
+   "name": "Oxford Lane Capital Corp.",
+   "date": "2026-07-28",
+   "when": "BMO",
+   "market_cap": 1531152000.0,
    "bucket": "week"
   }
  ],
