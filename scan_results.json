@@ -1,14 +1,14 @@
 {
- "generated_utc": "2026-07-23T13:16:48+00:00",
- "generated_et": "2026-07-23T09:15:34-04:00",
+ "generated_utc": "2026-07-23T13:21:58+00:00",
+ "generated_et": "2026-07-23T09:20:37-04:00",
  "scan_date": "2026-07-23",
  "next_trading_day": "2026-07-24",
  "horizon_days": 45,
  "date_source": "Nasdaq earnings calendar API, cross-checked per ticker against Yahoo Finance (date_mismatch flags a >1 day gap)",
  "market": {
-  "vix": 18.97,
+  "vix": 19.13,
   "vix3m": 20.54,
-  "vix_ratio": 0.924,
+  "vix_ratio": 0.931,
   "spy": 747.41,
   "spy_200dma": 694.69,
   "spy_bull": true,
@@ -41,7 +41,7 @@
   "avoid": 20,
   "tier1": 0,
   "watch_high": 39,
-  "errors": 0
+  "errors": 1
  },
  "events": [
   {
@@ -13321,7 +13321,8 @@
     }
    ],
    "suggested_frac": null,
-   "error": null
+   "error": null,
+   "carried": true
   },
   {
    "ticker": "DECK",
@@ -17999,5 +18000,10 @@
    "bucket": "week"
   }
  ],
- "errors": []
+ "errors": [
+  {
+   "ticker": "SSNC",
+   "error": "no options"
+  }
+ ]
 }
