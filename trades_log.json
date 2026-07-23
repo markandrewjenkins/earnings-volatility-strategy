@@ -2,7 +2,7 @@
  "created_utc": "2026-07-03T15:18:01+00:00",
  "account": {
   "start": 10000.0,
-  "equity": 9621.17,
+  "equity": 9516.01,
   "mode": "fractional (idealized), two-tier + circuit breaker",
   "sizing": {
    "rec": 0.07,
@@ -13,68 +13,7 @@
   },
   "peak_equity": 11131.85
  },
- "open": [
-  {
-   "id": "RTX-20260723",
-   "ticker": "RTX",
-   "name": "RTX Corporation",
-   "earnings_date": "2026-07-23",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.0862,
-   "odds": 0.697,
-   "rank_score": 66.0,
-   "structure": "call calendar",
-   "strike": 195.0,
-   "front_exp": "2026-07-24",
-   "back_exp": "2026-08-21",
-   "reaction_date": "2026-07-23",
-   "entry": {
-    "ts_utc": "2026-07-22T19:42:14+00:00",
-    "et": "2026-07-22T15:42-04:00",
-    "stock_price": 193.9250030517578,
-    "front_mid": 4.075,
-    "back_mid": 6.95,
-    "debit": 2.875,
-    "expected_move_pct": 4.71,
-    "spread_pct": 0.0327,
-    "combo_spread_pct": 0.089,
-    "iv30_rv30": 1.289,
-    "ts_slope_0_45": -0.00732
-   }
-  },
-  {
-   "id": "UNP-20260723",
-   "ticker": "UNP",
-   "name": "Union Pacific Corporation",
-   "earnings_date": "2026-07-23",
-   "when": "BMO",
-   "tier": "RECOMMENDED",
-   "tier1": false,
-   "frac": 0.0329,
-   "odds": 0.575,
-   "rank_score": 63.4,
-   "structure": "call calendar",
-   "strike": 290.0,
-   "front_exp": "2026-07-24",
-   "back_exp": "2026-09-18",
-   "reaction_date": "2026-07-23",
-   "entry": {
-    "ts_utc": "2026-07-22T19:42:15+00:00",
-    "et": "2026-07-22T15:42-04:00",
-    "stock_price": 291.04998779296875,
-    "front_mid": 7.1,
-    "back_mid": 13.95,
-    "debit": 6.85,
-    "expected_move_pct": 4.0,
-    "spread_pct": 0.1731,
-    "combo_spread_pct": 0.343,
-    "iv30_rv30": 1.347,
-    "ts_slope_0_45": -0.00638
-   }
-  }
- ],
+ "open": [],
  "closed": [
   {
    "id": "FAST-20260714",
@@ -738,7 +677,103 @@
     "pnl_usd": -33.25,
     "equity_after": 9621.17
    }
+  },
+  {
+   "id": "RTX-20260723",
+   "ticker": "RTX",
+   "name": "RTX Corporation",
+   "earnings_date": "2026-07-23",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.0862,
+   "odds": 0.697,
+   "rank_score": 66.0,
+   "structure": "call calendar",
+   "strike": 195.0,
+   "front_exp": "2026-07-24",
+   "back_exp": "2026-08-21",
+   "reaction_date": "2026-07-23",
+   "entry": {
+    "ts_utc": "2026-07-22T19:42:14+00:00",
+    "et": "2026-07-22T15:42-04:00",
+    "stock_price": 193.9250030517578,
+    "front_mid": 4.075,
+    "back_mid": 6.95,
+    "debit": 2.875,
+    "expected_move_pct": 4.71,
+    "spread_pct": 0.0327,
+    "combo_spread_pct": 0.089,
+    "iv30_rv30": 1.289,
+    "ts_slope_0_45": -0.00732
+   },
+   "exit": {
+    "ts_utc": "2026-07-23T13:41:55+00:00",
+    "et": "2026-07-23T09:41-04:00",
+    "stock_price": 209.36500549316406,
+    "front_mid": 4.69,
+    "back_mid": 7.6,
+    "value": 2.91,
+    "actual_move_pct": 7.96
+   },
+   "result": {
+    "pnl_pct": -8.24,
+    "gross_pnl_pct": 1.22,
+    "cost_drag_pct": 9.45,
+    "win": false,
+    "alloc_usd": 829.34,
+    "pnl_usd": -68.32,
+    "equity_after": 9552.85
+   }
+  },
+  {
+   "id": "UNP-20260723",
+   "ticker": "UNP",
+   "name": "Union Pacific Corporation",
+   "earnings_date": "2026-07-23",
+   "when": "BMO",
+   "tier": "RECOMMENDED",
+   "tier1": false,
+   "frac": 0.0329,
+   "odds": 0.575,
+   "rank_score": 63.4,
+   "structure": "call calendar",
+   "strike": 290.0,
+   "front_exp": "2026-07-24",
+   "back_exp": "2026-09-18",
+   "reaction_date": "2026-07-23",
+   "entry": {
+    "ts_utc": "2026-07-22T19:42:15+00:00",
+    "et": "2026-07-22T15:42-04:00",
+    "stock_price": 291.04998779296875,
+    "front_mid": 7.1,
+    "back_mid": 13.95,
+    "debit": 6.85,
+    "expected_move_pct": 4.0,
+    "spread_pct": 0.1731,
+    "combo_spread_pct": 0.343,
+    "iv30_rv30": 1.347,
+    "ts_slope_0_45": -0.00638
+   },
+   "exit": {
+    "ts_utc": "2026-07-23T13:41:56+00:00",
+    "et": "2026-07-23T09:41-04:00",
+    "stock_price": 315.0899963378906,
+    "front_mid": 6.5,
+    "back_mid": 14.71,
+    "value": 8.21,
+    "actual_move_pct": 8.26
+   },
+   "result": {
+    "pnl_pct": -11.72,
+    "gross_pnl_pct": 19.85,
+    "cost_drag_pct": 31.58,
+    "win": false,
+    "alloc_usd": 314.29,
+    "pnl_usd": -36.84,
+    "equity_after": 9516.01
+   }
   }
  ],
- "updated_utc": "2026-07-23T13:37:00+00:00"
+ "updated_utc": "2026-07-23T13:41:56+00:00"
 }
